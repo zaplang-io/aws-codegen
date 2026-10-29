@@ -1,0 +1,23 @@
+[package]
+name = "aws-codegen"
+version = "0.1.0"
+edition = "2021"
+description = "Model-driven generator: botocore service-2.json -> Zap AWS SDK clients (awsJson v0)"
+license = "Apache-2.0"
+repository = "https://github.com/zaplang-io/aws-codegen"
+
+[[bin]]
+name = "aws-codegen"
+path = "src/main.rs"
+
+[lib]
+name = "aws_codegen"
+path = "src/lib.rs"
+
+[dependencies]
+serde = { version = "1.0.217", features = ["derive"] }
+serde_json = "1.0.138"
+indexmap = { version = "2.7.1", features = ["serde"] }
+
+[profile.release]
+opt-level = 2

@@ -1,0 +1,12 @@
+aws-codegen
+Copyright 2024 The Zap Authors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+The service models under models/ are derived from AWS's botocore service
+models (https://github.com/boto/botocore), licensed under the Apache License,
+Version 2.0. The "documentation" fields have been stripped; the structural
+model (shapes, members, operations, traits) is otherwise unmodified.
+
+The runtime files under vendor/ are pinned copies from zaplang-io/aws
+(see vendor/README.md), licensed under the Apache License, Version 2.0.
