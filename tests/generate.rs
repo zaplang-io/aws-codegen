@@ -1,5 +1,6 @@
 //! Integration tests: the generator is deterministic, the checked-in DynamoDB
-//! output is up to date, and the awsJson-only contract + escaping hold.
+//! (awsJson) and Lambda (rest-json) outputs are up to date, and the protocol
+//! contracts + escaping hold.
 
 use std::path::PathBuf;
 
@@ -7,9 +8,27 @@ fn repo_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
 }
 
-fn dynamodb_model() -> String {
-    let p = repo_root().join("models/dynamodb/2012-08-10/service-2.json");
+fn read_model(rel: &str) -> String {
+    let p = repo_root().join(rel);
     std::fs::read_to_string(&p).unwrap_or_else(|e| panic!("reading {}: {e}", p.display()))
+}
+
+fn dynamodb_model() -> String {
+    read_model("models/dynamodb/2012-08-10/service-2.json")
+}
+
+fn lambda_model() -> String {
+    read_model("models/lambda/2015-03-31/service-2.json")
+}
+
+fn lambda_paginators() -> String {
+    read_model("models/lambda/2015-03-31/paginators-1.json")
+}
+
+/// Generate the checked-in Lambda client (rest-json, model + paginators sidecar).
+fn generate_lambda() -> (String, aws_codegen::Coverage) {
+    aws_codegen::generate_from_json_with_paginators(&lambda_model(), Some(&lambda_paginators()))
+        .unwrap()
 }
 
 fn dynamodb_paginators() -> String {
@@ -119,11 +138,91 @@ fn awsjson_contract_shape() {
 }
 
 #[test]
-fn non_json_protocol_is_rejected() {
-    let m =
-        r#"{"metadata":{"protocol":"rest-json","endpointPrefix":"x"},"operations":{},"shapes":{}}"#;
-    let err = aws_codegen::generate_from_json(m).unwrap_err();
-    assert!(err.contains("awsJson"), "{err}");
+fn unsupported_protocol_is_rejected() {
+    // rest-xml / query are later tickets (#352/#353); they are rejected with a
+    // clear message, while json and rest-json are accepted.
+    for proto in ["rest-xml", "query", "ec2"] {
+        let m = format!(
+            r#"{{"metadata":{{"protocol":"{proto}","endpointPrefix":"x"}},"operations":{{}},"shapes":{{}}}}"#
+        );
+        let err = aws_codegen::generate_from_json(&m).unwrap_err();
+        assert!(err.contains(proto), "{err}");
+        assert!(err.contains("unsupported protocol"), "{err}");
+    }
+    assert!(aws_codegen::generate_from_json(
+        r#"{"metadata":{"protocol":"rest-json","endpointPrefix":"x"},"operations":{},"shapes":{}}"#
+    )
+    .is_ok());
+}
+
+// --- Lambda (rest-json) ------------------------------------------------------
+
+#[test]
+fn checked_in_lambda_output_is_current() {
+    let (src, _cov) = generate_lambda();
+    let checked = repo_root().join("generated/lambda/lambda.zap");
+    let on_disk = std::fs::read_to_string(&checked)
+        .unwrap_or_else(|e| panic!("reading {}: {e}", checked.display()));
+    assert_eq!(
+        src, on_disk,
+        "generated/lambda/lambda.zap is stale — re-run: \
+         cargo run -- models/lambda/2015-03-31/service-2.json -o generated/lambda/lambda.zap"
+    );
+}
+
+#[test]
+fn lambda_coverage_is_substantial() {
+    let (_src, cov) = generate_lambda();
+    assert_eq!(cov.operations_total, 88);
+    assert!(
+        cov.operations_methods >= 60,
+        "methods: {}",
+        cov.operations_methods
+    );
+    assert!(
+        cov.operations_skipped > 0,
+        "some ops skip (non-derivable docs)"
+    );
+    assert!(cov.error_variants >= 25, "errors: {}", cov.error_variants);
+    // paginators-1.json lists 16 paginated ops; those whose input is generated
+    // and whose token is a string Marker thread through.
+    assert!(cov.paginators >= 12, "paginators: {}", cov.paginators);
+}
+
+#[test]
+fn rest_json_contract_shape() {
+    let (src, _cov) = generate_lambda();
+    // Protocol seam: a service-name function, not an AwsJson config.
+    assert!(src.contains("# Protocol: rest-json (restJson1)"));
+    assert!(src.contains("def lambda__service() -> str:"));
+    assert!(src.contains("    return \"lambda\""));
+    assert!(src.contains("struct LambdaClient:"));
+
+    // A GET with a path label + query, no body (dispatches the bare binding).
+    assert!(src.contains("def get_function(self, GetFunctionRequest input) -> str:"));
+    assert!(src.contains("labels[\"FunctionName\"] = input.FunctionName"));
+    assert!(src.contains("path_template=\"/2015-03-31/functions/{FunctionName}\""));
+
+    // A raw httpPayload blob (Invoke) and a JSON document body (PutFunction-
+    // Concurrency) are both emitted through the rest-json codec.
+    assert!(src.contains("rest_json_raw_payload(b, str(input.Payload.unwrap_or(bytes()))"));
+    assert!(src.contains("struct PutFunctionConcurrencyDocument:"));
+    assert!(src.contains("rest_json_document(b, doc.to_json())"));
+
+    // A string enum bound to a header/query is carried as its plain wire string.
+    assert!(src.contains("# wire string of the InvocationType enum (header binding)"));
+
+    // Error dispatch and a yield-based paginator threading the Marker token.
+    assert!(src.contains("enum LambdaError:"));
+    assert!(src.contains("def lambda__error_from_code(str code) -> LambdaError:"));
+    assert!(src.contains("def paginate_list_functions(self, ListFunctionsRequest input):"));
+    assert!(src.contains("auto np = next_page_json(page.body, \"NextMarker\")"));
+    assert!(src.contains("input.Marker = Optional.Some(np.token)"));
+}
+
+#[test]
+fn lambda_generation_is_deterministic() {
+    assert_eq!(generate_lambda().0, generate_lambda().0);
 }
 
 #[test]

@@ -1,0 +1,10 @@
+PUT /2017-10-31/functions/my-func/concurrency HTTP/1.1
+content-type: application/json
+host: lambda.us-east-1.amazonaws.com
+x-amz-content-sha256: d9d569764278d852775c25bcc699e76ab22b79e2acd36281ebfe79c5512dedb2
+x-amz-date: 20150830T123600Z
+content-length: 36
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/lambda/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=a7ec51b441fe608b2479ccefba9fd42c28a6679f713d3db65b56049231d57813
+Connection: close
+
+{"ReservedConcurrentExecutions":100}

@@ -1,0 +1,11 @@
+POST /2015-03-31/functions/123456789012%3Afunction%3Amy-func/invocations?Qualifier=PROD HTTP/1.1
+content-type: application/octet-stream
+host: lambda.us-east-1.amazonaws.com
+x-amz-content-sha256: 666c1aa02e8068c6d5cc1d3295009432c16790bec28ec8ce119d0d1a18d61319
+x-amz-date: 20150830T123600Z
+x-amz-invocation-type: Event
+content-length: 9
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/lambda/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date;x-amz-invocation-type, Signature=02b1fd6aa348f8b3eb6e3cee81dba7e5a5154a573a52883e3be660632a852f18
+Connection: close
+
+{"k":"v"}

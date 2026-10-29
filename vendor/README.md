@@ -9,7 +9,13 @@ These are **pinned copies** of the hand-written AWS SDK runtime from
 | `core.zap`     | protocol-agnostic runtime: SigV4 signer, Request/Response, transport |
 | `endpoints.zap`| regional endpoint / host resolution (used by `core.zap`)             |
 | `awsjson.zap`  | the awsJson 1.0/1.1 codec the generated client dispatches through    |
+| `binding.zap`  | the protocol-agnostic HTTP binding layer (httpLabel/Query/Header/…)  |
+| `restjson.zap` | the rest-json (restJson1) codec, a JSON body atop `binding.zap`       |
 | `smoke_main.zap` | a tiny entry point exercising the generated derive-path surface    |
+
+`binding.zap` + `restjson.zap` are the rest-json half (zaplang-io/aws #345, merged
+on `aws` main); the generated rest-json client (e.g. `generated/lambda`) builds an
+`HttpBinding` and dispatches through `rest_json_request` / `rest_json_sign`.
 
 They are **not** a dependency of the Rust generator and are **not** how the
 generated client ships. Wiring the generated output into the `aws` package is a
