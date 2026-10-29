@@ -1,0 +1,11 @@
+POST / HTTP/1.1
+content-type: application/x-amz-json-1.0
+host: dynamodb.us-east-1.amazonaws.com
+x-amz-content-sha256: 8bdbf65f0bdb5fcf3d9b1e6537906203f39cda849ebbb50e8e218ea775c200af
+x-amz-date: 20150830T123600Z
+x-amz-target: DynamoDB_20120810.DescribeTable
+content-length: 21
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/dynamodb/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date;x-amz-target, Signature=7eedd97b0a6738a06fdff4f6317e0443688bbc06c38a4d753556f87b64c2243f
+Connection: close
+
+{"TableName":"Users"}

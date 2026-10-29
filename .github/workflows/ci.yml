@@ -44,6 +44,10 @@ jobs:
         run: cargo build --locked
 
       - name: test
+        # Includes tests/byte_diff.rs: the generated DynamoDB DescribeTable
+        # request, reconstructed from the generated source + an independent
+        # SigV4 signer, must be byte-identical to the hand-written reference
+        # golden (tests/expected/dynamodb_describe_table.http). Toolchain-free.
         run: cargo test --locked
 
       - name: generated output is current (determinism)
@@ -54,6 +58,12 @@ jobs:
             exit 1
           fi
 
+      - name: byte-diff golden is correct SigV4 (independent oracle)
+        # Toolchain-free second implementation of the DescribeTable request
+        # bytes; proves the golden is genuine awsJson 1.0 + SigV4 even on a
+        # runner with no Zap toolchain. Blocking.
+        run: python3 tools/verify_describe_table.py
+
       # Best-effort: compile the generated Zap under the published compiler image.
       # Non-blocking because the published image lags the derive(Json) AWS hooks
       # (zaplang-io/zap#346); it turns green once those land upstream.
@@ -62,3 +72,14 @@ jobs:
         run: |
           docker pull ghcr.io/zaplang-io/zap:latest
           bash scripts/compile_check.sh
+
+      # Best-effort: the end-to-end byte-diff — run the GENERATED client under the
+      # real toolchain and diff its serialized DescribeTable request against the
+      # golden. Non-blocking for the same reason as the compile step (needs
+      # zaplang-io/zap#346 in the image); the blocking halves of the #348 gate are
+      # the `test` step (tests/byte_diff.rs) and the independent-oracle step above.
+      - name: byte-diff generated DescribeTable under toolchain (best-effort)
+        continue-on-error: true
+        run: |
+          docker pull ghcr.io/zaplang-io/zap:latest
+          bash scripts/byte_diff_check.sh
