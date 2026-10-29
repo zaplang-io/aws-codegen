@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  # Single required aggregate status check for branch protection: "CI gate".
+  ci-gate:
+    name: CI gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust components
+        run: rustup component add rustfmt clippy
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: cargo-${{ runner.os }}-
+
+      - name: rustfmt
+        run: cargo fmt --check
+
+      - name: clippy (-D warnings)
+        run: cargo clippy --all-targets --locked -- -D warnings
+
+      - name: build
+        run: cargo build --locked
+
+      - name: test
+        run: cargo test --locked
+
+      - name: generated output is current (determinism)
+        run: |
+          cargo run --locked -- models/dynamodb/2012-08-10/service-2.json -o /tmp/dynamodb.zap
+          if ! diff -u generated/dynamodb/dynamodb.zap /tmp/dynamodb.zap; then
+            echo "::error::generated/dynamodb/dynamodb.zap is stale — regenerate it" >&2
+            exit 1
+          fi
+
+      # Best-effort: compile the generated Zap under the published compiler image.
+      # Non-blocking because the published image lags the derive(Json) AWS hooks
+      # (zaplang-io/zap#346); it turns green once those land upstream.
+      - name: compile generated Zap (best-effort)
+        continue-on-error: true
+        run: |
+          docker pull ghcr.io/zaplang-io/zap:latest
+          bash scripts/compile_check.sh
