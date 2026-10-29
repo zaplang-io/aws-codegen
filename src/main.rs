@@ -82,6 +82,6 @@ fn run(args: &[String]) -> Result<(), String> {
 
 fn print_usage() {
     eprintln!("usage: aws-codegen <service-2.json> [-o <out.zap>]");
-    eprintln!("  Generate a Zap awsJson client from a botocore model.");
+    eprintln!("  Generate a Zap AWS SDK client (awsJson or rest-json) from a botocore model.");
     eprintln!("  With no -o, the client is written to stdout.");
 }

@@ -44,10 +44,11 @@ jobs:
         run: cargo build --locked
 
       - name: test
-        # Includes tests/byte_diff.rs: the generated DynamoDB DescribeTable
-        # request, reconstructed from the generated source + an independent
-        # SigV4 signer, must be byte-identical to the hand-written reference
-        # golden (tests/expected/dynamodb_describe_table.http). Toolchain-free.
+        # Includes the byte-diff gates: tests/byte_diff.rs (DynamoDB awsJson
+        # DescribeTable) and tests/rest_byte_diff.rs (Lambda rest-json GetFunction
+        # / ListFunctions / Invoke / PutFunctionConcurrency) — each request,
+        # reconstructed from the generated source + an independent SigV4/binding
+        # signer, must be byte-identical to the pinned golden. Toolchain-free.
         run: cargo test --locked
 
       - name: generated output is current (determinism)
@@ -65,15 +66,18 @@ jobs:
           regen models/dynamodb/2012-08-10/service-2.json generated/dynamodb/dynamodb.zap
           regen models/sqs/2012-11-05/service-2.json       generated/sqs/sqs.zap
           regen models/kinesis/2013-12-02/service-2.json   generated/kinesis/kinesis.zap
+          regen models/lambda/2015-03-31/service-2.json    generated/lambda/lambda.zap
 
       - name: byte-diff goldens are correct SigV4 (independent oracles)
         # Toolchain-free second implementations of the on-the-wire request bytes;
-        # prove each golden is genuine awsJson + SigV4 even on a runner with no Zap
+        # prove each golden is genuine SigV4 even on a runner with no Zap
         # toolchain. Blocking. DynamoDB (#348) + the #350 JSON services (SQS 1.0,
-        # Kinesis 1.1).
+        # Kinesis 1.1) + the Lambda rest-json fixtures (#4: GetFunction /
+        # ListFunctions / Invoke / PutFunctionConcurrency, cross-checked vs botocore).
         run: |
           python3 tools/verify_describe_table.py
           python3 tools/verify_goldens.py
+          python3 tools/verify_lambda_requests.py
 
       # Best-effort: compile the generated Zap under the published compiler image.
       # Non-blocking because the published image lags the derive(Json) AWS hooks

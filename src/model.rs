@@ -30,6 +30,10 @@ pub struct Metadata {
     pub api_version: String,
     #[serde(rename = "endpointPrefix", default)]
     pub endpoint_prefix: String,
+    /// The SigV4 signing name, when it differs from `endpointPrefix` (rare).
+    /// Used as the rest-json SigV4 service name; falls back to `endpointPrefix`.
+    #[serde(rename = "signingName", default)]
+    pub signing_name: String,
     #[serde(rename = "serviceId", default)]
     pub service_id: String,
     #[serde(rename = "serviceFullName", default)]
@@ -67,6 +71,16 @@ pub struct ShapeRef {
     pub shape: String,
     #[serde(rename = "timestampFormat", default)]
     pub timestamp_format: Option<String>,
+    /// The Smithy HTTP binding location of this member (rest-json et al.):
+    /// `"uri"` (httpLabel), `"querystring"` (httpQuery), `"header"`
+    /// (httpHeader), `"headers"` (httpPrefixHeaders), `"statusCode"`
+    /// (httpResponseCode). Absent for an unbound (document-body) member.
+    #[serde(default)]
+    pub location: Option<String>,
+    /// The wire name for a bound member — the path label name, query parameter,
+    /// header name, or header prefix (defaults to the member name when absent).
+    #[serde(rename = "locationName", default)]
+    pub location_name: Option<String>,
 }
 
 /// A shape definition (`shapes.<Name>`).
@@ -93,6 +107,10 @@ pub struct Shape {
     /// Shape-level `timestampFormat`.
     #[serde(rename = "timestampFormat", default)]
     pub timestamp_format: Option<String>,
+    /// The `httpPayload` member of a request/response structure (rest-json):
+    /// the single member carried as the raw body, if any.
+    #[serde(default)]
+    pub payload: Option<String>,
 }
 
 /// The botocore `paginators-1.json` sidecar: pagination metadata keyed by
@@ -193,6 +211,22 @@ impl Model {
         let mut v: Vec<&String> = self.operations.keys().collect();
         v.sort();
         v
+    }
+}
+
+impl ShapeRef {
+    /// The wire name of a bound member: the `locationName` trait when present,
+    /// else the member name itself.
+    pub fn wire_name<'a>(&'a self, member: &'a str) -> &'a str {
+        self.location_name.as_deref().unwrap_or(member)
+    }
+}
+
+impl Http {
+    /// Whether the request URI template binds `name` as a greedy label
+    /// (`{name+}`, which spans path segments and keeps `/`).
+    pub fn label_is_greedy(&self, name: &str) -> bool {
+        self.request_uri.contains(&format!("{{{name}+}}"))
     }
 }
 

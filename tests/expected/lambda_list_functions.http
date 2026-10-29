@@ -1,0 +1,8 @@
+GET /2015-03-31/functions?FunctionVersion=ALL&Marker=bWFyaw%3D%3D&MaxItems=50 HTTP/1.1
+host: lambda.us-east-1.amazonaws.com
+x-amz-content-sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+x-amz-date: 20150830T123600Z
+content-length: 0
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/lambda/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=c5dfba147f740c11be9516c32b5e48f210eeb888245dfbb9138630f6eb102841
+Connection: close
+

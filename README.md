@@ -7,10 +7,12 @@ Model-driven code generator: botocore `service-2.json` → Zap AWS SDK clients.
 AWS's own service models and emits a Zap client that rides on the hand-written
 `aws.core` runtime and protocol codecs (`zaplang-io/aws`).
 
-**v0 scope** ([zaplang-io/zap#347](https://github.com/zaplang-io/zap/issues/347)):
-the **awsJson** protocol. The generator is proven across **multiple services** on
-that protocol (#350, below). rest-json / rest-xml / query protocols and wiring the
-output into the `aws` package are later tickets.
+**Protocols**: the **awsJson** protocol
+([zaplang-io/zap#347](https://github.com/zaplang-io/zap/issues/347)), proven across
+multiple services, and the **rest-json** (restJson1) protocol
+([#4](https://github.com/zaplang-io/aws-codegen/issues/4), **Lambda** the proof).
+rest-xml / query protocols (#352/#353) and wiring the output into the `aws`
+package are later tickets.
 
 ## Services
 
@@ -22,25 +24,20 @@ regenerates each from its pinned model and fails on any drift.
 | **DynamoDB** | awsJson **1.0** | `models/dynamodb/2012-08-10/` | `generated/dynamodb/dynamodb.zap` | The original proof (#347); byte-diffed against the hand-written reference (#348); 3 paginators (#349). |
 | **SQS** | awsJson **1.0** | `models/sqs/2012-11-05/` | `generated/sqs/sqs.zap` | SQS's **modern JSON** protocol (`AmazonSQS` target); 2 `List*` paginators; `GetQueueUrl` byte-diffed against a pinned golden (#350). |
 | **Kinesis** | awsJson **1.1** | `models/kinesis/2013-12-02/` | `generated/kinesis/kinesis.zap` | Covers the **1.1** wire variant (content type `…-json-1.1`, `awsjson_1_1`) that the 1.0 services don't; 3 `NextToken` paginators; `DescribeStreamSummary` byte-diffed; `DescribeStream`'s nested JMESPath paginator token is document-skipped (#350). |
+| **Lambda** | **rest-json** | `models/lambda/2015-03-31/` | `generated/lambda/lambda.zap` | The **rest-json** proof (#4): HTTP path/query/header bindings + raw httpPayload + JSON document bodies, through the `aws.binding` + `aws.restjson` codec; 14 `Marker` paginators; `GetFunction` / `ListFunctions` / `Invoke` / `PutFunctionConcurrency` byte-diffed (cross-checked vs botocore). |
 
-The three services span both awsJson wire versions (1.0 and 1.1) and three
-protocol prefixes, proving the generator is model-driven rather than tuned to one
-service. Each ships a toolchain-free fidelity gate (see **Development / CI gate**):
-regeneration determinism, a byte-diff of a concrete operation's signed request
-against a pinned golden, and a behavioral paginator check — all host-only (no Zap
-compiler / Docker required).
-
-**Lambda and other rest-json services** are **document-skipped here** and tracked
-in [zaplang-io/aws-codegen#4](https://github.com/zaplang-io/aws-codegen/issues/4).
-Lambda's model is `rest-json` with HTTP path/query/header bindings; the generator
-is **awsJson-only** today and does not emit a REST binding layer. The blocker is
-purely the generator-side **rest-json emitter** — the hand-written rest-json codec
-already exists in `zaplang-io/aws` main (aws PR #8 / #345) — so #4 is additive to
-this generator and depends on no unmerged code.
+The awsJson services span both wire versions (1.0 and 1.1) and three protocol
+prefixes; Lambda adds the REST binding path — together proving the generator is
+model-driven rather than tuned to one service or protocol. Each ships a
+toolchain-free fidelity gate (see **Development / CI gate**): regeneration
+determinism, a byte-diff of a concrete operation's signed request against a pinned
+golden, and a behavioral paginator check — all host-only (no Zap compiler / Docker
+required).
 
 ## What it generates
 
-Given a `service-2.json`, the generator emits one Zap file containing:
+Given a `service-2.json`, the generator emits one Zap file. For **awsJson** it
+contains:
 
 - **A protocol constructor** — `def <svc>_protocol() -> AwsJson` returning
   `awsjson_1_0/1_1(targetPrefix, endpointPrefix)` per the model's `jsonVersion`.
@@ -69,6 +66,33 @@ Given a `service-2.json`, the generator emits one Zap file containing:
   Consume it with `for page in client.paginate_list_tables(input):`. Paginated ops
   with a non-derivable input or a non-string token (DynamoDB `Query`/`Scan`, whose
   `ExclusiveStartKey` is an `AttributeValue` map) are documented as skipped.
+
+### rest-json (restJson1)
+
+For a `rest-json` model (e.g. Lambda) the generator drives the hand-written
+**`aws.binding`** HTTP binding layer + **`aws.restjson`** codec instead. The
+protocol seam is a `def <svc>_service() -> str` (the SigV4 / endpoint name), and
+each operation method places its input members at the HTTP locations the model's
+Smithy traits name, then SigV4-signs via `rest_json_request`:
+
+- **`httpLabel`** → a `{Name}` / greedy `{Name+}` URI path segment, percent-encoded
+  per AWS rules (a non-greedy label encodes `/` as `%2F`, a greedy one keeps it);
+- **`httpQuery`** → a query-string parameter (an `int` is `str(...)`-coerced; a
+  string enum is carried as its plain wire string);
+- **`httpHeader`** / **`httpPrefixHeaders`** → a request header / a header group
+  sharing a name prefix;
+- **payload** → the `httpPayload` member carried as the raw body (a `blob` as
+  `application/octet-stream`, a `string` as `text/plain`, a derivable structure as
+  `application/json`), otherwise the remaining "document" members serialized into
+  a per-operation `@derive(Json)` `<Op>Document` struct and sent as the JSON body.
+
+The input shape is emitted as a plain parameter-carrier struct (it is never
+serialized whole). Operations with a non-bindable URI/query/header member
+(timestamp, collection), a non-derivable document member, or an unsupported
+payload are **skipped** with a documented reason — the same honest posture as the
+awsJson derive gap. rest-json paginators thread the model's string token (e.g.
+Lambda's `Marker` ← `NextMarker`) the same way, reusing the operation's own method
+to build each signed request.
 
 ### The derive-collection gap
 
@@ -129,15 +153,16 @@ A single required **CI gate** job runs:
 cargo fmt --check
 cargo clippy --all-targets -- -D warnings
 cargo build --locked
-cargo test --locked
-# regeneration determinism: every service's generated output must match what's
-# checked in (DynamoDB + SQS)
+cargo test --locked   # includes the byte-diff gates (tests/byte_diff.rs, tests/rest_byte_diff.rs, ...)
+# regeneration determinism: every service's generated output must match what's checked in
 cargo run -- models/dynamodb/2012-08-10/service-2.json -o /tmp/ddb.zap && diff /tmp/ddb.zap generated/dynamodb/dynamodb.zap
 cargo run -- models/sqs/2012-11-05/service-2.json       -o /tmp/sqs.zap && diff /tmp/sqs.zap generated/sqs/sqs.zap
 cargo run -- models/kinesis/2013-12-02/service-2.json   -o /tmp/kin.zap && diff /tmp/kin.zap generated/kinesis/kinesis.zap
-# independent-oracle byte-diff: pinned goldens are genuine awsJson + SigV4
+cargo run -- models/lambda/2015-03-31/service-2.json    -o /tmp/lam.zap && diff /tmp/lam.zap generated/lambda/lambda.zap
+# independent-oracle byte-diff: pinned goldens are genuine SigV4
 python3 tools/verify_describe_table.py   # DynamoDB (#348)
-python3 tools/verify_goldens.py          # SQS + later JSON services (#350)
+python3 tools/verify_goldens.py          # SQS + Kinesis JSON services (#350)
+python3 tools/verify_lambda_requests.py  # Lambda rest-json (#4; cross-checked vs botocore)
 ```
 
 These are all **host-only** (no Zap toolchain / Docker). The byte-diff is proven
