@@ -12,9 +12,9 @@
 # Paginators additionally use the live transport (aws.core `send` /
 # `regional_host` / `next_page_json`) to walk pages and yield each Response.
 #
-# Coverage (v0, awsJson only): 53 operations — 29 with a generated method,
-#   24 skipped (input uses collections not yet serializable by derive).
-#   234 structs (114 @derive(Json)), 36 enums, 31 error variants.
+# Coverage (v0, awsJson only): 58 operations — 32 with a generated method,
+#   26 skipped (input uses collections not yet serializable by derive).
+#   272 structs (136 @derive(Json)), 45 enums, 34 error variants.
 #   3 paginators generated (2 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs containing list/map members are emitted plain,
@@ -26,6 +26,13 @@ def dynamodb_protocol() -> AwsJson:
     return awsjson_1_0("DynamoDB_20120810", "dynamodb")
 
 # --- enums -----------------------------------------------------------------
+
+@derive(Json)
+@json(open)
+enum ApproximateCreationDateTimePrecision:
+    MILLISECOND
+    MICROSECOND
+    Unknown(str value)
 
 @derive(Json)
 @json(open)
@@ -124,6 +131,13 @@ enum ContributorInsightsAction:
 
 @derive(Json)
 @json(open)
+enum ContributorInsightsMode:
+    ACCESSED_AND_THROTTLED_KEYS
+    THROTTLED_KEYS
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum ContributorInsightsStatus:
     ENABLING
     ENABLED
@@ -140,6 +154,7 @@ enum DestinationStatus:
     DISABLING
     DISABLED
     ENABLE_FAILED
+    UPDATING
     Unknown(str value)
 
 @derive(Json)
@@ -155,6 +170,28 @@ enum ExportStatus:
     IN_PROGRESS
     COMPLETED
     FAILED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum ExportType:
+    FULL_EXPORT
+    INCREMENTAL_EXPORT
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum ExportViewType:
+    NEW_IMAGE
+    NEW_AND_OLD_IMAGES
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum GlobalTableSettingsReplicationMode:
+    ENABLED
+    DISABLED
+    ENABLED_WITH_OVERRIDES
     Unknown(str value)
 
 @derive(Json)
@@ -210,6 +247,13 @@ enum KeyType:
 
 @derive(Json)
 @json(open)
+enum MultiRegionConsistency:
+    EVENTUAL
+    STRONG
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum PointInTimeRecoveryStatus:
     ENABLED
     DISABLED
@@ -233,6 +277,9 @@ enum ReplicaStatus:
     ACTIVE
     REGION_DISABLED
     INACCESSIBLE_ENCRYPTION_CREDENTIALS
+    ARCHIVING
+    ARCHIVED
+    REPLICATION_NOT_AUTHORIZED
     Unknown(str value)
 
 @derive(Json)
@@ -301,6 +348,13 @@ enum ScalarAttributeType:
 
 @derive(Json)
 @json(open)
+enum SearchSchemaElementType:
+    HASH
+    INLINE_FILTER
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
 enum Select:
     ALL_ATTRIBUTES
     ALL_PROJECTED_ATTRIBUTES
@@ -334,6 +388,7 @@ enum TableStatus:
     INACCESSIBLE_ENCRYPTION_CREDENTIALS
     ARCHIVING
     ARCHIVED
+    REPLICATION_NOT_AUTHORIZED
     Unknown(str value)
 
 @derive(Json)
@@ -343,6 +398,22 @@ enum TimeToLiveStatus:
     DISABLING
     ENABLED
     DISABLED
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum VectorDistanceFunction:
+    COSINE
+    DOT_PRODUCT
+    EUCLIDEAN
+    Unknown(str value)
+
+@derive(Json)
+@json(open)
+enum WitnessStatus:
+    CREATING
+    DELETING
+    ACTIVE
     Unknown(str value)
 
 # --- shapes ----------------------------------------------------------------
@@ -558,7 +629,7 @@ struct ConditionalCheckFailedException:
     Optional[str] message
     Optional[dict[str, AttributeValue]] Item
 
-# no @derive(Json): member(s) LocalSecondaryIndexes: dict[str, Capacity], GlobalSecondaryIndexes: dict[str, Capacity] not yet serializable by derive
+# no @derive(Json): member(s) LocalSecondaryIndexes: dict[str, Capacity], GlobalSecondaryIndexes: dict[str, Capacity], VectorIndexes: dict[str, VectorCapacity] not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
 struct ConsumedCapacity:
     Optional[str] TableName
@@ -568,6 +639,7 @@ struct ConsumedCapacity:
     Optional[Capacity] Table
     Optional[dict[str, Capacity]] LocalSecondaryIndexes
     Optional[dict[str, Capacity]] GlobalSecondaryIndexes
+    Optional[dict[str, VectorCapacity]] VectorIndexes
 
 @derive(Json)
 struct ContinuousBackupsDescription:
@@ -583,6 +655,7 @@ struct ContributorInsightsSummary:
     Optional[str] TableName
     Optional[str] IndexName
     Optional[ContributorInsightsStatus] ContributorInsightsStatus
+    Optional[ContributorInsightsMode] ContributorInsightsMode
 
 @derive(Json)
 struct CreateBackupInput:
@@ -600,6 +673,8 @@ struct CreateGlobalSecondaryIndexAction:
     list[KeySchemaElement] KeySchema
     Projection Projection
     Optional[ProvisionedThroughput] ProvisionedThroughput
+    Optional[OnDemandThroughput] OnDemandThroughput
+    Optional[WarmThroughput] WarmThroughput
 
 # no @derive(Json): member(s) ReplicationGroup: list[Replica] not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
@@ -613,6 +688,10 @@ struct CreateGlobalTableOutput:
     Optional[GlobalTableDescription] GlobalTableDescription
 
 @derive(Json)
+struct CreateGlobalTableWitnessGroupMemberAction:
+    str RegionName
+
+@derive(Json)
 struct CreateReplicaAction:
     str RegionName
 
@@ -622,15 +701,16 @@ struct CreateReplicationGroupMemberAction:
     str RegionName
     Optional[str] KMSMasterKeyId
     Optional[ProvisionedThroughputOverride] ProvisionedThroughputOverride
+    Optional[OnDemandThroughputOverride] OnDemandThroughputOverride
     Optional[list[ReplicaGlobalSecondaryIndex]] GlobalSecondaryIndexes
     Optional[TableClass] TableClassOverride
 
-# no @derive(Json): member(s) AttributeDefinitions: list[AttributeDefinition], KeySchema: list[KeySchemaElement], LocalSecondaryIndexes: list[LocalSecondaryIndex], GlobalSecondaryIndexes: list[GlobalSecondaryIndex], Tags: list[Tag] not yet serializable by derive
+# no @derive(Json): member(s) AttributeDefinitions: list[AttributeDefinition], KeySchema: list[KeySchemaElement], LocalSecondaryIndexes: list[LocalSecondaryIndex], GlobalSecondaryIndexes: list[GlobalSecondaryIndex], Tags: list[Tag], VectorIndexes: list[VectorIndex] not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
 struct CreateTableInput:
-    list[AttributeDefinition] AttributeDefinitions
+    Optional[list[AttributeDefinition]] AttributeDefinitions
     str TableName
-    list[KeySchemaElement] KeySchema
+    Optional[list[KeySchemaElement]] KeySchema
     Optional[list[LocalSecondaryIndex]] LocalSecondaryIndexes
     Optional[list[GlobalSecondaryIndex]] GlobalSecondaryIndexes
     Optional[BillingMode] BillingMode
@@ -640,11 +720,27 @@ struct CreateTableInput:
     Optional[list[Tag]] Tags
     Optional[TableClass] TableClass
     Optional[bool] DeletionProtectionEnabled
+    Optional[WarmThroughput] WarmThroughput
+    Optional[str] ResourcePolicy
+    Optional[OnDemandThroughput] OnDemandThroughput
+    Optional[str] GlobalTableSourceArn
+    Optional[GlobalTableSettingsReplicationMode] GlobalTableSettingsReplicationMode
+    Optional[list[VectorIndex]] VectorIndexes
 
 # no @derive(Json): member(s) TableDescription: TableDescription not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
 struct CreateTableOutput:
     Optional[TableDescription] TableDescription
+
+# no @derive(Json): member(s) SearchSchema: list[SearchSchemaElement], Projection: Projection not yet serializable by derive
+# (list/map collections — zaplang-io/zap#346 follow-up).
+struct CreateVectorIndexAction:
+    str IndexName
+    VectorAttributeDefinition VectorAttribute
+    Optional[list[SearchSchemaElement]] SearchSchema
+    Projection Projection
+    int64 Dimensions
+    VectorDistanceFunction DistanceFunction
 
 # no @derive(Json): member(s) HeaderList: list[str] not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
@@ -674,6 +770,10 @@ struct DeleteBackupOutput:
 @derive(Json)
 struct DeleteGlobalSecondaryIndexAction:
     str IndexName
+
+@derive(Json)
+struct DeleteGlobalTableWitnessGroupMemberAction:
+    str RegionName
 
 # no @derive(Json): member(s) Key: dict[str, AttributeValue], Expected: dict[str, ExpectedAttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
@@ -711,6 +811,15 @@ struct DeleteRequest:
     dict[str, AttributeValue] Key
 
 @derive(Json)
+struct DeleteResourcePolicyInput:
+    str ResourceArn
+    Optional[str] ExpectedRevisionId
+
+@derive(Json)
+struct DeleteResourcePolicyOutput:
+    Optional[str] RevisionId
+
+@derive(Json)
 struct DeleteTableInput:
     str TableName
 
@@ -718,6 +827,10 @@ struct DeleteTableInput:
 # (list/map collections — zaplang-io/zap#346 follow-up).
 struct DeleteTableOutput:
     Optional[TableDescription] TableDescription
+
+@derive(Json)
+struct DeleteVectorIndexAction:
+    str IndexName
 
 @derive(Json)
 struct DescribeBackupInput:
@@ -750,6 +863,7 @@ struct DescribeContributorInsightsOutput:
     Optional[ContributorInsightsStatus] ContributorInsightsStatus
     Optional[DateTime] LastUpdateDateTime
     Optional[FailureException] FailureException
+    Optional[ContributorInsightsMode] ContributorInsightsMode
 
 @derive(Json)
 struct DescribeEndpointsRequest:
@@ -765,7 +879,8 @@ struct DescribeEndpointsResponse:
 struct DescribeExportInput:
     str ExportArn
 
-@derive(Json)
+# no @derive(Json): member(s) ExportDescription: ExportDescription not yet serializable by derive
+# (list/map collections — zaplang-io/zap#346 follow-up).
 struct DescribeExportOutput:
     Optional[ExportDescription] ExportDescription
 
@@ -846,8 +961,17 @@ struct DescribeTimeToLiveOutput:
     Optional[TimeToLiveDescription] TimeToLiveDescription
 
 @derive(Json)
+struct DisassociateReplicationGroupMemberAction:
+    str RegionName
+    str DisassociationMode
+
+@derive(Json)
 struct DuplicateItemException:
     Optional[str] message
+
+@derive(Json)
+struct EnableKinesisStreamingConfiguration:
+    Optional[ApproximateCreationDateTimePrecision] ApproximateCreationDateTimePrecision
 
 @derive(Json)
 struct Endpoint:
@@ -898,7 +1022,8 @@ struct ExpectedAttributeValue:
 struct ExportConflictException:
     Optional[str] message
 
-@derive(Json)
+# no @derive(Json): member(s) FilterSpecification: FilterSpecification not yet serializable by derive
+# (list/map collections — zaplang-io/zap#346 follow-up).
 struct ExportDescription:
     Optional[str] ExportArn
     Optional[ExportStatus] ExportStatus
@@ -919,6 +1044,9 @@ struct ExportDescription:
     Optional[ExportFormat] ExportFormat
     Optional[int64] BilledSizeBytes
     Optional[int64] ItemCount
+    Optional[ExportType] ExportType
+    Optional[IncrementalExportSpecification] IncrementalExportSpecification
+    Optional[FilterSpecification] FilterSpecification
 
 @derive(Json)
 struct ExportNotFoundException:
@@ -928,8 +1056,10 @@ struct ExportNotFoundException:
 struct ExportSummary:
     Optional[str] ExportArn
     Optional[ExportStatus] ExportStatus
+    Optional[ExportType] ExportType
 
-@derive(Json)
+# no @derive(Json): member(s) FilterSpecification: FilterSpecification not yet serializable by derive
+# (list/map collections — zaplang-io/zap#346 follow-up).
 struct ExportTableToPointInTimeInput:
     str TableArn
     Optional[DateTime] ExportTime
@@ -940,8 +1070,12 @@ struct ExportTableToPointInTimeInput:
     Optional[S3SseAlgorithm] S3SseAlgorithm
     Optional[str] S3SseKmsKeyId
     Optional[ExportFormat] ExportFormat
+    Optional[ExportType] ExportType
+    Optional[IncrementalExportSpecification] IncrementalExportSpecification
+    Optional[FilterSpecification] FilterSpecification
 
-@derive(Json)
+# no @derive(Json): member(s) ExportDescription: ExportDescription not yet serializable by derive
+# (list/map collections — zaplang-io/zap#346 follow-up).
 struct ExportTableToPointInTimeOutput:
     Optional[ExportDescription] ExportDescription
 
@@ -949,6 +1083,15 @@ struct ExportTableToPointInTimeOutput:
 struct FailureException:
     Optional[str] ExceptionName
     Optional[str] ExceptionDescription
+
+# no @derive(Json): member(s) ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not yet serializable by derive
+# (list/map collections — zaplang-io/zap#346 follow-up).
+struct FilterSpecification:
+    Optional[str] FilterExpression
+    Optional[str] ProjectionExpression
+    Optional[str] KeyConditionExpression
+    Optional[dict[str, str]] ExpressionAttributeNames
+    Optional[dict[str, AttributeValue]] ExpressionAttributeValues
 
 # no @derive(Json): member(s) Key: dict[str, AttributeValue], ExpressionAttributeNames: dict[str, str] not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
@@ -975,6 +1118,15 @@ struct GetItemOutput:
     Optional[dict[str, AttributeValue]] Item
     Optional[ConsumedCapacity] ConsumedCapacity
 
+@derive(Json)
+struct GetResourcePolicyInput:
+    str ResourceArn
+
+@derive(Json)
+struct GetResourcePolicyOutput:
+    Optional[str] Policy
+    Optional[str] RevisionId
+
 # no @derive(Json): member(s) KeySchema: list[KeySchemaElement], Projection: Projection not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
 struct GlobalSecondaryIndex:
@@ -982,6 +1134,8 @@ struct GlobalSecondaryIndex:
     list[KeySchemaElement] KeySchema
     Projection Projection
     Optional[ProvisionedThroughput] ProvisionedThroughput
+    Optional[OnDemandThroughput] OnDemandThroughput
+    Optional[WarmThroughput] WarmThroughput
 
 @derive(Json)
 struct GlobalSecondaryIndexAutoScalingUpdate:
@@ -1000,6 +1154,8 @@ struct GlobalSecondaryIndexDescription:
     Optional[int64] IndexSizeBytes
     Optional[int64] ItemCount
     Optional[str] IndexArn
+    Optional[OnDemandThroughput] OnDemandThroughput
+    Optional[GlobalSecondaryIndexWarmThroughputDescription] WarmThroughput
 
 # no @derive(Json): member(s) KeySchema: list[KeySchemaElement], Projection: Projection not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
@@ -1008,6 +1164,7 @@ struct GlobalSecondaryIndexInfo:
     Optional[list[KeySchemaElement]] KeySchema
     Optional[Projection] Projection
     Optional[ProvisionedThroughput] ProvisionedThroughput
+    Optional[OnDemandThroughput] OnDemandThroughput
 
 # no @derive(Json): member(s) Create: CreateGlobalSecondaryIndexAction not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
@@ -1015,6 +1172,12 @@ struct GlobalSecondaryIndexUpdate:
     Optional[UpdateGlobalSecondaryIndexAction] Update
     Optional[CreateGlobalSecondaryIndexAction] Create
     Optional[DeleteGlobalSecondaryIndexAction] Delete
+
+@derive(Json)
+struct GlobalSecondaryIndexWarmThroughputDescription:
+    Optional[int64] ReadUnitsPerSecond
+    Optional[int64] WriteUnitsPerSecond
+    Optional[IndexStatus] Status
 
 # no @derive(Json): member(s) ReplicationGroup: list[Replica] not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
@@ -1044,6 +1207,16 @@ struct GlobalTableGlobalSecondaryIndexSettingsUpdate:
 @derive(Json)
 struct GlobalTableNotFoundException:
     Optional[str] message
+
+@derive(Json)
+struct GlobalTableWitnessDescription:
+    Optional[str] RegionName
+    Optional[WitnessStatus] WitnessStatus
+
+@derive(Json)
+struct GlobalTableWitnessGroupUpdate:
+    Optional[CreateGlobalTableWitnessGroupMemberAction] Create
+    Optional[DeleteGlobalTableWitnessGroupMemberAction] Delete
 
 @derive(Json)
 struct IdempotentParameterMismatchException:
@@ -1107,6 +1280,12 @@ struct ImportTableOutput:
     ImportTableDescription ImportTableDescription
 
 @derive(Json)
+struct IncrementalExportSpecification:
+    Optional[DateTime] ExportFromTime
+    Optional[DateTime] ExportToTime
+    Optional[ExportViewType] ExportViewType
+
+@derive(Json)
 struct IndexNotFoundException:
     Optional[str] message
 
@@ -1161,17 +1340,20 @@ struct KinesisDataStreamDestination:
     Optional[str] StreamArn
     Optional[DestinationStatus] DestinationStatus
     Optional[str] DestinationStatusDescription
+    Optional[ApproximateCreationDateTimePrecision] ApproximateCreationDateTimePrecision
 
 @derive(Json)
 struct KinesisStreamingDestinationInput:
     str TableName
     str StreamArn
+    Optional[EnableKinesisStreamingConfiguration] EnableKinesisStreamingConfiguration
 
 @derive(Json)
 struct KinesisStreamingDestinationOutput:
     Optional[str] TableName
     Optional[str] StreamArn
     Optional[DestinationStatus] DestinationStatus
+    Optional[EnableKinesisStreamingConfiguration] EnableKinesisStreamingConfiguration
 
 @derive(Json)
 struct LimitExceededException:
@@ -1286,6 +1468,15 @@ struct LocalSecondaryIndexInfo:
     Optional[list[KeySchemaElement]] KeySchema
     Optional[Projection] Projection
 
+@derive(Json)
+struct OnDemandThroughput:
+    Optional[int64] MaxReadRequestUnits
+    Optional[int64] MaxWriteRequestUnits
+
+@derive(Json)
+struct OnDemandThroughputOverride:
+    Optional[int64] MaxReadRequestUnits
+
 # no @derive(Json): member(s) Parameters: list[AttributeValue] not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
 struct ParameterizedStatement:
@@ -1296,15 +1487,21 @@ struct ParameterizedStatement:
 @derive(Json)
 struct PointInTimeRecoveryDescription:
     Optional[PointInTimeRecoveryStatus] PointInTimeRecoveryStatus
+    Optional[int64] RecoveryPeriodInDays
     Optional[DateTime] EarliestRestorableDateTime
     Optional[DateTime] LatestRestorableDateTime
 
 @derive(Json)
 struct PointInTimeRecoverySpecification:
     bool PointInTimeRecoveryEnabled
+    Optional[int64] RecoveryPeriodInDays
 
 @derive(Json)
 struct PointInTimeRecoveryUnavailableException:
+    Optional[str] message
+
+@derive(Json)
+struct PolicyNotFoundException:
     Optional[str] message
 
 # no @derive(Json): member(s) NonKeyAttributes: list[str] not yet serializable by derive
@@ -1326,9 +1523,11 @@ struct ProvisionedThroughputDescription:
     Optional[int64] ReadCapacityUnits
     Optional[int64] WriteCapacityUnits
 
-@derive(Json)
+# no @derive(Json): member(s) ThrottlingReasons: list[ThrottlingReason] not yet serializable by derive
+# (list/map collections — zaplang-io/zap#346 follow-up).
 struct ProvisionedThroughputExceededException:
     Optional[str] message
+    Optional[list[ThrottlingReason]] ThrottlingReasons
 
 @derive(Json)
 struct ProvisionedThroughputOverride:
@@ -1370,6 +1569,17 @@ struct PutItemOutput:
 # (list/map collections — zaplang-io/zap#346 follow-up).
 struct PutRequest:
     dict[str, AttributeValue] Item
+
+@derive(Json)
+struct PutResourcePolicyInput:
+    str ResourceArn
+    str Policy
+    Optional[str] ExpectedRevisionId
+    Optional[bool] ConfirmRemoveSelfResourceAccess
+
+@derive(Json)
+struct PutResourcePolicyOutput:
+    Optional[str] RevisionId
 
 # no @derive(Json): member(s) AttributesToGet: list[str], KeyConditions: dict[str, Condition], QueryFilter: dict[str, Condition], ExclusiveStartKey: dict[str, AttributeValue], ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue] not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
@@ -1430,18 +1640,23 @@ struct ReplicaAutoScalingUpdate:
 struct ReplicaDescription:
     Optional[str] RegionName
     Optional[ReplicaStatus] ReplicaStatus
+    Optional[str] ReplicaArn
     Optional[str] ReplicaStatusDescription
     Optional[str] ReplicaStatusPercentProgress
     Optional[str] KMSMasterKeyId
     Optional[ProvisionedThroughputOverride] ProvisionedThroughputOverride
+    Optional[OnDemandThroughputOverride] OnDemandThroughputOverride
+    Optional[TableWarmThroughputDescription] WarmThroughput
     Optional[list[ReplicaGlobalSecondaryIndexDescription]] GlobalSecondaryIndexes
     Optional[DateTime] ReplicaInaccessibleDateTime
     Optional[TableClassSummary] ReplicaTableClassSummary
+    Optional[GlobalTableSettingsReplicationMode] GlobalTableSettingsReplicationMode
 
 @derive(Json)
 struct ReplicaGlobalSecondaryIndex:
     str IndexName
     Optional[ProvisionedThroughputOverride] ProvisionedThroughputOverride
+    Optional[OnDemandThroughputOverride] OnDemandThroughputOverride
 
 # no @derive(Json): member(s) ProvisionedReadCapacityAutoScalingSettings: AutoScalingSettingsDescription, ProvisionedWriteCapacityAutoScalingSettings: AutoScalingSettingsDescription not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
@@ -1460,6 +1675,8 @@ struct ReplicaGlobalSecondaryIndexAutoScalingUpdate:
 struct ReplicaGlobalSecondaryIndexDescription:
     Optional[str] IndexName
     Optional[ProvisionedThroughputOverride] ProvisionedThroughputOverride
+    Optional[OnDemandThroughputOverride] OnDemandThroughputOverride
+    Optional[GlobalSecondaryIndexWarmThroughputDescription] WarmThroughput
 
 # no @derive(Json): member(s) ProvisionedReadCapacityAutoScalingSettings: AutoScalingSettingsDescription, ProvisionedWriteCapacityAutoScalingSettings: AutoScalingSettingsDescription not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
@@ -1508,16 +1725,23 @@ struct ReplicaUpdate:
     Optional[CreateReplicaAction] Create
     Optional[DeleteReplicaAction] Delete
 
+@derive(Json)
+struct ReplicatedWriteConflictException:
+    Optional[str] message
+
 # no @derive(Json): member(s) Create: CreateReplicationGroupMemberAction, Update: UpdateReplicationGroupMemberAction not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
 struct ReplicationGroupUpdate:
     Optional[CreateReplicationGroupMemberAction] Create
     Optional[UpdateReplicationGroupMemberAction] Update
     Optional[DeleteReplicationGroupMemberAction] Delete
+    Optional[DisassociateReplicationGroupMemberAction] Disassociate
 
-@derive(Json)
+# no @derive(Json): member(s) ThrottlingReasons: list[ThrottlingReason] not yet serializable by derive
+# (list/map collections — zaplang-io/zap#346 follow-up).
 struct RequestLimitExceeded:
     Optional[str] message
+    Optional[list[ThrottlingReason]] ThrottlingReasons
 
 @derive(Json)
 struct ResourceInUseException:
@@ -1534,7 +1758,7 @@ struct RestoreSummary:
     DateTime RestoreDateTime
     bool RestoreInProgress
 
-# no @derive(Json): member(s) GlobalSecondaryIndexOverride: list[GlobalSecondaryIndex], LocalSecondaryIndexOverride: list[LocalSecondaryIndex] not yet serializable by derive
+# no @derive(Json): member(s) GlobalSecondaryIndexOverride: list[GlobalSecondaryIndex], LocalSecondaryIndexOverride: list[LocalSecondaryIndex], VectorIndexOverride: list[VectorIndex] not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
 struct RestoreTableFromBackupInput:
     str TargetTableName
@@ -1543,14 +1767,16 @@ struct RestoreTableFromBackupInput:
     Optional[list[GlobalSecondaryIndex]] GlobalSecondaryIndexOverride
     Optional[list[LocalSecondaryIndex]] LocalSecondaryIndexOverride
     Optional[ProvisionedThroughput] ProvisionedThroughputOverride
+    Optional[OnDemandThroughput] OnDemandThroughputOverride
     Optional[SSESpecification] SSESpecificationOverride
+    Optional[list[VectorIndex]] VectorIndexOverride
 
 # no @derive(Json): member(s) TableDescription: TableDescription not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
 struct RestoreTableFromBackupOutput:
     Optional[TableDescription] TableDescription
 
-# no @derive(Json): member(s) GlobalSecondaryIndexOverride: list[GlobalSecondaryIndex], LocalSecondaryIndexOverride: list[LocalSecondaryIndex] not yet serializable by derive
+# no @derive(Json): member(s) GlobalSecondaryIndexOverride: list[GlobalSecondaryIndex], LocalSecondaryIndexOverride: list[LocalSecondaryIndex], VectorIndexOverride: list[VectorIndex] not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
 struct RestoreTableToPointInTimeInput:
     Optional[str] SourceTableArn
@@ -1562,7 +1788,9 @@ struct RestoreTableToPointInTimeInput:
     Optional[list[GlobalSecondaryIndex]] GlobalSecondaryIndexOverride
     Optional[list[LocalSecondaryIndex]] LocalSecondaryIndexOverride
     Optional[ProvisionedThroughput] ProvisionedThroughputOverride
+    Optional[OnDemandThroughput] OnDemandThroughputOverride
     Optional[SSESpecification] SSESpecificationOverride
+    Optional[list[VectorIndex]] VectorIndexOverride
 
 # no @derive(Json): member(s) TableDescription: TableDescription not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
@@ -1617,6 +1845,36 @@ struct ScanOutput:
     Optional[dict[str, AttributeValue]] LastEvaluatedKey
     Optional[ConsumedCapacity] ConsumedCapacity
 
+# no @derive(Json): member(s) Item: dict[str, AttributeValue] not yet serializable by derive
+# (list/map collections — zaplang-io/zap#346 follow-up).
+struct SearchResultItem:
+    Optional[dict[str, AttributeValue]] Item
+    Optional[float64] Score
+
+@derive(Json)
+struct SearchSchemaElement:
+    str AttributeName
+    SearchSchemaElementType SearchSchemaElementType
+
+# no @derive(Json): member(s) ExpressionAttributeNames: dict[str, str], ExpressionAttributeValues: dict[str, AttributeValue], SearchVector: list[AttributeValue] not yet serializable by derive
+# (list/map collections — zaplang-io/zap#346 follow-up).
+struct SearchVectorsInput:
+    str TableName
+    str IndexName
+    Optional[ReturnConsumedCapacity] ReturnConsumedCapacity
+    Optional[dict[str, str]] ExpressionAttributeNames
+    Optional[dict[str, AttributeValue]] ExpressionAttributeValues
+    Optional[str] ProjectionExpression
+    list[AttributeValue] SearchVector
+    Optional[str] SearchConditionExpression
+    int64 TopK
+
+# no @derive(Json): member(s) SearchResults: list[SearchResultItem] not yet serializable by derive
+# (list/map collections — zaplang-io/zap#346 follow-up).
+struct SearchVectorsOutput:
+    Optional[VectorCapacity] ConsumedCapacity
+    Optional[list[SearchResultItem]] SearchResults
+
 # no @derive(Json): member(s) KeySchema: list[KeySchemaElement] not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
 struct SourceTableDetails:
@@ -1627,10 +1885,11 @@ struct SourceTableDetails:
     list[KeySchemaElement] KeySchema
     DateTime TableCreationDateTime
     ProvisionedThroughput ProvisionedThroughput
+    Optional[OnDemandThroughput] OnDemandThroughput
     Optional[int64] ItemCount
     Optional[BillingMode] BillingMode
 
-# no @derive(Json): member(s) LocalSecondaryIndexes: list[LocalSecondaryIndexInfo], GlobalSecondaryIndexes: list[GlobalSecondaryIndexInfo] not yet serializable by derive
+# no @derive(Json): member(s) LocalSecondaryIndexes: list[LocalSecondaryIndexInfo], GlobalSecondaryIndexes: list[GlobalSecondaryIndexInfo], VectorIndexes: list[VectorIndexInfo] not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
 struct SourceTableFeatureDetails:
     Optional[list[LocalSecondaryIndexInfo]] LocalSecondaryIndexes
@@ -1638,6 +1897,7 @@ struct SourceTableFeatureDetails:
     Optional[StreamSpecification] StreamDescription
     Optional[TimeToLiveDescription] TimeToLiveDescription
     Optional[SSEDescription] SSEDescription
+    Optional[list[VectorIndexInfo]] VectorIndexes
 
 @derive(Json)
 struct StreamSpecification:
@@ -1660,7 +1920,7 @@ struct TableClassSummary:
     Optional[TableClass] TableClass
     Optional[DateTime] LastUpdateDateTime
 
-# no @derive(Json): member(s) AttributeDefinitions: list[AttributeDefinition], KeySchema: list[KeySchemaElement], GlobalSecondaryIndexes: list[GlobalSecondaryIndex] not yet serializable by derive
+# no @derive(Json): member(s) AttributeDefinitions: list[AttributeDefinition], KeySchema: list[KeySchemaElement], GlobalSecondaryIndexes: list[GlobalSecondaryIndex], VectorIndexes: list[VectorIndex] not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
 struct TableCreationParameters:
     str TableName
@@ -1668,10 +1928,12 @@ struct TableCreationParameters:
     list[KeySchemaElement] KeySchema
     Optional[BillingMode] BillingMode
     Optional[ProvisionedThroughput] ProvisionedThroughput
+    Optional[OnDemandThroughput] OnDemandThroughput
     Optional[SSESpecification] SSESpecification
     Optional[list[GlobalSecondaryIndex]] GlobalSecondaryIndexes
+    Optional[list[VectorIndex]] VectorIndexes
 
-# no @derive(Json): member(s) AttributeDefinitions: list[AttributeDefinition], KeySchema: list[KeySchemaElement], LocalSecondaryIndexes: list[LocalSecondaryIndexDescription], GlobalSecondaryIndexes: list[GlobalSecondaryIndexDescription], Replicas: list[ReplicaDescription] not yet serializable by derive
+# no @derive(Json): member(s) AttributeDefinitions: list[AttributeDefinition], KeySchema: list[KeySchemaElement], LocalSecondaryIndexes: list[LocalSecondaryIndexDescription], GlobalSecondaryIndexes: list[GlobalSecondaryIndexDescription], Replicas: list[ReplicaDescription], GlobalTableWitnesses: list[GlobalTableWitnessDescription], VectorIndexes: list[VectorIndexDescription] not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
 struct TableDescription:
     Optional[list[AttributeDefinition]] AttributeDefinitions
@@ -1692,11 +1954,18 @@ struct TableDescription:
     Optional[str] LatestStreamArn
     Optional[str] GlobalTableVersion
     Optional[list[ReplicaDescription]] Replicas
+    Optional[list[GlobalTableWitnessDescription]] GlobalTableWitnesses
+    Optional[GlobalTableSettingsReplicationMode] GlobalTableSettingsReplicationMode
     Optional[RestoreSummary] RestoreSummary
     Optional[SSEDescription] SSEDescription
     Optional[ArchivalSummary] ArchivalSummary
     Optional[TableClassSummary] TableClassSummary
     Optional[bool] DeletionProtectionEnabled
+    Optional[bool] DisassociationProtectionEnabled
+    Optional[OnDemandThroughput] OnDemandThroughput
+    Optional[TableWarmThroughputDescription] WarmThroughput
+    Optional[MultiRegionConsistency] MultiRegionConsistency
+    Optional[list[VectorIndexDescription]] VectorIndexes
 
 @derive(Json)
 struct TableInUseException:
@@ -1705,6 +1974,12 @@ struct TableInUseException:
 @derive(Json)
 struct TableNotFoundException:
     Optional[str] message
+
+@derive(Json)
+struct TableWarmThroughputDescription:
+    Optional[int64] ReadUnitsPerSecond
+    Optional[int64] WriteUnitsPerSecond
+    Optional[TableStatus] Status
 
 @derive(Json)
 struct Tag:
@@ -1716,6 +1991,17 @@ struct Tag:
 struct TagResourceInput:
     str ResourceArn
     list[Tag] Tags
+
+# no @derive(Json): member(s) throttlingReasons: list[ThrottlingReason] not yet serializable by derive
+# (list/map collections — zaplang-io/zap#346 follow-up).
+struct ThrottlingException:
+    Optional[str] message
+    Optional[list[ThrottlingReason]] throttlingReasons
+
+@derive(Json)
+struct ThrottlingReason:
+    Optional[str] reason
+    Optional[str] resource
 
 @derive(Json)
 struct TimeToLiveDescription:
@@ -1811,17 +2097,21 @@ struct UpdateContributorInsightsInput:
     str TableName
     Optional[str] IndexName
     ContributorInsightsAction ContributorInsightsAction
+    Optional[ContributorInsightsMode] ContributorInsightsMode
 
 @derive(Json)
 struct UpdateContributorInsightsOutput:
     Optional[str] TableName
     Optional[str] IndexName
     Optional[ContributorInsightsStatus] ContributorInsightsStatus
+    Optional[ContributorInsightsMode] ContributorInsightsMode
 
 @derive(Json)
 struct UpdateGlobalSecondaryIndexAction:
     str IndexName
-    ProvisionedThroughput ProvisionedThroughput
+    Optional[ProvisionedThroughput] ProvisionedThroughput
+    Optional[OnDemandThroughput] OnDemandThroughput
+    Optional[WarmThroughput] WarmThroughput
 
 # no @derive(Json): member(s) ReplicaUpdates: list[ReplicaUpdate] not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
@@ -1874,16 +2164,34 @@ struct UpdateItemOutput:
     Optional[ConsumedCapacity] ConsumedCapacity
     Optional[ItemCollectionMetrics] ItemCollectionMetrics
 
+@derive(Json)
+struct UpdateKinesisStreamingConfiguration:
+    Optional[ApproximateCreationDateTimePrecision] ApproximateCreationDateTimePrecision
+
+@derive(Json)
+struct UpdateKinesisStreamingDestinationInput:
+    str TableName
+    str StreamArn
+    Optional[UpdateKinesisStreamingConfiguration] UpdateKinesisStreamingConfiguration
+
+@derive(Json)
+struct UpdateKinesisStreamingDestinationOutput:
+    Optional[str] TableName
+    Optional[str] StreamArn
+    Optional[DestinationStatus] DestinationStatus
+    Optional[UpdateKinesisStreamingConfiguration] UpdateKinesisStreamingConfiguration
+
 # no @derive(Json): member(s) GlobalSecondaryIndexes: list[ReplicaGlobalSecondaryIndex] not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
 struct UpdateReplicationGroupMemberAction:
     str RegionName
     Optional[str] KMSMasterKeyId
     Optional[ProvisionedThroughputOverride] ProvisionedThroughputOverride
+    Optional[OnDemandThroughputOverride] OnDemandThroughputOverride
     Optional[list[ReplicaGlobalSecondaryIndex]] GlobalSecondaryIndexes
     Optional[TableClass] TableClassOverride
 
-# no @derive(Json): member(s) AttributeDefinitions: list[AttributeDefinition], GlobalSecondaryIndexUpdates: list[GlobalSecondaryIndexUpdate], ReplicaUpdates: list[ReplicationGroupUpdate] not yet serializable by derive
+# no @derive(Json): member(s) AttributeDefinitions: list[AttributeDefinition], GlobalSecondaryIndexUpdates: list[GlobalSecondaryIndexUpdate], ReplicaUpdates: list[ReplicationGroupUpdate], GlobalTableWitnessUpdates: list[GlobalTableWitnessGroupUpdate], VectorIndexUpdates: list[VectorIndexUpdate] not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
 struct UpdateTableInput:
     Optional[list[AttributeDefinition]] AttributeDefinitions
@@ -1896,6 +2204,13 @@ struct UpdateTableInput:
     Optional[list[ReplicationGroupUpdate]] ReplicaUpdates
     Optional[TableClass] TableClass
     Optional[bool] DeletionProtectionEnabled
+    Optional[MultiRegionConsistency] MultiRegionConsistency
+    Optional[list[GlobalTableWitnessGroupUpdate]] GlobalTableWitnessUpdates
+    Optional[OnDemandThroughput] OnDemandThroughput
+    Optional[WarmThroughput] WarmThroughput
+    Optional[GlobalTableSettingsReplicationMode] GlobalTableSettingsReplicationMode
+    Optional[bool] DisassociationProtectionEnabled
+    Optional[list[VectorIndexUpdate]] VectorIndexUpdates
 
 # no @derive(Json): member(s) TableDescription: TableDescription not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
@@ -1923,6 +2238,61 @@ struct UpdateTimeToLiveInput:
 @derive(Json)
 struct UpdateTimeToLiveOutput:
     Optional[TimeToLiveSpecification] TimeToLiveSpecification
+
+@derive(Json)
+struct VectorAttributeDefinition:
+    str AttributeName
+
+@derive(Json)
+struct VectorCapacity:
+    Optional[float64] VectorSearchRequestBytes
+    Optional[float64] VectorWriteRequestBytes
+
+# no @derive(Json): member(s) SearchSchema: list[SearchSchemaElement], Projection: Projection not yet serializable by derive
+# (list/map collections — zaplang-io/zap#346 follow-up).
+struct VectorIndex:
+    str IndexName
+    VectorAttributeDefinition VectorAttribute
+    Optional[list[SearchSchemaElement]] SearchSchema
+    Projection Projection
+    int64 Dimensions
+    VectorDistanceFunction DistanceFunction
+
+# no @derive(Json): member(s) SearchSchema: list[SearchSchemaElement], Projection: Projection not yet serializable by derive
+# (list/map collections — zaplang-io/zap#346 follow-up).
+struct VectorIndexDescription:
+    Optional[str] IndexName
+    Optional[list[SearchSchemaElement]] SearchSchema
+    Optional[Projection] Projection
+    Optional[VectorAttributeDefinition] VectorAttribute
+    Optional[int64] Dimensions
+    Optional[VectorDistanceFunction] DistanceFunction
+    Optional[IndexStatus] IndexStatus
+    Optional[bool] Backfilling
+    Optional[int64] IndexSizeBytes
+    Optional[int64] ItemCount
+    Optional[str] IndexArn
+
+# no @derive(Json): member(s) SearchSchema: list[SearchSchemaElement], Projection: Projection not yet serializable by derive
+# (list/map collections — zaplang-io/zap#346 follow-up).
+struct VectorIndexInfo:
+    Optional[str] IndexName
+    Optional[VectorAttributeDefinition] VectorAttribute
+    Optional[list[SearchSchemaElement]] SearchSchema
+    Optional[Projection] Projection
+    Optional[int64] Dimensions
+    Optional[VectorDistanceFunction] DistanceFunction
+
+# no @derive(Json): member(s) Create: CreateVectorIndexAction not yet serializable by derive
+# (list/map collections — zaplang-io/zap#346 follow-up).
+struct VectorIndexUpdate:
+    Optional[CreateVectorIndexAction] Create
+    Optional[DeleteVectorIndexAction] Delete
+
+@derive(Json)
+struct WarmThroughput:
+    Optional[int64] ReadUnitsPerSecond
+    Optional[int64] WriteUnitsPerSecond
 
 # no @derive(Json): member(s) PutRequest: PutRequest, DeleteRequest: DeleteRequest not yet serializable by derive
 # (list/map collections — zaplang-io/zap#346 follow-up).
@@ -1954,15 +2324,18 @@ enum DynamoDBError:
     ItemCollectionSizeLimitExceededException
     LimitExceededException
     PointInTimeRecoveryUnavailableException
+    PolicyNotFoundException
     ProvisionedThroughputExceededException
     ReplicaAlreadyExistsException
     ReplicaNotFoundException
+    ReplicatedWriteConflictException
     RequestLimitExceeded
     ResourceInUseException
     ResourceNotFoundException
     TableAlreadyExistsException
     TableInUseException
     TableNotFoundException
+    ThrottlingException
     TransactionCanceledException
     TransactionConflictException
     TransactionInProgressException
@@ -2008,12 +2381,16 @@ def dynamodb_error_from_code(str code) -> DynamoDBError:
         return DynamoDBError.LimitExceededException
     if code == "PointInTimeRecoveryUnavailableException":
         return DynamoDBError.PointInTimeRecoveryUnavailableException
+    if code == "PolicyNotFoundException":
+        return DynamoDBError.PolicyNotFoundException
     if code == "ProvisionedThroughputExceededException":
         return DynamoDBError.ProvisionedThroughputExceededException
     if code == "ReplicaAlreadyExistsException":
         return DynamoDBError.ReplicaAlreadyExistsException
     if code == "ReplicaNotFoundException":
         return DynamoDBError.ReplicaNotFoundException
+    if code == "ReplicatedWriteConflictException":
+        return DynamoDBError.ReplicatedWriteConflictException
     if code == "RequestLimitExceeded":
         return DynamoDBError.RequestLimitExceeded
     if code == "ResourceInUseException":
@@ -2026,6 +2403,8 @@ def dynamodb_error_from_code(str code) -> DynamoDBError:
         return DynamoDBError.TableInUseException
     if code == "TableNotFoundException":
         return DynamoDBError.TableNotFoundException
+    if code == "ThrottlingException":
+        return DynamoDBError.ThrottlingException
     if code == "TransactionCanceledException":
         return DynamoDBError.TransactionCanceledException
     if code == "TransactionConflictException":
@@ -2046,6 +2425,7 @@ def dynamodb_error_from_code(str code) -> DynamoDBError:
 #   DeleteItem (input DeleteItemInput)
 #   ExecuteStatement (input ExecuteStatementInput)
 #   ExecuteTransaction (input ExecuteTransactionInput)
+#   ExportTableToPointInTime (input ExportTableToPointInTimeInput)
 #   GetItem (input GetItemInput)
 #   ImportTable (input ImportTableInput)
 #   PutItem (input PutItemInput)
@@ -2053,6 +2433,7 @@ def dynamodb_error_from_code(str code) -> DynamoDBError:
 #   RestoreTableFromBackup (input RestoreTableFromBackupInput)
 #   RestoreTableToPointInTime (input RestoreTableToPointInTimeInput)
 #   Scan (input ScanInput)
+#   SearchVectors (input SearchVectorsInput)
 #   TagResource (input TagResourceInput)
 #   TransactGetItems (input TransactGetItemsInput)
 #   TransactWriteItems (input TransactWriteItemsInput)
@@ -2084,6 +2465,12 @@ struct DynamoDBClient:
     def delete_backup(self, DeleteBackupInput input) -> str:
         auto body = input.to_json()
         return awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "DeleteBackup", body)
+
+    # DeleteResourcePolicy
+    # errors: InternalServerError, LimitExceededException, PolicyNotFoundException, ResourceInUseException, ResourceNotFoundException
+    def delete_resource_policy(self, DeleteResourcePolicyInput input) -> str:
+        auto body = input.to_json()
+        return awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "DeleteResourcePolicy", body)
 
     # DeleteTable
     # errors: InternalServerError, LimitExceededException, ResourceInUseException, ResourceNotFoundException
@@ -2180,11 +2567,11 @@ struct DynamoDBClient:
         auto body = input.to_json()
         return awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "EnableKinesisStreamingDestination", body)
 
-    # ExportTableToPointInTime
-    # errors: ExportConflictException, InternalServerError, InvalidExportTimeException, LimitExceededException, PointInTimeRecoveryUnavailableException, TableNotFoundException
-    def export_table_to_point_in_time(self, ExportTableToPointInTimeInput input) -> str:
+    # GetResourcePolicy
+    # errors: InternalServerError, PolicyNotFoundException, ResourceNotFoundException
+    def get_resource_policy(self, GetResourcePolicyInput input) -> str:
         auto body = input.to_json()
-        return awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "ExportTableToPointInTime", body)
+        return awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "GetResourcePolicy", body)
 
     # ListBackups
     # errors: InternalServerError
@@ -2228,6 +2615,12 @@ struct DynamoDBClient:
         auto body = input.to_json()
         return awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "ListTagsOfResource", body)
 
+    # PutResourcePolicy
+    # errors: InternalServerError, LimitExceededException, PolicyNotFoundException, ResourceInUseException, ResourceNotFoundException
+    def put_resource_policy(self, PutResourcePolicyInput input) -> str:
+        auto body = input.to_json()
+        return awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "PutResourcePolicy", body)
+
     # UpdateContinuousBackups
     # errors: ContinuousBackupsUnavailableException, InternalServerError, TableNotFoundException
     def update_continuous_backups(self, UpdateContinuousBackupsInput input) -> str:
@@ -2239,6 +2632,12 @@ struct DynamoDBClient:
     def update_contributor_insights(self, UpdateContributorInsightsInput input) -> str:
         auto body = input.to_json()
         return awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "UpdateContributorInsights", body)
+
+    # UpdateKinesisStreamingDestination
+    # errors: InternalServerError, LimitExceededException, ResourceInUseException, ResourceNotFoundException
+    def update_kinesis_streaming_destination(self, UpdateKinesisStreamingDestinationInput input) -> str:
+        auto body = input.to_json()
+        return awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "UpdateKinesisStreamingDestination", body)
 
     # UpdateTimeToLive
     # errors: InternalServerError, LimitExceededException, ResourceInUseException, ResourceNotFoundException

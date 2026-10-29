@@ -58,8 +58,10 @@ fn checked_in_dynamodb_output_is_current() {
 #[test]
 fn dynamodb_coverage_is_substantial() {
     let (_src, cov) = generate_dynamodb();
-    // The real model: 53 ops, 234 structures, enums + the error set.
-    assert_eq!(cov.operations_total, 53);
+    // The pinned model (botocore 1.43.121): 58 ops, 272 structures, enums + the
+    // error set. Bumping the pin (tools/sync-models.py) can move these; update
+    // this exact count and keep the `>=` floors below as the real contract.
+    assert_eq!(cov.operations_total, 58);
     assert!(
         cov.operations_methods >= 25,
         "methods: {}",

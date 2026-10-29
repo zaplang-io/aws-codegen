@@ -1,0 +1,40 @@
+name: model-sync drift
+
+# Guards the model-sourcing pipeline: re-runs tools/sync-models.py against the
+# pinned botocore (models/manifest.json) and fails if the checked-in models/
+# snapshot has drifted from the pin. Kept OUT of the required "CI gate" job so
+# that gate stays hermetic (no network) — this is the one place the pin is
+# fetched, and only on changes to the sourcing pipeline or on demand.
+
+on:
+  pull_request:
+    paths:
+      - "models/**"
+      - "tools/sync-models.py"
+      - "tools/requirements.txt"
+      - ".github/workflows/model-sync.yml"
+  push:
+    branches: [main]
+    paths:
+      - "models/**"
+      - "tools/sync-models.py"
+      - "tools/requirements.txt"
+      - ".github/workflows/model-sync.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  drift-check:
+    name: models match the pin
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: sync-models --check
+        # Downloads the pinned botocore wheel, verifies its SHA-256, and asserts
+        # models/ regenerates byte-identically. Stdlib only — no pip install.
+        run: python3 tools/sync-models.py --check
