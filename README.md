@@ -128,15 +128,72 @@ cargo run --release -- path/to/service-2.json -o out/client.zap
 cargo run --release -- path/to/service-2.json
 ```
 
+## Model sourcing
+
+The service models under `models/` are **not hand-copied**. They are snapshotted
+from a **single pinned upstream** — [botocore](https://github.com/boto/botocore),
+AWS's own model source — by `tools/sync-models.py`, which vendors **only** the
+services we generate.
+
+- **Pin** — `models/manifest.json` is the source of truth: it carries the exact
+  `botocore_version`, the wheel `wheel_sha256`, and the list of services (+ API
+  version) to vendor. The pin is mirrored in `models/BOTOCORE_VERSION` and
+  `tools/requirements.txt` (with the same hash) for other tooling; the sync script
+  asserts all three agree.
+- **Hermetic builds** — botocore and the network are needed **only** when you run
+  the sync script explicitly. `cargo build`, `cargo test`, and the generator read
+  the checked-in `models/` snapshot and never install anything or reach the
+  network. This is deliberate: determinism is the foundation of the byte-diff
+  goldens (#348/#350), so the generator must never depend on a live/latest model.
+- **Deterministic snapshot** — `service-2.json` is extracted from botocore's
+  gzipped model with `documentation` stripped (the generator ignores it; stripping
+  keeps the snapshot small) and re-serialized with stable formatting;
+  `paginators-1.json` is copied verbatim. Re-running the sync is byte-stable.
+
+```bash
+# Snapshot the manifest's services from the pinned botocore (downloads the wheel):
+tools/sync-models.py
+# ...or fully offline, from a wheel you already have:
+tools/sync-models.py --wheel path/to/botocore-<ver>-py3-none-any.whl
+# Verify models/ is in sync with the pin without writing anything (CI / pre-commit):
+tools/sync-models.py --check
+```
+
+The script is plain Python 3 (standard library only — no project or third-party
+deps) and verifies the wheel's SHA-256 against the manifest before extracting.
+
+### Add a service
+
+1. Add `{ "service": "<name>", "api_version": "<version>" }` to the `services`
+   list in `models/manifest.json` (the API version is botocore's model directory
+   name, e.g. `2012-08-10`).
+2. Run `tools/sync-models.py` and review `git diff -- models/`.
+3. Generate its client: `cargo run -- models/<name>/<version>/service-2.json -o
+   generated/<name>/<name>.zap`, add it to the CI regen loop + a per-service
+   fidelity gate, and commit both the model and the generated client.
+
+### Bump all models
+
+1. Pick the new botocore release and update `botocore_version` **and**
+   `wheel_sha256` in `models/manifest.json` (the wheel's PyPI SHA-256), and mirror
+   the version/hash in `models/BOTOCORE_VERSION` and `tools/requirements.txt`.
+2. Run `tools/sync-models.py` and review `git diff -- models/` — this is where you
+   see exactly what AWS changed in each model.
+3. Regenerate every client (the CI regen loop lists them) and review the generated
+   diff; update any pinned coverage counts / goldens the model change moves, and
+   commit.
+
 ## Repo layout
 
 ```
 src/            the generator (model parse, type resolution, emission)
-models/         pinned botocore service-2.json + paginators-1.json fixtures (per service)
+models/         service-2.json + paginators-1.json snapshots, synced from pinned
+                botocore by tools/sync-models.py (manifest.json = pin + service list)
 generated/      checked-in generated Zap, one dir per service (regenerated + diffed in CI)
 vendor/         pinned aws-core runtime + per-service smoke mains for the compile gate
 scripts/        compile_check.sh — best-effort bundle + run under the Zap image
-tools/          verify_*.py — independent SigV4 oracles for the byte-diff goldens
+tools/          sync-models.py — snapshot models from pinned botocore;
+                verify_*.py — independent SigV4 oracles for the byte-diff goldens
 tests/          regeneration / determinism / contract / byte-diff / paginator tests
 tests/common/   shared host-only SigV4 signer + generated-source parsers (per-service gates)
 tests/expected/ pinned golden request bytes for the byte-diff gates
@@ -177,9 +234,18 @@ because the published image lags the derive(Json) AWS hooks (#346); it turns gre
 once those land upstream. The generated client has been verified to compile and
 run against a #346-enabled compiler.
 
+A separate **`model-sync drift`** workflow (`.github/workflows/model-sync.yml`)
+re-runs `tools/sync-models.py --check` against the pinned botocore whenever the
+sourcing pipeline changes (or on demand), failing if `models/` has drifted from
+the pin. It is kept out of the required **CI gate** so that gate stays hermetic —
+this is the only place the pin is fetched from the network. Locally, `make
+sync-check` does the same. You can also run it via `make`: `make sync`,
+`make generate`, `make check`.
+
 ## Provenance / license
 
-The generator is Apache-2.0. The pinned `service-2.json` models are AWS's
-botocore service models (Apache-2.0), with `documentation` fields stripped to keep
-the fixtures small and structural. The `vendor/` runtime is pinned from
-`zaplang-io/aws` (see `vendor/README.md`).
+The generator is Apache-2.0. The `models/` snapshots are AWS's botocore service
+models (Apache-2.0), vendored from a pinned botocore release by
+`tools/sync-models.py` (see **Model sourcing**) with `documentation` fields
+stripped to keep the snapshot small and structural. The `vendor/` runtime is
+pinned from `zaplang-io/aws` (see `vendor/README.md`).

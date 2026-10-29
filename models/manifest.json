@@ -1,0 +1,11 @@
+{
+  "_about": "Declarative source of truth for the vendored AWS service models. botocore is pinned here; tools/sync-models.py snapshots ONLY the services listed below into models/<service>/<api_version>/ from that exact botocore release. The generator builds from the checked-in snapshot, so `cargo build` and the generator never need pip or the network. To add a service: add an entry, rerun the sync, review the diff. To bump every model: bump botocore_version + wheel_sha256, rerun the sync, review the diff. See README.md > Model sourcing.",
+  "botocore_version": "1.43.121",
+  "wheel_sha256": "39bfd17e69f3370350e6aac2072df64045d002f9878e09115e85b87c772bd473",
+  "services": [
+    { "service": "dynamodb", "api_version": "2012-08-10" },
+    { "service": "sqs", "api_version": "2012-11-05" },
+    { "service": "kinesis", "api_version": "2013-12-02" },
+    { "service": "lambda", "api_version": "2015-03-31" }
+  ]
+}

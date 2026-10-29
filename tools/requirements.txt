@@ -1,0 +1,13 @@
+# Pinned upstream source of the vendored AWS service models.
+#
+# This is the ONLY dependency the model-sync step needs, and only when
+# tools/sync-models.py is run explicitly. `cargo build` and the generator read
+# the checked-in models/ snapshot and never install or reach the network.
+#
+# Must stay in lockstep with models/manifest.json (botocore_version + wheel_sha256);
+# tools/sync-models.py asserts they agree. Hash is the py3-none-any wheel on PyPI.
+#
+# Install into a throwaway venv with:
+#   python3 -m pip install --require-hashes -r tools/requirements.txt
+botocore==1.43.121 \
+    --hash=sha256:39bfd17e69f3370350e6aac2072df64045d002f9878e09115e85b87c772bd473
