@@ -8,9 +8,35 @@ AWS's own service models and emits a Zap client that rides on the hand-written
 `aws.core` runtime and protocol codecs (`zaplang-io/aws`).
 
 **v0 scope** ([zaplang-io/zap#347](https://github.com/zaplang-io/zap/issues/347)):
-the **awsJson** protocol, with **DynamoDB** as the proof. rest-json / rest-xml /
-query protocols and wiring the output into the `aws` package are later tickets
-(#345/#350 and friends).
+the **awsJson** protocol. The generator is proven across **multiple services** on
+that protocol (#350, below). rest-json / rest-xml / query protocols and wiring the
+output into the `aws` package are later tickets.
+
+## Services
+
+The generator is the single source of truth for every checked-in client; CI
+regenerates each from its pinned model and fails on any drift.
+
+| Service | Protocol | Model | Generated | Notes |
+|---|---|---|---|---|
+| **DynamoDB** | awsJson **1.0** | `models/dynamodb/2012-08-10/` | `generated/dynamodb/dynamodb.zap` | The original proof (#347); byte-diffed against the hand-written reference (#348); 3 paginators (#349). |
+| **SQS** | awsJson **1.0** | `models/sqs/2012-11-05/` | `generated/sqs/sqs.zap` | SQS's **modern JSON** protocol (`AmazonSQS` target); 2 `List*` paginators; `GetQueueUrl` byte-diffed against a pinned golden (#350). |
+| **Kinesis** | awsJson **1.1** | `models/kinesis/2013-12-02/` | `generated/kinesis/kinesis.zap` | Covers the **1.1** wire variant (content type `…-json-1.1`, `awsjson_1_1`) that the 1.0 services don't; 3 `NextToken` paginators; `DescribeStreamSummary` byte-diffed; `DescribeStream`'s nested JMESPath paginator token is document-skipped (#350). |
+
+The three services span both awsJson wire versions (1.0 and 1.1) and three
+protocol prefixes, proving the generator is model-driven rather than tuned to one
+service. Each ships a toolchain-free fidelity gate (see **Development / CI gate**):
+regeneration determinism, a byte-diff of a concrete operation's signed request
+against a pinned golden, and a behavioral paginator check — all host-only (no Zap
+compiler / Docker required).
+
+**Lambda and other rest-json services** are **document-skipped here** and tracked
+in [zaplang-io/aws-codegen#4](https://github.com/zaplang-io/aws-codegen/issues/4).
+Lambda's model is `rest-json` with HTTP path/query/header bindings; the generator
+is **awsJson-only** today and does not emit a REST binding layer. The blocker is
+purely the generator-side **rest-json emitter** — the hand-written rest-json codec
+already exists in `zaplang-io/aws` main (aws PR #8 / #345) — so #4 is additive to
+this generator and depends on no unmerged code.
 
 ## What it generates
 
@@ -82,17 +108,18 @@ cargo run --release -- path/to/service-2.json
 
 ```
 src/            the generator (model parse, type resolution, emission)
-models/         pinned botocore service-2.json + paginators-1.json fixtures
-generated/      checked-in generated Zap (regenerated + diffed in CI)
-vendor/         pinned aws-core runtime for the compile gate (see vendor/README)
+models/         pinned botocore service-2.json + paginators-1.json fixtures (per service)
+generated/      checked-in generated Zap, one dir per service (regenerated + diffed in CI)
+vendor/         pinned aws-core runtime + per-service smoke mains for the compile gate
 scripts/        compile_check.sh — best-effort bundle + run under the Zap image
-tests/          regeneration / determinism / contract tests
+tools/          verify_*.py — independent SigV4 oracles for the byte-diff goldens
+tests/          regeneration / determinism / contract / byte-diff / paginator tests
+tests/common/   shared host-only SigV4 signer + generated-source parsers (per-service gates)
+tests/expected/ pinned golden request bytes for the byte-diff gates
 ```
 
-The checked-in DynamoDB client lives at
-[`generated/dynamodb/dynamodb.zap`](generated/dynamodb/dynamodb.zap); its model
-is [`models/dynamodb/2012-08-10/service-2.json`](models/dynamodb/2012-08-10/service-2.json).
-CI fails if the checked-in output drifts from the generator.
+Each service's client is regenerated from its pinned model and diffed in CI; the
+build fails if any checked-in output drifts from the generator.
 
 ## Development / CI gate
 
@@ -103,11 +130,23 @@ cargo fmt --check
 cargo clippy --all-targets -- -D warnings
 cargo build --locked
 cargo test --locked
-# regeneration determinism: generated output must match what's checked in
+# regeneration determinism: every service's generated output must match what's
+# checked in (DynamoDB + SQS)
 cargo run -- models/dynamodb/2012-08-10/service-2.json -o /tmp/ddb.zap && diff /tmp/ddb.zap generated/dynamodb/dynamodb.zap
+cargo run -- models/sqs/2012-11-05/service-2.json       -o /tmp/sqs.zap && diff /tmp/sqs.zap generated/sqs/sqs.zap
+cargo run -- models/kinesis/2013-12-02/service-2.json   -o /tmp/kin.zap && diff /tmp/kin.zap generated/kinesis/kinesis.zap
+# independent-oracle byte-diff: pinned goldens are genuine awsJson + SigV4
+python3 tools/verify_describe_table.py   # DynamoDB (#348)
+python3 tools/verify_goldens.py          # SQS + later JSON services (#350)
 ```
 
-A separate **non-blocking** job compiles the generated Zap under
+These are all **host-only** (no Zap toolchain / Docker). The byte-diff is proven
+twice over, independently: `tests/byte_diff.rs` / `tests/sqs.rs` reconstruct the
+signed request from the *generated source* with a Rust SigV4 signer, while the
+`tools/verify_*.py` oracles recompute the same golden from scratch in Python — a
+regression shows up in both.
+
+A separate **non-blocking** job compiles each generated client under
 `ghcr.io/zaplang-io/zap:latest` via `scripts/compile_check.sh`. It is non-blocking
 because the published image lags the derive(Json) AWS hooks (#346); it turns green
 once those land upstream. The generated client has been verified to compile and

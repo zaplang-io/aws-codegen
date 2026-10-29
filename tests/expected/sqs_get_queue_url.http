@@ -1,0 +1,11 @@
+POST / HTTP/1.1
+content-type: application/x-amz-json-1.0
+host: sqs.us-east-1.amazonaws.com
+x-amz-content-sha256: 307f2f5eaa4450343a0794762365e9ecd3913574e46550d1d5bf27ef79b905fa
+x-amz-date: 20150830T123600Z
+x-amz-target: AmazonSQS.GetQueueUrl
+content-length: 23
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/sqs/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date;x-amz-target, Signature=2824ff30bb784d57bfa9ea601622954893ec705ae95febbd00df57fc8bc94672
+Connection: close
+
+{"QueueName":"MyQueue"}

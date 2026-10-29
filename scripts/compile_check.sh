@@ -6,8 +6,10 @@
 # same concatenation convention the aws repo's tools/bundle.py uses (there is no
 # `import` yet), then runs it under the Zap compiler image.
 #
-# Usage:  scripts/compile_check.sh [generated.zap]
+# Usage:  scripts/compile_check.sh [generated.zap] [smoke_main.zap]
 #   ZAP_IMAGE   compiler image (default ghcr.io/zaplang-io/zap:latest)
+# Defaults to the DynamoDB client + its smoke entry; pass a service's generated
+# file and matching smoke (e.g. generated/sqs/sqs.zap vendor/smoke_sqs_main.zap).
 #
 # NOTE: this needs the derive(Json) AWS hooks (zaplang-io/zap#346:
 # @json(open) enums, @json(timestamp), bytes-as-base64). Until that lands in the
@@ -17,6 +19,7 @@ set -euo pipefail
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
 generated="${1:-$root/generated/dynamodb/dynamodb.zap}"
+smoke="${2:-$root/vendor/smoke_main.zap}"
 image="${ZAP_IMAGE:-ghcr.io/zaplang-io/zap:latest}"
 
 work="$(mktemp -d)"
@@ -29,7 +32,7 @@ cat \
   "$root/vendor/endpoints.zap" \
   "$root/vendor/awsjson.zap" \
   "$generated" \
-  "$root/vendor/smoke_main.zap" \
+  "$smoke" \
   > "$bundle"
 
 echo "compile_check: bundled $(wc -l < "$bundle") lines -> running under $image"
