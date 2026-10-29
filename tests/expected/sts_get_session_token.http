@@ -1,0 +1,10 @@
+POST / HTTP/1.1
+content-type: application/x-www-form-urlencoded; charset=utf-8
+host: sts.us-east-1.amazonaws.com
+x-amz-content-sha256: 73afef05d66be4af31cb1024dda06636de5a59796f7fa6c3c6b70c61ff849166
+x-amz-date: 20150830T123600Z
+content-length: 168
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/sts/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=59f8a1400a535fdc9f45ec349bd7a7b0d93ad0ad32a5441de6277660daa4e789
+Connection: close
+
+Action=GetSessionToken&Version=2011-06-15&DurationSeconds=3600&SerialNumber=arn%3Aaws%3Aiam%3A%3A123456789012%3Amfa%2Fuser&TokenCode=123456&MinimumSessionTokenSize=1024

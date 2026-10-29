@@ -139,3 +139,66 @@ fn generated_ec2_monitor_instances_matches_golden() {
     let got = sign_request("ec2", "POST", "/", &body, &query_headers("ec2", &body));
     assert_eq!(got, read("tests/expected/ec2_monitor_instances.http"));
 }
+
+// STS (query) — the first service under the generated-is-product policy (#355).
+// GetCallerIdentity proves the empty-input body (just `Action` + `Version`);
+// GetSessionToken proves optional scalar members, including an integer rendered
+// via `str(...)` and a value that url-encodes (the MFA serial's `:` and `/`).
+// STS's assume-role family (AssumeRole, …) is v0-skipped — those inputs carry
+// list-of-struct members (PolicyArns/Tags/…) the `aws.query` oracle does not yet
+// serialize — so there is no oracle request to diff them against here.
+
+#[test]
+fn generated_sts_get_caller_identity_matches_golden() {
+    let src = generate("models/sts/2011-06-15/service-2.json");
+    assert!(src.contains("def sts_service() -> str:"));
+    assert!(src.contains("    return \"sts\""));
+
+    // Empty input: the generated method takes no `input` and emits only the
+    // Action/Version pair.
+    let sig = "def get_caller_identity(self) -> str:";
+    let mb = method_body(&src, sig);
+    assert!(mb.contains("auto p = query_params(\"GetCallerIdentity\", \"2011-06-15\")"));
+    assert!(
+        !mb.contains("query_scalar"),
+        "GetCallerIdentity has no input members, so no form parameters:\n{mb}"
+    );
+    assert!(mb.contains("return query_request(self.creds, sts_service(), self.region, p)"));
+
+    let body = form_body("GetCallerIdentity", "2011-06-15", &[]);
+    let got = sign_request("sts", "POST", "/", &body, &query_headers("sts", &body));
+    assert_eq!(got, read("tests/expected/sts_get_caller_identity.http"));
+}
+
+#[test]
+fn generated_sts_get_session_token_matches_golden() {
+    let src = generate("models/sts/2011-06-15/service-2.json");
+
+    let sig = "def get_session_token(self, GetSessionTokenRequest input) -> str:";
+    let mb = method_body(&src, sig);
+    assert!(mb.contains("auto p = query_params(\"GetSessionToken\", \"2011-06-15\")"));
+    assert!(
+        mb.contains(
+            "p = query_scalar(p, \"DurationSeconds\", str(input.DurationSeconds.unwrap()))"
+        ),
+        "an integer member is rendered through str(...):\n{mb}"
+    );
+    assert!(mb.contains("p = query_scalar(p, \"SerialNumber\", input.SerialNumber.unwrap())"));
+    assert!(mb.contains("p = query_scalar(p, \"TokenCode\", input.TokenCode.unwrap())"));
+    assert!(mb.contains("return query_request(self.creds, sts_service(), self.region, p)"));
+
+    // All optional members set, in model order; the MFA serial exercises
+    // url-encoding of `:` and `/` in a value.
+    let body = form_body(
+        "GetSessionToken",
+        "2011-06-15",
+        &[
+            ("DurationSeconds", "3600"),
+            ("SerialNumber", "arn:aws:iam::123456789012:mfa/user"),
+            ("TokenCode", "123456"),
+            ("MinimumSessionTokenSize", "1024"),
+        ],
+    );
+    let got = sign_request("sts", "POST", "/", &body, &query_headers("sts", &body));
+    assert_eq!(got, read("tests/expected/sts_get_session_token.http"));
+}
