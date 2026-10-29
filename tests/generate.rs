@@ -140,21 +140,23 @@ fn awsjson_contract_shape() {
 }
 
 #[test]
-fn unsupported_protocol_is_rejected() {
-    // rest-xml / query are later tickets (#352/#353); they are rejected with a
-    // clear message, while json and rest-json are accepted.
-    for proto in ["rest-xml", "query", "ec2"] {
+fn supported_protocols_accepted_unknown_rejected() {
+    // The emitter now spans the awsJson, rest-json, rest-xml and query/ec2
+    // protocols; all are accepted. A protocol it does not emit yet (e.g. the
+    // RPCv2 CBOR protocol) is rejected with a clear message.
+    for proto in ["json", "rest-json", "rest-xml", "query", "ec2"] {
         let m = format!(
-            r#"{{"metadata":{{"protocol":"{proto}","endpointPrefix":"x"}},"operations":{{}},"shapes":{{}}}}"#
+            r#"{{"metadata":{{"protocol":"{proto}","apiVersion":"2021-01-01","endpointPrefix":"x"}},"operations":{{}},"shapes":{{}}}}"#
         );
-        let err = aws_codegen::generate_from_json(&m).unwrap_err();
-        assert!(err.contains(proto), "{err}");
-        assert!(err.contains("unsupported protocol"), "{err}");
+        assert!(
+            aws_codegen::generate_from_json(&m).is_ok(),
+            "protocol {proto} should be accepted"
+        );
     }
-    assert!(aws_codegen::generate_from_json(
-        r#"{"metadata":{"protocol":"rest-json","endpointPrefix":"x"},"operations":{},"shapes":{}}"#
-    )
-    .is_ok());
+    let m = r#"{"metadata":{"protocol":"smithy-rpc-v2-cbor","endpointPrefix":"x"},"operations":{},"shapes":{}}"#;
+    let err = aws_codegen::generate_from_json(m).unwrap_err();
+    assert!(err.contains("smithy-rpc-v2-cbor"), "{err}");
+    assert!(err.contains("unsupported protocol"), "{err}");
 }
 
 // --- Lambda (rest-json) ------------------------------------------------------
@@ -283,4 +285,122 @@ fn keyword_and_reserved_names_are_escaped() {
     assert!(src.contains("    dict_"));
     assert!(src.contains("    OK"));
     assert!(src.contains("    Unknown(str value)"));
+}
+
+// --- CloudFront (rest-xml), SimpleDB (query), EC2 (ec2) ----------------------
+
+/// Generate a checked-in client from its pinned model + paginators sidecar
+/// (exactly what `cargo run` / the CI determinism loop does).
+fn generate_with_sidecar(service: &str, api_version: &str) -> (String, aws_codegen::Coverage) {
+    let model = read_model(&format!("models/{service}/{api_version}/service-2.json"));
+    let pag = read_model(&format!("models/{service}/{api_version}/paginators-1.json"));
+    aws_codegen::generate_from_json_with_paginators(&model, Some(&pag)).unwrap()
+}
+
+fn assert_current(service: &str, api_version: &str, out_rel: &str) {
+    let (src, _cov) = generate_with_sidecar(service, api_version);
+    let checked = repo_root().join(out_rel);
+    let on_disk = std::fs::read_to_string(&checked)
+        .unwrap_or_else(|e| panic!("reading {}: {e}", checked.display()));
+    assert_eq!(
+        src, on_disk,
+        "{out_rel} is stale — re-run: cargo run -- models/{service}/{api_version}/service-2.json -o {out_rel}"
+    );
+}
+
+#[test]
+fn checked_in_cloudfront_output_is_current() {
+    assert_current(
+        "cloudfront",
+        "2015-09-17",
+        "generated/cloudfront/cloudfront.zap",
+    );
+}
+
+#[test]
+fn checked_in_sdb_output_is_current() {
+    assert_current("sdb", "2009-04-15", "generated/sdb/sdb.zap");
+}
+
+#[test]
+fn checked_in_ec2_output_is_current() {
+    assert_current("ec2", "2014-09-01", "generated/ec2/ec2.zap");
+}
+
+#[test]
+fn restxml_contract_shape() {
+    let (src, cov) = generate_with_sidecar("cloudfront", "2015-09-17");
+    assert_eq!(cov.operations_total, 22);
+    assert!(
+        cov.operations_methods >= 15,
+        "methods: {}",
+        cov.operations_methods
+    );
+    assert!(cov.operations_skipped > 0, "complex payloads skip");
+    // Protocol seam: a service-name function, plain structs (no @derive(Json)).
+    assert!(src.contains("# Protocol: rest-xml"));
+    assert!(src.contains("def cloudfront_service() -> str:"));
+    assert!(src.contains("    return \"cloudfront\""));
+    assert!(
+        !src.contains("@derive(Json)\nstruct"),
+        "rest-xml structs are plain carriers"
+    );
+    // A namespaced XML document body with a nested struct + wrapped list.
+    assert!(src.contains("rest_xml_root_ns(\"InvalidationBatch\","));
+    assert!(src.contains("rest_xml_struct(root, \"Paths\")"));
+    assert!(src.contains("rest_xml_wrapped_list(n0, \"Items\", \"Path\","));
+    assert!(src.contains("rest_xml_document(b, body)"));
+    // Error dispatch from the rest-xml <Error><Code>.
+    assert!(src.contains("enum CloudFrontError:"));
+    assert!(src.contains("def cloudfront_error_from_code(str code) -> CloudFrontError:"));
+    // A GET with only a path label sends no XML body (bare binding).
+    assert!(src.contains("def get_distribution(self, GetDistributionRequest input) -> str:"));
+}
+
+#[test]
+fn query_contract_shape() {
+    let (src, cov) = generate_with_sidecar("sdb", "2009-04-15");
+    assert_eq!(cov.operations_total, 10);
+    assert!(
+        cov.operations_methods >= 5,
+        "methods: {}",
+        cov.operations_methods
+    );
+    assert!(src.contains("# Protocol: query"));
+    assert!(src.contains("def sdb_service() -> str:"));
+    assert!(src.contains("    return \"sdb\""));
+    assert!(src.contains("auto p = query_params(\"GetAttributes\", \"2009-04-15\")"));
+    assert!(src.contains("query_flat_list(p, \"AttributeNames\","));
+    assert!(src.contains("query_bool(input.ConsistentRead.unwrap())"));
+    assert!(src.contains("return query_request(self.creds, sdb_service(), self.region, p)"));
+}
+
+#[test]
+fn ec2_contract_shape() {
+    let (src, cov) = generate_with_sidecar("ec2", "2014-09-01");
+    assert_eq!(cov.operations_total, 154);
+    assert!(
+        cov.operations_methods >= 80,
+        "methods: {}",
+        cov.operations_methods
+    );
+    assert!(src.contains("# Protocol: ec2"));
+    assert!(src.contains("def ec2_service() -> str:"));
+    assert!(src.contains("    return \"ec2\""));
+    assert!(src.contains("auto p = query_params(\"MonitorInstances\", \"2014-09-01\")"));
+    // ec2 capitalizes the key and always flattens the list.
+    assert!(src.contains("query_flat_list(p, \"InstanceId\", input.InstanceIds)"));
+    assert!(src.contains("query_scalar(p, \"DryRun\","));
+}
+
+#[test]
+fn xml_family_generation_is_deterministic() {
+    assert_eq!(
+        generate_with_sidecar("cloudfront", "2015-09-17").0,
+        generate_with_sidecar("cloudfront", "2015-09-17").0
+    );
+    assert_eq!(
+        generate_with_sidecar("ec2", "2014-09-01").0,
+        generate_with_sidecar("ec2", "2014-09-01").0
+    );
 }

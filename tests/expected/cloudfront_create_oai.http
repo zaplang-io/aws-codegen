@@ -1,0 +1,10 @@
+POST /2015-09-17/origin-access-identity/cloudfront HTTP/1.1
+content-type: application/xml
+host: cloudfront.us-east-1.amazonaws.com
+x-amz-content-sha256: 883689f29cdb2d43b5af863e68d363d52a83398a1ac5ec1ad98fa3356776ad34
+x-amz-date: 20150830T123600Z
+content-length: 206
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/cloudfront/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=a757b5a9d0f0c80771829c42e04fdfe108ac7099ceeb793b0fe438763840f10e
+Connection: close
+
+<CloudFrontOriginAccessIdentityConfig xmlns="http://cloudfront.amazonaws.com/doc/2015-09-17/"><CallerReference>oai-2021</CallerReference><Comment>my identity</Comment></CloudFrontOriginAccessIdentityConfig>

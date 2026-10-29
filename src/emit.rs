@@ -9,7 +9,9 @@
 use crate::binding::{plan_operation, OpBinding, PayloadBody, ScalarBind};
 use crate::model::{Model, Paginators, Shape};
 use crate::naming::{escape_ident, snake_case};
+use crate::query::{plan_query, QueryFlavor, QueryMember, QueryOp, ScalarText};
 use crate::types::{compute_derivable, resolve, ZapType};
+use crate::xml::{plan_rest_xml, RawKind, RestXmlOp, XmlBody, XmlMember, XmlText};
 use std::collections::{HashMap, HashSet};
 
 /// The wire protocol the generator emits for a service.
@@ -19,6 +21,21 @@ enum Protocol {
     AwsJson,
     /// rest-json (restJson1) — members bound to URI/query/header/payload.
     RestJson,
+    /// rest-xml — the binding layer with an XML document body (CloudFront, S3).
+    RestXml,
+    /// query — flat form-urlencoded body, XML response (SimpleDB, IAM, STS, …).
+    Query,
+    /// ec2 — the query variant with capitalized keys + always-flattened lists.
+    Ec2,
+}
+
+impl Protocol {
+    /// Whether struct/enum members serialize through `@derive(Json)` (awsJson /
+    /// rest-json). The XML-family protocols build bodies explicitly, so their
+    /// structs are plain carriers and enum members are carried as `str`.
+    fn uses_json_derive(self) -> bool {
+        matches!(self, Protocol::AwsJson | Protocol::RestJson)
+    }
 }
 
 /// What the generator covered, for the file header and the CLI summary.
@@ -79,8 +96,15 @@ impl<'a> Generator<'a> {
         });
         let protocol = match md.protocol.trim() {
             "rest-json" => Protocol::RestJson,
+            "rest-xml" => Protocol::RestXml,
+            "query" => Protocol::Query,
+            "ec2" => Protocol::Ec2,
             _ => Protocol::AwsJson,
         };
+        // rest-json renders bound enum members in its input carrier structs as
+        // their plain wire `str`; the XML-family protocols render every enum
+        // member as `str` (see `render_member_type`), so the set is only needed
+        // for rest-json's selective treatment.
         let rest_input_shapes = if protocol == Protocol::RestJson {
             model
                 .operations
@@ -175,6 +199,20 @@ impl<'a> Generator<'a> {
                 "# Protocol: rest-json (restJson1) (SigV4 service {})\n",
                 self.sigv4_service()
             )),
+            Protocol::RestXml => h.push_str(&format!(
+                "# Protocol: rest-xml (SigV4 service {})\n",
+                self.sigv4_service()
+            )),
+            Protocol::Query => h.push_str(&format!(
+                "# Protocol: query (SigV4 service {}, Version {})\n",
+                self.sigv4_service(),
+                md.api_version
+            )),
+            Protocol::Ec2 => h.push_str(&format!(
+                "# Protocol: ec2 (SigV4 service {}, Version {})\n",
+                self.sigv4_service(),
+                md.api_version
+            )),
         }
         h.push_str("# Source: botocore service-2.json (Apache-2.0); documentation stripped.\n");
         h.push_str("#\n");
@@ -185,6 +223,12 @@ impl<'a> Generator<'a> {
             Protocol::RestJson => h.push_str(
                 "# Depends on aws.core + aws.binding + aws.restjson (bundle them ahead of this\n# file; there is\n",
             ),
+            Protocol::RestXml => h.push_str(
+                "# Depends on aws.core + aws.binding + aws.restxml (bundle them ahead of this\n# file; there is\n",
+            ),
+            Protocol::Query | Protocol::Ec2 => h.push_str(
+                "# Depends on aws.core + aws.query (bundle them ahead of this file; there is\n",
+            ),
         }
         h.push_str("# no `import` yet). Each operation returns ready-to-send, SigV4-signed\n");
         match self.protocol {
@@ -194,73 +238,115 @@ impl<'a> Generator<'a> {
             Protocol::RestJson => h.push_str(
                 "# HTTP/1.1 request text: members bind to the URI path/query/headers and the\n# remaining members (or an httpPayload member) form the body.\n",
             ),
+            Protocol::RestXml => h.push_str(
+                "# HTTP/1.1 request text: members bind to the URI path/query/headers and an\n# httpPayload structure is serialized as the XML document body.\n",
+            ),
+            Protocol::Query | Protocol::Ec2 => h.push_str(
+                "# HTTP/1.1 request text: the whole input is a flat form-urlencoded POST body\n# (Action + Version + the members), the AWS query wire format.\n",
+            ),
         }
         h.push_str("# Paginators additionally use the live transport (aws.core `send` /\n");
         h.push_str(
             "# `regional_host` / `next_page_json`) to walk pages and yield each Response.\n",
         );
         h.push_str("#\n");
-        match self.protocol {
-            Protocol::AwsJson => {
-                h.push_str(&format!(
-                    "# Coverage (v0, awsJson only): {} operations — {} with a generated method,\n",
-                    cov.operations_total, cov.operations_methods
-                ));
-                h.push_str(&format!(
-                    "#   {} skipped (input uses collections not yet serializable by derive).\n",
-                    cov.operations_skipped
-                ));
-            }
-            Protocol::RestJson => {
-                h.push_str(&format!(
-                    "# Coverage (rest-json): {} operations — {} with a generated method,\n",
-                    cov.operations_total, cov.operations_methods
-                ));
-                h.push_str(&format!(
-                    "#   {} skipped (a member type is not yet bindable/serializable by derive).\n",
-                    cov.operations_skipped
-                ));
-            }
-        }
+        let label = match self.protocol {
+            Protocol::AwsJson => "v0, awsJson only",
+            Protocol::RestJson => "rest-json",
+            Protocol::RestXml => "rest-xml",
+            Protocol::Query => "query",
+            Protocol::Ec2 => "ec2",
+        };
         h.push_str(&format!(
-            "#   {} structs ({} @derive(Json)), {} enums, {} error variants.\n",
-            cov.structs_total, cov.structs_derivable, cov.enums, cov.error_variants
+            "# Coverage ({label}): {} operations — {} with a generated method,\n",
+            cov.operations_total, cov.operations_methods
         ));
+        let skip_reason = match self.protocol {
+            Protocol::AwsJson => "input uses collections not yet serializable by derive",
+            Protocol::RestJson => "a member type is not yet bindable/serializable by derive",
+            Protocol::RestXml => "a body member is not yet serializable by the XML emitter",
+            Protocol::Query | Protocol::Ec2 => {
+                "a member type is not yet serializable (nesting/map)"
+            }
+        };
+        h.push_str(&format!(
+            "#   {} skipped ({skip_reason}).\n",
+            cov.operations_skipped
+        ));
+        if self.protocol.uses_json_derive() {
+            h.push_str(&format!(
+                "#   {} structs ({} @derive(Json)), {} enums, {} error variants.\n",
+                cov.structs_total, cov.structs_derivable, cov.enums, cov.error_variants
+            ));
+        } else {
+            h.push_str(&format!(
+                "#   {} structs (plain carriers), {} enums, {} error variants.\n",
+                cov.structs_total, cov.enums, cov.error_variants
+            ));
+        }
         h.push_str(&format!(
             "#   {} paginators generated ({} paginated ops skipped) from paginators-1.json.\n",
             cov.paginators, cov.paginators_skipped
         ));
-        h.push_str("# @derive(Json) is attached to structs whose members are all derive-\n");
-        h.push_str("# serializable; structs containing list/map members are emitted plain,\n");
-        h.push_str("# pending derive collection support (zaplang-io/zap#346 follow-up).\n");
+        if self.protocol.uses_json_derive() {
+            h.push_str("# @derive(Json) is attached to structs whose members are all derive-\n");
+            h.push_str("# serializable; structs containing list/map members are emitted plain,\n");
+            h.push_str("# pending derive collection support (zaplang-io/zap#346 follow-up).\n");
+        } else {
+            h.push_str("# Structs are plain data carriers (the body is built explicitly by each\n");
+            h.push_str("# method); enum-typed members are carried as their plain wire string.\n");
+        }
         h.push_str(bar);
         h
     }
 
     fn protocol_fn(&self) -> String {
         let md = &self.model.metadata;
-        if self.protocol == Protocol::RestJson {
-            let svc = self.sigv4_service();
-            return format!(
-                "# The {} rest-json protocol: SigV4 service \"{}\" (also the endpoint\n# prefix for host resolution). Each operation binds its input members to the\n# URI path/query/headers and dispatches through the aws.restjson codec.\ndef {}_service() -> str:\n{IND}return \"{}\"\n",
-                self.type_prefix, svc, self.fn_prefix, svc,
-            );
+        match self.protocol {
+            Protocol::RestJson => {
+                let svc = self.sigv4_service();
+                format!(
+                    "# The {} rest-json protocol: SigV4 service \"{}\" (also the endpoint\n# prefix for host resolution). Each operation binds its input members to the\n# URI path/query/headers and dispatches through the aws.restjson codec.\ndef {}_service() -> str:\n{IND}return \"{}\"\n",
+                    self.type_prefix, svc, self.fn_prefix, svc,
+                )
+            }
+            Protocol::RestXml => {
+                let svc = self.sigv4_service();
+                format!(
+                    "# The {} rest-xml protocol: SigV4 service \"{}\" (also the endpoint\n# prefix for host resolution). Each operation binds its input members to the\n# URI path/query/headers and serializes an XML body through the aws.restxml\n# codec.\ndef {}_service() -> str:\n{IND}return \"{}\"\n",
+                    self.type_prefix, svc, self.fn_prefix, svc,
+                )
+            }
+            Protocol::Query | Protocol::Ec2 => {
+                let svc = self.sigv4_service();
+                let flavor = if self.protocol == Protocol::Ec2 {
+                    "ec2"
+                } else {
+                    "query"
+                };
+                format!(
+                    "# The {} {flavor} protocol: SigV4 service \"{}\" (also the endpoint prefix\n# for host resolution). Each operation POSTs a flat form-urlencoded body built\n# with the aws.query codec.\ndef {}_service() -> str:\n{IND}return \"{}\"\n",
+                    self.type_prefix, svc, self.fn_prefix, svc,
+                )
+            }
+            Protocol::AwsJson => {
+                let ctor = if md.json_version.trim() == "1.1" {
+                    "awsjson_1_1"
+                } else {
+                    "awsjson_1_0"
+                };
+                format!(
+                    "# The {} awsJson protocol: version {}, API id \"{}\".\ndef {}_protocol() -> AwsJson:\n{IND}return {}(\"{}\", \"{}\")\n",
+                    self.type_prefix,
+                    json_wire_version(&md.json_version),
+                    md.target_prefix,
+                    self.fn_prefix,
+                    ctor,
+                    md.target_prefix,
+                    md.endpoint_prefix,
+                )
+            }
         }
-        let ctor = if md.json_version.trim() == "1.1" {
-            "awsjson_1_1"
-        } else {
-            "awsjson_1_0"
-        };
-        format!(
-            "# The {} awsJson protocol: version {}, API id \"{}\".\ndef {}_protocol() -> AwsJson:\n{IND}return {}(\"{}\", \"{}\")\n",
-            self.type_prefix,
-            json_wire_version(&md.json_version),
-            md.target_prefix,
-            self.fn_prefix,
-            ctor,
-            md.target_prefix,
-            md.endpoint_prefix,
-        )
     }
 
     // --- enums -------------------------------------------------------------
@@ -308,7 +394,9 @@ impl<'a> Generator<'a> {
             out.push_str(&self.emit_struct(name, shape));
             out.push('\n');
             cov.structs_total += 1;
-            if self.is_derivable(name) {
+            // structs_derivable is only meaningful for the JSON-derive protocols;
+            // the XML-family protocols emit every struct as a plain carrier.
+            if self.protocol.uses_json_derive() && self.is_derivable(name) {
                 cov.structs_derivable += 1;
             }
         }
@@ -316,6 +404,9 @@ impl<'a> Generator<'a> {
     }
 
     fn emit_struct(&self, name: &str, shape: &Shape) -> String {
+        if !self.protocol.uses_json_derive() {
+            return self.emit_plain_struct(name, shape);
+        }
         if self.protocol == Protocol::RestJson && self.rest_input_shapes.contains(name) {
             return self.emit_rest_input_struct(name, shape);
         }
@@ -453,6 +544,43 @@ impl<'a> Generator<'a> {
         out
     }
 
+    /// Emit a plain data-carrier struct for the XML-family protocols (rest-xml /
+    /// query / ec2). These never serialize a struct as a whole — each method
+    /// builds the body explicitly — so the struct carries no `@derive(Json)`.
+    /// Enum-typed members (at any depth) render as `str`, their plain wire form,
+    /// so the serializers consume them without an enum-to-string step.
+    fn emit_plain_struct(&self, name: &str, shape: &Shape) -> String {
+        let type_name = escape_ident(name).0;
+        let mut out = String::new();
+        out.push_str(&format!("struct {type_name}:\n"));
+
+        if shape.members.is_empty() {
+            out.push_str(&format!(
+                "{IND}# empty shape in the model; reserved field keeps it valid\n"
+            ));
+            out.push_str(&format!("{IND}Optional[str] reserved\n"));
+            return out;
+        }
+
+        for (mn, r) in &shape.members {
+            let (field, changed) = escape_ident(mn);
+            let ty = resolve(self.model, &r.shape);
+            let optional = !shape.required.contains(mn);
+            if changed {
+                out.push_str(&format!(
+                    "{IND}# wire name \"{mn}\" differs from field (handled by the method)\n"
+                ));
+            }
+            let rendered = if optional {
+                format!("Optional[{}]", render_member_type(&ty))
+            } else {
+                render_member_type(&ty)
+            };
+            out.push_str(&format!("{IND}{rendered} {field}\n"));
+        }
+        out
+    }
+
     // --- errors ------------------------------------------------------------
 
     fn error_section(&self, cov: &mut Coverage) -> String {
@@ -473,6 +601,9 @@ impl<'a> Generator<'a> {
         let code_source = match self.protocol {
             Protocol::AwsJson => "awsJson `__type` / X-Amzn-ErrorType",
             Protocol::RestJson => "restJson1 X-Amzn-ErrorType / body `__type`",
+            Protocol::RestXml => "rest-xml `<Error><Code>` element",
+            Protocol::Query => "query `<ErrorResponse><Error><Code>` element",
+            Protocol::Ec2 => "ec2 `<Response><Errors><Error><Code>` element",
         };
         let mut out = String::new();
         out.push_str(&format!(
@@ -499,6 +630,12 @@ impl<'a> Generator<'a> {
             Protocol::RestJson => {
                 "# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType\n# header or body __type, stripped to the bare shape name) to a variant.".to_string()
             }
+            Protocol::RestXml => {
+                "# Map a rest-xml error code (the <Error><Code> text from rest_xml_error_code)\n# to a variant.".to_string()
+            }
+            Protocol::Query | Protocol::Ec2 => {
+                "# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's\n# error helpers) to a variant.".to_string()
+            }
         };
         out.push_str(&format!(
             "{classifier_doc}\ndef {}_error_from_code(str code) -> {enum_name}:\n",
@@ -519,8 +656,11 @@ impl<'a> Generator<'a> {
     // --- client ------------------------------------------------------------
 
     fn client_section(&self, cov: &mut Coverage) -> String {
-        if self.protocol == Protocol::RestJson {
-            return self.rest_client_section(cov);
+        match self.protocol {
+            Protocol::RestJson => return self.rest_client_section(cov),
+            Protocol::RestXml => return self.xml_client_section(cov),
+            Protocol::Query | Protocol::Ec2 => return self.query_client_section(cov),
+            Protocol::AwsJson => {}
         }
         let client_name = format!("{}Client", self.type_prefix);
         let mut methods = String::new();
@@ -905,6 +1045,494 @@ impl<'a> Generator<'a> {
         local.to_string()
     }
 
+    // --- rest-xml client ---------------------------------------------------
+
+    /// The rest-xml counterpart to `rest_client_section`: a method per operation
+    /// that builds the binding (shared with rest-json) and an XML document body
+    /// via the `aws.restxml` codec. Operations whose body the XML emitter cannot
+    /// render yet are skipped with a documented reason.
+    fn xml_client_section(&self, cov: &mut Coverage) -> String {
+        let client_name = format!("{}Client", self.type_prefix);
+        let mut methods = String::new();
+        let mut skipped: Vec<String> = Vec::new();
+
+        for op_name in self.model.sorted_operation_names() {
+            cov.operations_total += 1;
+            let op = &self.model.operations[op_name];
+            match plan_rest_xml(self.model, op) {
+                Ok(plan) => {
+                    methods.push_str(&self.xml_method(op_name, op, &plan));
+                    methods.push('\n');
+                    cov.operations_methods += 1;
+                }
+                Err(reason) => {
+                    skipped.push(format!("{op_name} ({reason})"));
+                    cov.operations_skipped += 1;
+                }
+            }
+        }
+
+        let mut out = String::new();
+        if !skipped.is_empty() {
+            out.push_str(
+                "# Operations skipped in v0 (a body member is not yet serializable by the XML\n# emitter — a bool, a map, a list/map of non-scalars, or an XML document body\n# with no httpPayload):\n",
+            );
+            for s in &skipped {
+                out.push_str(&format!("#   {s}\n"));
+            }
+            out.push('\n');
+        }
+        self.paginators_not_surfaced_note(&mut out, cov);
+
+        out.push_str(&format!(
+            "# A bound {} client: credentials + region, threaded into every operation.\n",
+            self.type_prefix
+        ));
+        out.push_str(&format!("struct {client_name}:\n"));
+        out.push_str(&format!("{IND}Credentials creds\n{IND}str region\n"));
+        if methods.is_empty() {
+            out.push_str(&format!(
+                "\n{IND}# no XML-serializable operations were generated for this service in v0\n"
+            ));
+        } else {
+            out.push('\n');
+            out.push_str(&methods);
+        }
+        out.push_str(&format!(
+            "# Construct a {} bound to credentials + region.\ndef {}_client(Credentials creds, str region) -> {client_name}:\n{IND}return {client_name}(creds=creds, region=region)\n",
+            client_name, self.fn_prefix
+        ));
+        out
+    }
+
+    /// Emit one rest-xml operation method: build the binding, then attach the
+    /// XML document body (or a raw payload, or nothing) and sign.
+    fn xml_method(&self, op_name: &str, op: &crate::model::Operation, plan: &RestXmlOp) -> String {
+        let i2 = format!("{IND}{IND}");
+        let svc = &self.fn_prefix;
+        let method = snake_case(op_name);
+
+        let mut b = String::new();
+        b.push_str(&format!(
+            "{IND}# {op_name}  {} {}\n",
+            plan.method, plan.path_template
+        ));
+        if !op.errors.is_empty() {
+            let mut es: Vec<&str> = op.errors.iter().map(|e| e.shape.as_str()).collect();
+            es.sort_unstable();
+            b.push_str(&format!("{IND}# errors: {}\n", es.join(", ")));
+        }
+        match &plan.input_shape {
+            Some(sh) => b.push_str(&format!("{IND}def {method}(self, {sh} input) -> str:\n")),
+            None => b.push_str(&format!("{IND}def {method}(self) -> str:\n")),
+        }
+        b.push_str(&format!(
+            "{i2}auto host = regional_host({svc}_service(), self.region)\n"
+        ));
+
+        let greedy: Vec<&ScalarBind> = plan.labels.iter().filter(|l| l.greedy).collect();
+        let plain: Vec<&ScalarBind> = plan.labels.iter().filter(|l| !l.greedy).collect();
+        let labels_arg = self.rest_dict_local(&mut b, &i2, "labels", &plain);
+        let greedy_arg = self.rest_dict_local(&mut b, &i2, "greedy_labels", &greedy);
+        let query_arg =
+            self.rest_dict_local(&mut b, &i2, "query", &plan.query.iter().collect::<Vec<_>>());
+        let headers_arg = self.rest_dict_local(
+            &mut b,
+            &i2,
+            "headers",
+            &plan.headers.iter().collect::<Vec<_>>(),
+        );
+        let (pfx_arg, pmap_arg) = match &plan.prefix_headers {
+            Some(ph) => {
+                let map = if ph.optional {
+                    format!("input.{}.unwrap_or({{}})", ph.field)
+                } else {
+                    format!("input.{}", ph.field)
+                };
+                (format!("\"{}\"", ph.prefix), map)
+            }
+            None => ("\"\"".to_string(), "{}".to_string()),
+        };
+        b.push_str(&format!(
+            "{i2}auto b = HttpBinding(method=\"{}\", path_template=\"{}\", labels={labels_arg}, greedy_labels={greedy_arg}, query={query_arg}, headers={headers_arg}, prefix_header_prefix={pfx_arg}, prefix_headers={pmap_arg}, payload_kind=PayloadKind.Empty, body=\"\", content_type=\"\")\n",
+            plan.method, plan.path_template
+        ));
+
+        let bind_var = match &plan.body {
+            XmlBody::Empty => "b",
+            XmlBody::Raw {
+                field,
+                kind,
+                optional,
+            } => {
+                let (expr, ct) = match kind {
+                    RawKind::Blob => (
+                        if *optional {
+                            format!("str(input.{field}.unwrap_or(bytes()))")
+                        } else {
+                            format!("str(input.{field})")
+                        },
+                        "application/octet-stream",
+                    ),
+                    RawKind::Str => (
+                        if *optional {
+                            format!("input.{field}.unwrap_or(\"\")")
+                        } else {
+                            format!("input.{field}")
+                        },
+                        "text/plain",
+                    ),
+                };
+                b.push_str(&format!(
+                    "{i2}auto bp = rest_xml_raw_payload(b, {expr}, \"{ct}\")\n"
+                ));
+                "bp"
+            }
+            XmlBody::Struct { field, plan } => {
+                let mut counter: u32 = 0;
+                let root_access = format!("input.{field}");
+                b.push_str(&format!(
+                    "{i2}auto root = {}\n",
+                    xml_root_ctor(&plan.root_name, &plan.namespace)
+                ));
+                self.emit_xml_members(
+                    &mut b,
+                    &i2,
+                    "root",
+                    &plan.members,
+                    &root_access,
+                    &mut counter,
+                );
+                b.push_str(&format!("{i2}auto body = rest_xml_serialize(root)\n"));
+                b.push_str(&format!("{i2}auto bp = rest_xml_document(b, body)\n"));
+                "bp"
+            }
+        };
+
+        b.push_str(&format!(
+            "{i2}return rest_xml_request(self.creds, {bind_var}, {svc}_service(), self.region, host)\n"
+        ));
+        b
+    }
+
+    /// Recursively emit the `rest_xml_*` calls that build an XML structure's
+    /// members under `node_var`, reading fields off `access_prefix`
+    /// (e.g. `input.Config`). `counter` names fresh locals deterministically.
+    fn emit_xml_members(
+        &self,
+        out: &mut String,
+        indent: &str,
+        node_var: &str,
+        members: &[XmlMember],
+        access_prefix: &str,
+        counter: &mut u32,
+    ) {
+        for m in members {
+            match m {
+                XmlMember::Attribute {
+                    attr,
+                    field,
+                    text,
+                    optional,
+                } => {
+                    let access = format!("{access_prefix}.{field}");
+                    let prefix = format!("rest_xml_attribute({node_var}, \"{attr}\", ");
+                    self.emit_xml_scalar_call(
+                        out, indent, &prefix, text, &access, *optional, counter,
+                    );
+                }
+                XmlMember::Scalar {
+                    elem,
+                    field,
+                    text,
+                    optional,
+                } => {
+                    let access = format!("{access_prefix}.{field}");
+                    let prefix = format!("rest_xml_scalar({node_var}, \"{elem}\", ");
+                    self.emit_xml_scalar_call(
+                        out, indent, &prefix, text, &access, *optional, counter,
+                    );
+                }
+                XmlMember::FlatList {
+                    elem,
+                    field,
+                    optional,
+                } => {
+                    let access = format!("{access_prefix}.{field}");
+                    let value = if *optional {
+                        format!("{access}.unwrap_or([])")
+                    } else {
+                        access
+                    };
+                    let prefix = format!("rest_xml_flat_list({node_var}, \"{elem}\", ");
+                    self.emit_hoisted(out, indent, &prefix, &value, ")", counter);
+                }
+                XmlMember::WrappedList {
+                    wrapper,
+                    member,
+                    field,
+                    optional,
+                } => {
+                    let access = format!("{access_prefix}.{field}");
+                    let prefix =
+                        format!("rest_xml_wrapped_list({node_var}, \"{wrapper}\", \"{member}\", ");
+                    if *optional {
+                        // An absent optional wrapped list emits nothing (an empty
+                        // one would still emit `<wrapper/>`), so guard it.
+                        out.push_str(&format!("{indent}if {access}.is_some():\n"));
+                        let inner = format!("{indent}{IND}");
+                        let tmp = next_tmp(counter);
+                        out.push_str(&format!("{inner}auto {tmp} = {access}.unwrap()\n"));
+                        self.emit_hoisted(out, &inner, &prefix, &tmp, ")", counter);
+                    } else {
+                        self.emit_hoisted(out, indent, &prefix, &access, ")", counter);
+                    }
+                }
+                XmlMember::Struct {
+                    elem,
+                    field,
+                    optional,
+                    plan,
+                } => {
+                    let access = format!("{access_prefix}.{field}");
+                    let child = next_node(counter);
+                    if *optional {
+                        out.push_str(&format!("{indent}if {access}.is_some():\n"));
+                        let inner = format!("{indent}{IND}");
+                        out.push_str(&format!(
+                            "{inner}auto {child} = rest_xml_struct({node_var}, \"{elem}\")\n"
+                        ));
+                        emit_nested_ns(out, &inner, &child, &plan.namespace);
+                        let child_access = format!("{access}.unwrap()");
+                        self.emit_xml_members(
+                            out,
+                            &inner,
+                            &child,
+                            &plan.members,
+                            &child_access,
+                            counter,
+                        );
+                    } else {
+                        out.push_str(&format!(
+                            "{indent}auto {child} = rest_xml_struct({node_var}, \"{elem}\")\n"
+                        ));
+                        emit_nested_ns(out, indent, &child, &plan.namespace);
+                        self.emit_xml_members(out, indent, &child, &plan.members, &access, counter);
+                    }
+                }
+            }
+        }
+    }
+
+    /// Emit a `rest_xml_scalar`/`rest_xml_attribute` call whose value is a scalar
+    /// text expression, guarding an optional member and hoisting a long line.
+    #[allow(clippy::too_many_arguments)]
+    fn emit_xml_scalar_call(
+        &self,
+        out: &mut String,
+        indent: &str,
+        prefix: &str,
+        text: &XmlText,
+        access: &str,
+        optional: bool,
+        counter: &mut u32,
+    ) {
+        if optional {
+            out.push_str(&format!("{indent}if {access}.is_some():\n"));
+            let inner = format!("{indent}{IND}");
+            let value = xml_text_expr(text, &format!("{access}.unwrap()"));
+            self.emit_hoisted(out, &inner, prefix, &value, ")", counter);
+        } else {
+            let value = xml_text_expr(text, access);
+            self.emit_hoisted(out, indent, prefix, &value, ")", counter);
+        }
+    }
+
+    /// Emit `{indent}{prefix}{value}{suffix}` on one line, or — when that would
+    /// exceed 88 columns — hoist `value` into a fresh `auto` local first, so the
+    /// generated source stays within the formatter's width by construction.
+    fn emit_hoisted(
+        &self,
+        out: &mut String,
+        indent: &str,
+        prefix: &str,
+        value: &str,
+        suffix: &str,
+        counter: &mut u32,
+    ) {
+        let one = format!("{indent}{prefix}{value}{suffix}");
+        if one.chars().count() <= 88 {
+            out.push_str(&one);
+            out.push('\n');
+        } else {
+            let tmp = next_tmp(counter);
+            out.push_str(&format!("{indent}auto {tmp} = {value}\n"));
+            out.push_str(&format!("{indent}{prefix}{tmp}{suffix}\n"));
+        }
+    }
+
+    // --- query / ec2 client ------------------------------------------------
+
+    /// The query/ec2 client: a method per operation that builds a flat
+    /// form-urlencoded body with the `aws.query` codec and signs it. Operations
+    /// with members the codec cannot serialize yet (nesting, maps, non-scalar
+    /// lists) are skipped with a documented reason.
+    fn query_client_section(&self, cov: &mut Coverage) -> String {
+        let client_name = format!("{}Client", self.type_prefix);
+        let flavor = if self.protocol == Protocol::Ec2 {
+            QueryFlavor::Ec2
+        } else {
+            QueryFlavor::Query
+        };
+        let mut methods = String::new();
+        let mut skipped: Vec<String> = Vec::new();
+
+        for op_name in self.model.sorted_operation_names() {
+            cov.operations_total += 1;
+            let op = &self.model.operations[op_name];
+            match plan_query(self.model, op, flavor) {
+                Ok(plan) => {
+                    methods.push_str(&self.query_method(op_name, op, &plan));
+                    methods.push('\n');
+                    cov.operations_methods += 1;
+                }
+                Err(reason) => {
+                    skipped.push(format!("{op_name} ({reason})"));
+                    cov.operations_skipped += 1;
+                }
+            }
+        }
+
+        let mut out = String::new();
+        if !skipped.is_empty() {
+            out.push_str(
+                "# Operations skipped in v0 (a member type is not yet serializable by the query\n# emitter — a nested structure, a map, or a list of non-scalars):\n",
+            );
+            for s in &skipped {
+                out.push_str(&format!("#   {s}\n"));
+            }
+            out.push('\n');
+        }
+        self.paginators_not_surfaced_note(&mut out, cov);
+
+        out.push_str(&format!(
+            "# A bound {} client: credentials + region, threaded into every operation.\n",
+            self.type_prefix
+        ));
+        out.push_str(&format!("struct {client_name}:\n"));
+        out.push_str(&format!("{IND}Credentials creds\n{IND}str region\n"));
+        if methods.is_empty() {
+            out.push_str(&format!(
+                "\n{IND}# no serializable operations were generated for this service in v0\n"
+            ));
+        } else {
+            out.push('\n');
+            out.push_str(&methods);
+        }
+        out.push_str(&format!(
+            "# Construct a {} bound to credentials + region.\ndef {}_client(Credentials creds, str region) -> {client_name}:\n{IND}return {client_name}(creds=creds, region=region)\n",
+            client_name, self.fn_prefix
+        ));
+        out
+    }
+
+    /// Emit one query/ec2 operation method: build the parameter list and sign.
+    fn query_method(&self, op_name: &str, op: &crate::model::Operation, plan: &QueryOp) -> String {
+        let i2 = format!("{IND}{IND}");
+        let svc = &self.fn_prefix;
+        let method = snake_case(op_name);
+
+        let mut b = String::new();
+        b.push_str(&format!("{IND}# {op_name}\n"));
+        if !op.errors.is_empty() {
+            let mut es: Vec<&str> = op.errors.iter().map(|e| e.shape.as_str()).collect();
+            es.sort_unstable();
+            b.push_str(&format!("{IND}# errors: {}\n", es.join(", ")));
+        }
+        match &plan.input_shape {
+            Some(sh) if !plan.members.is_empty() => {
+                b.push_str(&format!("{IND}def {method}(self, {sh} input) -> str:\n"))
+            }
+            _ => b.push_str(&format!("{IND}def {method}(self) -> str:\n")),
+        }
+        b.push_str(&format!(
+            "{i2}auto p = query_params(\"{}\", \"{}\")\n",
+            plan.action, plan.version
+        ));
+
+        let mut counter: u32 = 0;
+        for m in &plan.members {
+            match m {
+                QueryMember::Scalar {
+                    key,
+                    field,
+                    text,
+                    optional,
+                } => {
+                    let prefix = format!("p = query_scalar(p, \"{key}\", ");
+                    if *optional {
+                        b.push_str(&format!("{i2}if input.{field}.is_some():\n"));
+                        let inner = format!("{i2}{IND}");
+                        let value = query_value_text(text, &format!("input.{field}.unwrap()"));
+                        self.emit_hoisted(&mut b, &inner, &prefix, &value, ")", &mut counter);
+                    } else {
+                        let value = query_value_text(text, &format!("input.{field}"));
+                        self.emit_hoisted(&mut b, &i2, &prefix, &value, ")", &mut counter);
+                    }
+                }
+                QueryMember::FlatList {
+                    name,
+                    field,
+                    optional,
+                } => {
+                    let value = if *optional {
+                        format!("input.{field}.unwrap_or([])")
+                    } else {
+                        format!("input.{field}")
+                    };
+                    let prefix = format!("p = query_flat_list(p, \"{name}\", ");
+                    self.emit_hoisted(&mut b, &i2, &prefix, &value, ")", &mut counter);
+                }
+                QueryMember::WrappedList {
+                    name,
+                    member,
+                    field,
+                    optional,
+                } => {
+                    let value = if *optional {
+                        format!("input.{field}.unwrap_or([])")
+                    } else {
+                        format!("input.{field}")
+                    };
+                    let prefix = format!("p = query_list(p, \"{name}\", \"{member}\", ");
+                    self.emit_hoisted(&mut b, &i2, &prefix, &value, ")", &mut counter);
+                }
+            }
+        }
+
+        b.push_str(&format!(
+            "{i2}return query_request(self.creds, {svc}_service(), self.region, p)\n"
+        ));
+        b
+    }
+
+    /// For the XML-family protocols, note any paginated operations we did not
+    /// surface (XML pagination is a follow-up) and record them as skipped.
+    fn paginators_not_surfaced_note(&self, out: &mut String, cov: &mut Coverage) {
+        let names = self.paginators.sorted_operation_names();
+        if names.is_empty() {
+            return;
+        }
+        out.push_str(
+            "# Paginated operations (paginators-1.json) are not surfaced for this protocol in\n# v0 — XML-response pagination (next_page_xml) is a follow-up:\n",
+        );
+        for n in &names {
+            out.push_str(&format!("#   {n}\n"));
+            cov.paginators_skipped += 1;
+        }
+        out.push('\n');
+    }
+
     // --- rest-json paginators ----------------------------------------------
 
     /// Emit a `paginate_*` method for each paginated operation we can surface,
@@ -1218,6 +1846,91 @@ fn member_blocks_derive(model: &Model, ty: &ZapType, derivable: &HashMap<String,
             let _ = model;
             false
         }
+    }
+}
+
+/// A fresh deterministic local name for a hoisted value (`t0`, `t1`, …).
+fn next_tmp(counter: &mut u32) -> String {
+    let n = *counter;
+    *counter += 1;
+    format!("t{n}")
+}
+
+/// A fresh deterministic local name for an XML element node (`n0`, `n1`, …).
+fn next_node(counter: &mut u32) -> String {
+    let n = *counter;
+    *counter += 1;
+    format!("n{n}")
+}
+
+/// The codec call that builds an XML root element with its namespace, if any.
+fn xml_root_ctor(name: &str, ns: &Option<crate::model::XmlNamespace>) -> String {
+    match ns {
+        None => format!("rest_xml_root(\"{name}\")"),
+        Some(ns) => match &ns.prefix {
+            None => format!("rest_xml_root_ns(\"{name}\", \"{}\")", ns.uri),
+            Some(p) => format!(
+                "rest_xml_root_prefixed(\"{name}\", \"{p}\", \"{}\")",
+                ns.uri
+            ),
+        },
+    }
+}
+
+/// Emit an `xmlns` attribute for a nested structure that carries its own
+/// namespace (the root gets its namespace from the element constructor instead).
+fn emit_nested_ns(
+    out: &mut String,
+    indent: &str,
+    node_var: &str,
+    ns: &Option<crate::model::XmlNamespace>,
+) {
+    if let Some(ns) = ns {
+        let attr = match &ns.prefix {
+            None => "xmlns".to_string(),
+            Some(p) => format!("xmlns:{p}"),
+        };
+        out.push_str(&format!(
+            "{indent}rest_xml_attribute({node_var}, \"{attr}\", \"{}\")\n",
+            ns.uri
+        ));
+    }
+}
+
+/// The scalar text expression for an XML member value (element or attribute).
+fn xml_text_expr(text: &XmlText, access: &str) -> String {
+    match text {
+        XmlText::Str => access.to_string(),
+        XmlText::Int | XmlText::Float => format!("str({access})"),
+        XmlText::Blob => format!("xml_blob({access})"),
+        XmlText::TimestampIso => format!("xml_timestamp_iso8601({access})"),
+        XmlText::TimestampEpoch => format!("xml_timestamp_epoch({access})"),
+    }
+}
+
+/// The scalar text expression for a query form-parameter value.
+fn query_value_text(text: &ScalarText, access: &str) -> String {
+    match text {
+        ScalarText::Str => access.to_string(),
+        ScalarText::Int | ScalarText::Float => format!("str({access})"),
+        ScalarText::Bool => format!("query_bool({access})"),
+        ScalarText::Blob => format!("query_blob({access})"),
+        ScalarText::TimestampIso => format!("query_timestamp_iso8601({access})"),
+        ScalarText::TimestampEpoch => format!("query_timestamp_epoch({access})"),
+    }
+}
+
+/// Render a resolved type for an XML-family carrier struct, replacing every
+/// enum (including inside a list/dict) with `str` — the plain wire form the
+/// XML/query serializers consume, so no enum-to-string step is needed.
+fn render_member_type(ty: &ZapType) -> String {
+    match ty {
+        ZapType::Enum(_) => "str".to_string(),
+        ZapType::List(e) => format!("list[{}]", render_member_type(e)),
+        ZapType::Dict(k, v) => {
+            format!("dict[{}, {}]", render_member_type(k), render_member_type(v))
+        }
+        other => other.render(),
     }
 }
 

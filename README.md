@@ -9,10 +9,12 @@ AWS's own service models and emits a Zap client that rides on the hand-written
 
 **Protocols**: the **awsJson** protocol
 ([zaplang-io/zap#347](https://github.com/zaplang-io/zap/issues/347)), proven across
-multiple services, and the **rest-json** (restJson1) protocol
-([#4](https://github.com/zaplang-io/aws-codegen/issues/4), **Lambda** the proof).
-rest-xml / query protocols (#352/#353) and wiring the output into the `aws`
-package are later tickets.
+multiple services; the **rest-json** (restJson1) protocol
+([#4](https://github.com/zaplang-io/aws-codegen/issues/4), **Lambda** the proof);
+and the XML family — **rest-xml** (CloudFront) and **query**/**ec2** (SimpleDB /
+EC2) ([#354](https://github.com/zaplang-io/aws-codegen/issues/354)), through the
+hand-written `aws.restxml` / `aws.query` codecs. Wiring the output into the `aws`
+package, and the full XML-family services (STS, S3, SNS/IAM/EC2), are later tickets.
 
 ## Services
 
@@ -25,10 +27,15 @@ regenerates each from its pinned model and fails on any drift.
 | **SQS** | awsJson **1.0** | `models/sqs/2012-11-05/` | `generated/sqs/sqs.zap` | SQS's **modern JSON** protocol (`AmazonSQS` target); 2 `List*` paginators; `GetQueueUrl` byte-diffed against a pinned golden (#350). |
 | **Kinesis** | awsJson **1.1** | `models/kinesis/2013-12-02/` | `generated/kinesis/kinesis.zap` | Covers the **1.1** wire variant (content type `…-json-1.1`, `awsjson_1_1`) that the 1.0 services don't; 3 `NextToken` paginators; `DescribeStreamSummary` byte-diffed; `DescribeStream`'s nested JMESPath paginator token is document-skipped (#350). |
 | **Lambda** | **rest-json** | `models/lambda/2015-03-31/` | `generated/lambda/lambda.zap` | The **rest-json** proof (#4): HTTP path/query/header bindings + raw httpPayload + JSON document bodies, through the `aws.binding` + `aws.restjson` codec; 14 `Marker` paginators; `GetFunction` / `ListFunctions` / `Invoke` / `PutFunctionConcurrency` byte-diffed (cross-checked vs botocore). |
+| **CloudFront** | **rest-xml** | `models/cloudfront/2015-09-17/` | `generated/cloudfront/cloudfront.zap` | The **rest-xml** proof (#354): XML document bodies (default namespace, nested structs, wrapped lists) over the `aws.binding` + `aws.restxml` codec; `CreateInvalidation` / `CreateCloudFrontOriginAccessIdentity` byte-diffed. Complex payloads (`DistributionConfig`) are v0-skipped. |
+| **SimpleDB** | **query** | `models/sdb/2009-04-15/` | `generated/sdb/sdb.zap` | The **query** (awsQuery) proof (#354): flat form-urlencoded bodies via the `aws.query` codec; `GetAttributes` (scalars + a flattened list + a boolean) byte-diffed. |
+| **EC2** | **ec2** | `models/ec2/2014-09-01/` | `generated/ec2/ec2.zap` | The **ec2** variant proof (#354): Capitalized keys + always-flattened lists; `MonitorInstances` byte-diffed. A deliberately small/old pin — EC2 productionization is a later ticket. |
 
 The awsJson services span both wire versions (1.0 and 1.1) and three protocol
-prefixes; Lambda adds the REST binding path — together proving the generator is
-model-driven rather than tuned to one service or protocol. Each ships a
+prefixes; Lambda adds the REST binding path; CloudFront/SimpleDB/EC2 add the XML
+family (rest-xml body, query form body, and the ec2 key variant) — together
+proving the generator is model-driven rather than tuned to one service or
+protocol. Each ships a
 toolchain-free fidelity gate (see **Development / CI gate**): regeneration
 determinism, a byte-diff of a concrete operation's signed request against a pinned
 golden, and a behavioral paginator check — all host-only (no Zap compiler / Docker
@@ -93,6 +100,46 @@ payload are **skipped** with a documented reason — the same honest posture as 
 awsJson derive gap. rest-json paginators thread the model's string token (e.g.
 Lambda's `Marker` ← `NextMarker`) the same way, reusing the operation's own method
 to build each signed request.
+
+### rest-xml (CloudFront)
+
+rest-xml reuses the **same `aws.binding` layer** as rest-json for the URI / query
+/ header / prefix-header locations, and differs only in the body: a `httpPayload`
+structure member is serialized as the XML document body with the hand-written
+**`aws.restxml`** codec's primitive helpers. The emitter walks the payload
+structure (botocore's `RestXMLSerializer` rules) and emits explicit tree-building
+calls — there is no XML `@derive`, so each member maps to one deterministic call:
+
+- the root element is the payload member's `locationName`, carrying its
+  `xmlNamespace` (`rest_xml_root` / `rest_xml_root_ns` / `rest_xml_root_prefixed`);
+- scalar members → `rest_xml_scalar` (with the codec's `xml_blob` /
+  `xml_timestamp_*` text helpers), `xmlAttribute` members → `rest_xml_attribute`;
+- a nested structure → `rest_xml_struct` (recursing), a `flattened` list →
+  `rest_xml_flat_list`, a wrapped list → `rest_xml_wrapped_list`;
+- the tree is `rest_xml_serialize`d and attached via `rest_xml_document`, then
+  SigV4-signed through the binding `rest_xml_request` (shared path contract).
+
+Operations whose body needs something the v0 emitter can't render yet — a boolean
+(the codec has no `xml_bool`), a map, a list/map of non-scalars, or an XML body
+with no `httpPayload` — are **skipped** with a documented reason. GET/DELETE ops
+with only path/query bindings send no body (the bare binding).
+
+### query / ec2 (SimpleDB, EC2)
+
+A `query` or `ec2` model POSTs its whole input as one flat
+`application/x-www-form-urlencoded` body through the hand-written **`aws.query`**
+codec — no URI/header binding. Each method builds the parameter list (`Action`,
+`Version`, then the members in model order) and signs via `query_request`:
+
+- a scalar → `query_scalar` (with `query_bool` / `query_blob` / `query_timestamp_*`
+  text helpers); a flattened list → `query_flat_list` (`Name.N`); a wrapped list →
+  `query_list` (`Name.member.N`);
+- the **ec2** variant Capitalizes member keys (the `queryName` / capitalized
+  `locationName`) and always flattens lists, matching botocore's `EC2Serializer`.
+
+Members the codec can't serialize yet (a nested structure, a map, a list of
+non-scalars) are **skipped** with a documented reason. XML-response pagination is
+a follow-up, so paginated ops are listed as not-yet-surfaced.
 
 ### The derive-collection gap
 
@@ -220,6 +267,7 @@ cargo run -- models/lambda/2015-03-31/service-2.json    -o /tmp/lam.zap && diff 
 python3 tools/verify_describe_table.py   # DynamoDB (#348)
 python3 tools/verify_goldens.py          # SQS + Kinesis JSON services (#350)
 python3 tools/verify_lambda_requests.py  # Lambda rest-json (#4; cross-checked vs botocore)
+python3 tools/verify_xml_requests.py     # CloudFront rest-xml + SimpleDB query + EC2 ec2 (#354)
 ```
 
 These are all **host-only** (no Zap toolchain / Docker). The byte-diff is proven

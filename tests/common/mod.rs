@@ -60,16 +60,113 @@ fn hex(bytes: &[u8]) -> String {
 /// Percent-encode a path with "/" as a safe separator (RFC-3986 unreserved pass
 /// through), matching url.quote_path / aws.core.wire_path.
 fn quote_path(path: &str) -> String {
+    uri_quote(path, true)
+}
+
+/// RFC-3986 percent-encode (url.quote / url.quote_path). `keep_slash` keeps "/"
+/// as a safe character (the whole-path form); otherwise "/" is encoded too.
+pub fn uri_quote(s: &str, keep_slash: bool) -> String {
     let mut out = String::new();
-    for b in path.bytes() {
-        let unreserved = b.is_ascii_alphanumeric() || matches!(b, b'-' | b'_' | b'.' | b'~' | b'/');
-        if unreserved {
+    for b in s.bytes() {
+        let unreserved = b.is_ascii_alphanumeric() || matches!(b, b'-' | b'_' | b'.' | b'~');
+        if unreserved || (keep_slash && b == b'/') {
             out.push(b as char);
         } else {
             out.push_str(&format!("%{b:02X}"));
         }
     }
     out
+}
+
+/// Expand a URI path template, percent-encoding each non-greedy label value
+/// (encoding "/"), matching aws.binding.expand_path for the non-greedy case.
+pub fn expand_path(template: &str, labels: &[(&str, String)]) -> String {
+    let mut out = String::new();
+    let bytes: Vec<char> = template.chars().collect();
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] == '{' {
+            let close = template[i..].find('}').map(|c| i + c);
+            match close {
+                None => {
+                    out.push_str(&template[i..]);
+                    break;
+                }
+                Some(c) => {
+                    let token = &template[i + 1..c];
+                    let val = labels
+                        .iter()
+                        .find(|(n, _)| *n == token)
+                        .map(|(_, v)| v.clone())
+                        .unwrap_or_default();
+                    out.push_str(&uri_quote(&val, false));
+                    i = c + 1;
+                }
+            }
+        } else {
+            out.push(bytes[i]);
+            i += 1;
+        }
+    }
+    out
+}
+
+/// Sign a binding request whose path is ALREADY wire-encoded and return the full
+/// HTTP/1.1 text — aws.binding.binding_sign (non-S3): the canonical URI is a
+/// single `quote_path` pass over the wire path, and the wire target is that path
+/// verbatim. Mirrors the signer proven against lambda/botocore in
+/// `tests/rest_byte_diff.rs`, parameterized by service + host for other
+/// binding-layer protocols (rest-xml).
+pub fn binding_sign(
+    service: &str,
+    host: &str,
+    method: &str,
+    wire_path: &str,
+    body: &str,
+    content_type: &str,
+) -> String {
+    let mut signed: Vec<(String, String)> = vec![
+        ("host".to_string(), host.to_string()),
+        ("x-amz-date".to_string(), AMZ_DATE.to_string()),
+        ("x-amz-content-sha256".to_string(), hex_sha256(body)),
+    ];
+    if !content_type.is_empty() {
+        signed.push(("content-type".to_string(), content_type.to_string()));
+    }
+    signed.sort_by(|a, b| a.0.cmp(&b.0));
+
+    let canon_uri = uri_quote(wire_path, true);
+    let canon_headers: String = signed
+        .iter()
+        .map(|(n, v)| format!("{n}:{}\n", v.trim()))
+        .collect();
+    let signed_names = signed
+        .iter()
+        .map(|(n, _)| n.clone())
+        .collect::<Vec<_>>()
+        .join(";");
+    let canon_req = format!(
+        "{method}\n{canon_uri}\n\n{canon_headers}\n{signed_names}\n{}",
+        hex_sha256(body)
+    );
+    let scope = format!("{DATE_STAMP}/{REGION}/{service}/aws4_request");
+    let sts = format!(
+        "AWS4-HMAC-SHA256\n{AMZ_DATE}\n{scope}\n{}",
+        hex_sha256(&canon_req)
+    );
+    let key = signing_key(SECRET, DATE_STAMP, REGION, service);
+    let signature = hex(&hmac_raw(&key, &sts));
+    let auth = format!(
+        "AWS4-HMAC-SHA256 Credential={ACCESS}/{scope}, \
+         SignedHeaders={signed_names}, Signature={signature}"
+    );
+    let mut headers_block = String::new();
+    for (n, v) in &signed {
+        headers_block.push_str(&format!("{n}: {v}\r\n"));
+    }
+    headers_block.push_str(&format!("content-length: {}\r\n", body.len()));
+    headers_block.push_str(&format!("authorization: {auth}\r\n"));
+    format!("{method} {wire_path} HTTP/1.1\r\n{headers_block}Connection: close\r\n\r\n{body}")
 }
 
 /// CanonicalURI: non-S3 services double-encode the path (aws.core.canonical_uri).

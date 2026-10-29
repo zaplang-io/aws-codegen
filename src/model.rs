@@ -40,6 +40,12 @@ pub struct Metadata {
     pub service_full_name: String,
     #[serde(rename = "signatureVersion", default)]
     pub signature_version: String,
+    /// The service-level default XML namespace (e.g. ec2's
+    /// `http://ec2.amazonaws.com/doc/<version>`). Informational for the XML
+    /// protocols; the per-member/per-shape `xmlNamespace` is what the emitter
+    /// serializes on the wire.
+    #[serde(rename = "xmlNamespace", default)]
+    pub xml_namespace: Option<XmlNamespace>,
 }
 
 /// An operation (`operations.<Name>`).
@@ -65,6 +71,39 @@ pub struct Http {
     pub request_uri: String,
 }
 
+/// An XML namespace trait (`xmlNamespace`). botocore writes it either as a bare
+/// URI string (service-level `metadata.xmlNamespace`) or as an object
+/// `{"uri": "...", "prefix": "..."}` (member/shape level); both normalize here.
+/// A `prefix` makes the declaration `xmlns:prefix="uri"` and the element tag
+/// `prefix:name`; without one it is a default `xmlns="uri"`.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(from = "XmlNamespaceRaw")]
+pub struct XmlNamespace {
+    pub uri: String,
+    pub prefix: Option<String>,
+}
+
+#[derive(Deserialize)]
+#[serde(untagged)]
+enum XmlNamespaceRaw {
+    Uri(String),
+    Obj {
+        #[serde(default)]
+        uri: String,
+        #[serde(default)]
+        prefix: Option<String>,
+    },
+}
+
+impl From<XmlNamespaceRaw> for XmlNamespace {
+    fn from(raw: XmlNamespaceRaw) -> Self {
+        match raw {
+            XmlNamespaceRaw::Uri(uri) => XmlNamespace { uri, prefix: None },
+            XmlNamespaceRaw::Obj { uri, prefix } => XmlNamespace { uri, prefix },
+        }
+    }
+}
+
 /// A reference to a shape, optionally carrying member-level traits.
 #[derive(Debug, Clone, Deserialize)]
 pub struct ShapeRef {
@@ -81,6 +120,27 @@ pub struct ShapeRef {
     /// header name, or header prefix (defaults to the member name when absent).
     #[serde(rename = "locationName", default)]
     pub location_name: Option<String>,
+    /// `xmlName`: overrides the on-the-wire element/key name for XML protocols
+    /// (rest-xml element tag, awsQuery/ec2 member name) when it differs from the
+    /// member name. botocore folds this into `locationName`, but a handful of
+    /// shapes carry a distinct `xmlName`, so it is read explicitly.
+    #[serde(rename = "xmlName", default)]
+    pub xml_name: Option<String>,
+    /// `xmlNamespace`: an XML namespace declared on this member's element.
+    #[serde(rename = "xmlNamespace", default)]
+    pub xml_namespace: Option<XmlNamespace>,
+    /// `xmlAttribute`: this (scalar) member is serialized as an XML attribute of
+    /// its parent element rather than a child element (rest-xml).
+    #[serde(rename = "xmlAttribute", default)]
+    pub xml_attribute: bool,
+    /// `flattened` on a member ref (some models mark the list/map member rather
+    /// than its shape): the list/map is serialized without a wrapper element.
+    #[serde(default)]
+    pub flattened: bool,
+    /// `queryName` (the Smithy `ec2QueryName`): the verbatim ec2-protocol key for
+    /// this member, used ahead of the capitalized `locationName`.
+    #[serde(rename = "queryName", default)]
+    pub query_name: Option<String>,
 }
 
 /// A shape definition (`shapes.<Name>`).
@@ -111,6 +171,17 @@ pub struct Shape {
     /// the single member carried as the raw body, if any.
     #[serde(default)]
     pub payload: Option<String>,
+    /// `flattened` on a list/map shape: serialized without a wrapper element
+    /// (rest-xml `<name>v</name><name>v</name>`) or without the `.member`/
+    /// `.entry` path segment (awsQuery `name.N`).
+    #[serde(default)]
+    pub flattened: bool,
+    /// `xmlName` on the shape: the default element/key name for the shape.
+    #[serde(rename = "xmlName", default)]
+    pub xml_name: Option<String>,
+    /// `xmlNamespace` declared on the shape itself (rest-xml).
+    #[serde(rename = "xmlNamespace", default)]
+    pub xml_namespace: Option<XmlNamespace>,
 }
 
 /// The botocore `paginators-1.json` sidecar: pagination metadata keyed by
@@ -220,6 +291,16 @@ impl ShapeRef {
     pub fn wire_name<'a>(&'a self, member: &'a str) -> &'a str {
         self.location_name.as_deref().unwrap_or(member)
     }
+
+    /// The XML/query element or key name for a member: `locationName`, else
+    /// `xmlName`, else the member name. (botocore folds `xmlName` into the
+    /// serialization `name`; this mirrors that precedence.)
+    pub fn xml_wire_name<'a>(&'a self, member: &'a str) -> &'a str {
+        self.location_name
+            .as_deref()
+            .or(self.xml_name.as_deref())
+            .unwrap_or(member)
+    }
 }
 
 impl Http {
@@ -233,6 +314,14 @@ impl Http {
 impl Shape {
     pub fn is_structure(&self) -> bool {
         self.kind == "structure"
+    }
+
+    pub fn is_list(&self) -> bool {
+        self.kind == "list"
+    }
+
+    pub fn is_map(&self) -> bool {
+        self.kind == "map"
     }
 
     /// A `string` shape with at least two enumerated values (the floor for an
