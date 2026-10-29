@@ -1,0 +1,10 @@
+POST / HTTP/1.1
+content-type: application/x-www-form-urlencoded; charset=utf-8
+host: ec2.us-east-1.amazonaws.com
+x-amz-content-sha256: b768b827867236052c26e39355c599021dc70ed34b86c0803bb3c0b448fa25d8
+x-amz-date: 20150830T123600Z
+content-length: 94
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/ec2/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=23ca316dcbfdf3a4cbf1cd1346ff340410f5a054aeb14d6b5a554bd4076d27e4
+Connection: close
+
+Action=MonitorInstances&Version=2014-09-01&DryRun=true&InstanceId.1=i-1111&InstanceId.2=i-2222

@@ -1,20 +1,22 @@
 //! aws-codegen — a model-driven generator that consumes a botocore
 //! `service-2.json` and emits a Zap AWS SDK client.
 //!
-//! The generator targets two protocols: **awsJson** (DynamoDB is the proof) and
-//! **rest-json** (Lambda is the proof). Both emit shapes as `@derive(Json)`
-//! structs, string enums as `@json(open)` enums, and a service error enum +
-//! classifier; they differ only in request/response framing. awsJson POSTs the
-//! whole input shape as one JSON object through the `aws.awsjson` codec;
-//! rest-json places members at HTTP locations (path/query/header/payload) via
-//! the `aws.binding` layer and dispatches through the `aws.restjson` codec. See
-//! the module docs and `README.md` for the design.
+//! The generator targets the AWS wire protocols: **awsJson** (DynamoDB),
+//! **rest-json** (Lambda), **rest-xml** (CloudFront) and **query**/**ec2**
+//! (SimpleDB / EC2). They share the shape, enum and error-set emission and
+//! differ only in request/response framing: awsJson POSTs the whole input shape
+//! as one JSON object (`aws.awsjson`); rest-json/rest-xml place members at HTTP
+//! locations via the `aws.binding` layer and dispatch a JSON or XML body
+//! (`aws.restjson` / `aws.restxml`); query/ec2 POST the input as a flat
+//! form-urlencoded body (`aws.query`). See the module docs and `README.md`.
 
 pub mod binding;
 pub mod emit;
 pub mod model;
 pub mod naming;
+pub mod query;
 pub mod types;
+pub mod xml;
 
 pub use emit::{generate, Coverage};
 pub use model::{Model, Paginators};
@@ -36,11 +38,14 @@ pub fn generate_from_json_with_paginators(
 ) -> Result<(String, Coverage), String> {
     let model = Model::from_json_str(json)?;
     let proto = model.metadata.protocol.trim();
-    if !(proto == "json" || proto == "rest-json" || proto.is_empty()) {
+    if !matches!(
+        proto,
+        "json" | "rest-json" | "rest-xml" | "query" | "ec2" | ""
+    ) {
         return Err(format!(
-            "unsupported protocol `{proto}`; the generator emits awsJson (`json`) \
-             and rest-json (`rest-json`) — rest-xml/query are later tickets \
-             (zaplang-io/aws-codegen#352/#353)"
+            "unsupported protocol `{proto}`; the generator emits awsJson (`json`), \
+             rest-json (`rest-json`), rest-xml (`rest-xml`) and query/ec2 \
+             (`query`, `ec2`)"
         ));
     }
     let paginators = match paginators_json {

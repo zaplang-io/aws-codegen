@@ -1,0 +1,10 @@
+POST / HTTP/1.1
+content-type: application/x-www-form-urlencoded; charset=utf-8
+host: sdb.us-east-1.amazonaws.com
+x-amz-content-sha256: a93e8ca1a5eed95cace6a59642116a5e001a668773575f28ec6862c2da295ef3
+x-amz-date: 20150830T123600Z
+content-length: 143
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/sdb/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=e38847f5e937afad3a6ff8cc62123d91aeffdcba8908bb1700ca93fc9cd98ed8
+Connection: close
+
+Action=GetAttributes&Version=2009-04-15&DomainName=My%20Domain&ItemName=Item42&AttributeNames.1=Color&AttributeNames.2=Size&ConsistentRead=true

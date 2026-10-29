@@ -63,21 +63,27 @@ jobs:
               exit 1
             fi
           }
-          regen models/dynamodb/2012-08-10/service-2.json generated/dynamodb/dynamodb.zap
-          regen models/sqs/2012-11-05/service-2.json       generated/sqs/sqs.zap
-          regen models/kinesis/2013-12-02/service-2.json   generated/kinesis/kinesis.zap
-          regen models/lambda/2015-03-31/service-2.json    generated/lambda/lambda.zap
+          regen models/dynamodb/2012-08-10/service-2.json   generated/dynamodb/dynamodb.zap
+          regen models/sqs/2012-11-05/service-2.json         generated/sqs/sqs.zap
+          regen models/kinesis/2013-12-02/service-2.json     generated/kinesis/kinesis.zap
+          regen models/lambda/2015-03-31/service-2.json      generated/lambda/lambda.zap
+          regen models/cloudfront/2015-09-17/service-2.json  generated/cloudfront/cloudfront.zap
+          regen models/sdb/2009-04-15/service-2.json         generated/sdb/sdb.zap
+          regen models/ec2/2014-09-01/service-2.json         generated/ec2/ec2.zap
 
       - name: byte-diff goldens are correct SigV4 (independent oracles)
         # Toolchain-free second implementations of the on-the-wire request bytes;
         # prove each golden is genuine SigV4 even on a runner with no Zap
         # toolchain. Blocking. DynamoDB (#348) + the #350 JSON services (SQS 1.0,
         # Kinesis 1.1) + the Lambda rest-json fixtures (#4: GetFunction /
-        # ListFunctions / Invoke / PutFunctionConcurrency, cross-checked vs botocore).
+        # ListFunctions / Invoke / PutFunctionConcurrency, cross-checked vs botocore)
+        # + the #354 XML-family fixtures (CloudFront rest-xml, SimpleDB query,
+        # EC2 ec2, + a synthetic rest-xml flattened-list/attribute/prefixed-ns case).
         run: |
           python3 tools/verify_describe_table.py
           python3 tools/verify_goldens.py
           python3 tools/verify_lambda_requests.py
+          python3 tools/verify_xml_requests.py
 
       # Best-effort: compile the generated Zap under the published compiler image.
       # Non-blocking because the published image lags the derive(Json) AWS hooks

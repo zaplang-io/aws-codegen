@@ -1,0 +1,10 @@
+POST /2015-09-17/distribution/EDFDVBD6EXAMPLE/invalidation HTTP/1.1
+content-type: application/xml
+host: cloudfront.us-east-1.amazonaws.com
+x-amz-content-sha256: 27d7adb6ae86203b24347ebb337bc4c37f4bc90edd14533d79ddd2c6ac6b8200
+x-amz-date: 20150830T123600Z
+content-length: 236
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/cloudfront/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=6791d6c1a83017cee3b9067a6d4b67b9560dc4fd71ef1eead11edbbde8391931
+Connection: close
+
+<InvalidationBatch xmlns="http://cloudfront.amazonaws.com/doc/2015-09-17/"><Paths><Quantity>2</Quantity><Items><Path>/img/a.png</Path><Path>/img/b.png</Path></Items></Paths><CallerReference>ref-2021</CallerReference></InvalidationBatch>

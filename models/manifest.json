@@ -6,6 +6,9 @@
     { "service": "dynamodb", "api_version": "2012-08-10" },
     { "service": "sqs", "api_version": "2012-11-05" },
     { "service": "kinesis", "api_version": "2013-12-02" },
-    { "service": "lambda", "api_version": "2015-03-31" }
+    { "service": "lambda", "api_version": "2015-03-31" },
+    { "service": "cloudfront", "api_version": "2015-09-17" },
+    { "service": "sdb", "api_version": "2009-04-15" },
+    { "service": "ec2", "api_version": "2014-09-01" }
   ]
 }
