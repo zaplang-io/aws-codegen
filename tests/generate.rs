@@ -127,6 +127,37 @@ fn non_json_protocol_is_rejected() {
 }
 
 #[test]
+fn paginator_with_nested_output_token_is_skipped() {
+    // A paginator whose output_token is a nested JMESPath path (not a flat field)
+    // cannot be read by the emitted `next_page_json` flat lookup, so it must be
+    // document-skipped rather than emitted as a paginator that never advances.
+    // (Mirrors Kinesis DescribeStream's `StreamDescription.Shards[-1].ShardId`.)
+    let model = r#"{
+      "metadata":{"protocol":"json","jsonVersion":"1.0","targetPrefix":"T","endpointPrefix":"svc","serviceId":"Svc"},
+      "operations":{"ListThings":{"name":"ListThings","input":{"shape":"ListThingsInput"},"output":{"shape":"ListThingsOutput"}}},
+      "shapes":{
+        "ListThingsInput":{"type":"structure","members":{"Marker":{"shape":"Str"}}},
+        "ListThingsOutput":{"type":"structure","members":{"Things":{"shape":"Str"}}},
+        "Str":{"type":"string"}
+      }
+    }"#;
+    let paginators = r#"{"pagination":{"ListThings":{
+        "input_token":"Marker","output_token":"Result.Items[-1].Id","result_key":"Things"}}}"#;
+    let (src, cov) =
+        aws_codegen::generate_from_json_with_paginators(model, Some(paginators)).unwrap();
+    assert_eq!(
+        cov.paginators, 0,
+        "nested-path paginator should not generate"
+    );
+    assert_eq!(cov.paginators_skipped, 1);
+    assert!(!src.contains("def paginate_list_things("), "{src}");
+    assert!(
+        src.contains("Result.Items[-1].Id is a nested path, not a flat field"),
+        "{src}"
+    );
+}
+
+#[test]
 fn keyword_and_reserved_names_are_escaped() {
     // A model whose names collide with Zap keywords and reserved words.
     let m = r#"{

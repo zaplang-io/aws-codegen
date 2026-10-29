@@ -51,18 +51,29 @@ jobs:
         run: cargo test --locked
 
       - name: generated output is current (determinism)
+        # The generator is the source of truth: every checked-in client must
+        # regenerate byte-identically from its pinned model (+ paginators sidecar).
         run: |
-          cargo run --locked -- models/dynamodb/2012-08-10/service-2.json -o /tmp/dynamodb.zap
-          if ! diff -u generated/dynamodb/dynamodb.zap /tmp/dynamodb.zap; then
-            echo "::error::generated/dynamodb/dynamodb.zap is stale — regenerate it" >&2
-            exit 1
-          fi
+          set -e
+          regen() {
+            cargo run --locked -- "$1" -o "/tmp/$(basename "$2")"
+            if ! diff -u "$2" "/tmp/$(basename "$2")"; then
+              echo "::error::$2 is stale — regenerate it" >&2
+              exit 1
+            fi
+          }
+          regen models/dynamodb/2012-08-10/service-2.json generated/dynamodb/dynamodb.zap
+          regen models/sqs/2012-11-05/service-2.json       generated/sqs/sqs.zap
+          regen models/kinesis/2013-12-02/service-2.json   generated/kinesis/kinesis.zap
 
-      - name: byte-diff golden is correct SigV4 (independent oracle)
-        # Toolchain-free second implementation of the DescribeTable request
-        # bytes; proves the golden is genuine awsJson 1.0 + SigV4 even on a
-        # runner with no Zap toolchain. Blocking.
-        run: python3 tools/verify_describe_table.py
+      - name: byte-diff goldens are correct SigV4 (independent oracles)
+        # Toolchain-free second implementations of the on-the-wire request bytes;
+        # prove each golden is genuine awsJson + SigV4 even on a runner with no Zap
+        # toolchain. Blocking. DynamoDB (#348) + the #350 JSON services (SQS 1.0,
+        # Kinesis 1.1).
+        run: |
+          python3 tools/verify_describe_table.py
+          python3 tools/verify_goldens.py
 
       # Best-effort: compile the generated Zap under the published compiler image.
       # Non-blocking because the published image lags the derive(Json) AWS hooks
@@ -72,6 +83,8 @@ jobs:
         run: |
           docker pull ghcr.io/zaplang-io/zap:latest
           bash scripts/compile_check.sh
+          bash scripts/compile_check.sh generated/sqs/sqs.zap vendor/smoke_sqs_main.zap
+          bash scripts/compile_check.sh generated/kinesis/kinesis.zap vendor/smoke_kinesis_main.zap
 
       # Best-effort: the end-to-end byte-diff — run the GENERATED client under the
       # real toolchain and diff its serialized DescribeTable request against the

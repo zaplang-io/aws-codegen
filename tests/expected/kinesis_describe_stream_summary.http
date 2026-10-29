@@ -1,0 +1,11 @@
+POST / HTTP/1.1
+content-type: application/x-amz-json-1.1
+host: kinesis.us-east-1.amazonaws.com
+x-amz-content-sha256: 9f955757499dde38c4132a2d5a665a56430b64962867f5bf02ded6e8df588c39
+x-amz-date: 20150830T123600Z
+x-amz-target: Kinesis_20131202.DescribeStreamSummary
+content-length: 34
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/kinesis/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date;x-amz-target, Signature=9fc8ab79f93aff13fb8c0b2470b5f7d93c127e4e8e0dd49100583e73a4b58753
+Connection: close
+
+{"StreamName":"exampleStreamName"}

@@ -557,6 +557,19 @@ impl<'a> Generator<'a> {
             .single()
             .ok_or("output_token is not a single field")?;
 
+        // The output token must be a FLAT response field: the emitted loop reads
+        // it with `next_page_json(page.body, "<output_token>")`, which looks up a
+        // top-level string field, not a path. botocore sometimes writes a nested
+        // JMESPath expression here (e.g. Kinesis DescribeStream's
+        // `StreamDescription.Shards[-1].ShardId`); surfacing that verbatim would
+        // emit a paginator that never finds the token and silently stops after
+        // one page, so skip it rather than emit it wrong.
+        if !is_flat_field(output_token) {
+            return Err(format!(
+                "output_token {output_token} is a nested path, not a flat field"
+            ));
+        }
+
         // The continuation token must be a string member of the input shape so we
         // can carry it on the next request.
         let member = input_sh
@@ -644,6 +657,13 @@ impl PaginatorPlan {
         ));
         out
     }
+}
+
+/// A flat botocore token field: a bare member name, not a nested JMESPath
+/// expression (which contains `.` for sub-fields or `[` for list indexing). Only
+/// flat fields are readable by the emitted `next_page_json` flat lookup.
+fn is_flat_field(token: &str) -> bool {
+    !token.is_empty() && !token.contains('.') && !token.contains('[')
 }
 
 /// Make `base` unique against `used` by appending `_`, `_2`, ... deterministically.
