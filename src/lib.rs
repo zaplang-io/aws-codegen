@@ -12,10 +12,23 @@ pub mod naming;
 pub mod types;
 
 pub use emit::{generate, Coverage};
-pub use model::Model;
+pub use model::{Model, Paginators};
 
 /// Parse a `service-2.json` string and generate the Zap client source.
+///
+/// No pagination metadata; equivalent to passing an empty `paginators-1.json`.
+/// Use [`generate_from_json_with_paginators`] to emit paginators (zaplang-io/
+/// zap#349).
 pub fn generate_from_json(json: &str) -> Result<(String, Coverage), String> {
+    generate_from_json_with_paginators(json, None)
+}
+
+/// Generate the Zap client from a `service-2.json`, optionally driving
+/// paginators off the matching botocore `paginators-1.json` sidecar.
+pub fn generate_from_json_with_paginators(
+    json: &str,
+    paginators_json: Option<&str>,
+) -> Result<(String, Coverage), String> {
     let model = Model::from_json_str(json)?;
     let proto = model.metadata.protocol.trim();
     if !(proto == "json" || proto.is_empty()) {
@@ -24,5 +37,9 @@ pub fn generate_from_json(json: &str) -> Result<(String, Coverage), String> {
              (rest-json/xml/query are later tickets)"
         ));
     }
-    Ok(generate(&model))
+    let paginators = match paginators_json {
+        Some(p) => Paginators::from_json_str(p)?,
+        None => Paginators::default(),
+    };
+    Ok(generate(&model, &paginators))
 }

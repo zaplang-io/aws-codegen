@@ -95,6 +95,81 @@ pub struct Shape {
     pub timestamp_format: Option<String>,
 }
 
+/// The botocore `paginators-1.json` sidecar: pagination metadata keyed by
+/// operation name. Separate from `service-2.json` (botocore ships it as its own
+/// file), so it is parsed and threaded in independently.
+#[derive(Debug, Clone, Default, Deserialize)]
+pub struct Paginators {
+    #[serde(default)]
+    pub pagination: IndexMap<String, Paginator>,
+}
+
+/// One operation's pagination config. `input_token`/`output_token`/`result_key`
+/// are a single name for simple listings but a parallel list for a few ops (so
+/// they are modeled as [`StringOrList`]); `limit_key` is the per-page cap field.
+#[derive(Debug, Clone, Deserialize)]
+pub struct Paginator {
+    #[serde(rename = "input_token", default)]
+    pub input_token: StringOrList,
+    #[serde(rename = "output_token", default)]
+    pub output_token: StringOrList,
+    #[serde(rename = "limit_key", default)]
+    pub limit_key: Option<String>,
+    #[serde(rename = "result_key", default)]
+    pub result_key: StringOrList,
+}
+
+/// A paginators field that botocore writes as either a bare string or a list of
+/// strings. Normalized to a `Vec` so callers treat both uniformly; an absent
+/// field deserializes to the empty vec.
+#[derive(Debug, Clone, Default, Deserialize)]
+#[serde(from = "StringOrListRaw")]
+pub struct StringOrList(pub Vec<String>);
+
+#[derive(Deserialize)]
+#[serde(untagged)]
+enum StringOrListRaw {
+    One(String),
+    Many(Vec<String>),
+}
+
+impl From<StringOrListRaw> for StringOrList {
+    fn from(raw: StringOrListRaw) -> Self {
+        match raw {
+            StringOrListRaw::One(s) => StringOrList(vec![s]),
+            StringOrListRaw::Many(v) => StringOrList(v),
+        }
+    }
+}
+
+impl StringOrList {
+    /// The single value, when the field carries exactly one name.
+    pub fn single(&self) -> Option<&str> {
+        match self.0.as_slice() {
+            [one] => Some(one.as_str()),
+            _ => None,
+        }
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+}
+
+impl Paginators {
+    /// Parse `paginators-1.json`.
+    pub fn from_json_str(s: &str) -> Result<Paginators, String> {
+        serde_json::from_str(s).map_err(|e| format!("parsing paginators-1.json: {e}"))
+    }
+
+    /// Paginated operation names, sorted for deterministic iteration.
+    pub fn sorted_operation_names(&self) -> Vec<&String> {
+        let mut v: Vec<&String> = self.pagination.keys().collect();
+        v.sort();
+        v
+    }
+}
+
 impl Model {
     /// Parse a model from the raw `service-2.json` text.
     pub fn from_json_str(s: &str) -> Result<Model, String> {
@@ -135,5 +210,50 @@ impl Shape {
                 .as_ref()
                 .map(|v| v.len() >= 2)
                 .unwrap_or(false)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn paginators_accept_string_or_list_tokens() {
+        // botocore writes tokens as a bare string (ListTables) or a parallel list
+        // (result_key on Query/Scan); both normalize to a Vec.
+        let p = Paginators::from_json_str(
+            r#"{"pagination":{
+                 "ListTables":{"input_token":"ExclusiveStartTableName",
+                               "output_token":"LastEvaluatedTableName",
+                               "limit_key":"Limit","result_key":"TableNames"},
+                 "Scan":{"input_token":"ExclusiveStartKey",
+                         "output_token":"LastEvaluatedKey",
+                         "result_key":["Items","Count"]}
+               }}"#,
+        )
+        .unwrap();
+
+        let lt = &p.pagination["ListTables"];
+        assert_eq!(lt.input_token.single(), Some("ExclusiveStartTableName"));
+        assert_eq!(lt.output_token.single(), Some("LastEvaluatedTableName"));
+        assert_eq!(lt.limit_key.as_deref(), Some("Limit"));
+        assert_eq!(lt.result_key.0, vec!["TableNames".to_string()]);
+
+        let scan = &p.pagination["Scan"];
+        // A multi-field result_key has no single value.
+        assert_eq!(scan.result_key.single(), None);
+        assert_eq!(
+            scan.result_key.0,
+            vec!["Items".to_string(), "Count".to_string()]
+        );
+        // Deterministic ordering of paginated op names.
+        assert_eq!(p.sorted_operation_names(), vec!["ListTables", "Scan"]);
+    }
+
+    #[test]
+    fn absent_paginators_is_empty() {
+        let p = Paginators::default();
+        assert!(p.pagination.is_empty());
+        assert!(p.sorted_operation_names().is_empty());
     }
 }

@@ -12,9 +12,20 @@ fn dynamodb_model() -> String {
     std::fs::read_to_string(&p).unwrap_or_else(|e| panic!("reading {}: {e}", p.display()))
 }
 
+fn dynamodb_paginators() -> String {
+    let p = repo_root().join("models/dynamodb/2012-08-10/paginators-1.json");
+    std::fs::read_to_string(&p).unwrap_or_else(|e| panic!("reading {}: {e}", p.display()))
+}
+
+/// Generate the checked-in DynamoDB client (model + pinned paginators sidecar).
+fn generate_dynamodb() -> (String, aws_codegen::Coverage) {
+    aws_codegen::generate_from_json_with_paginators(&dynamodb_model(), Some(&dynamodb_paginators()))
+        .unwrap()
+}
+
 #[test]
 fn checked_in_dynamodb_output_is_current() {
-    let (src, _cov) = aws_codegen::generate_from_json(&dynamodb_model()).unwrap();
+    let (src, _cov) = generate_dynamodb();
     let checked = repo_root().join("generated/dynamodb/dynamodb.zap");
     let on_disk = std::fs::read_to_string(&checked)
         .unwrap_or_else(|e| panic!("reading {}: {e}", checked.display()));
@@ -27,7 +38,7 @@ fn checked_in_dynamodb_output_is_current() {
 
 #[test]
 fn dynamodb_coverage_is_substantial() {
-    let (_src, cov) = aws_codegen::generate_from_json(&dynamodb_model()).unwrap();
+    let (_src, cov) = generate_dynamodb();
     // The real model: 53 ops, 234 structures, enums + the error set.
     assert_eq!(cov.operations_total, 53);
     assert!(
@@ -43,17 +54,45 @@ fn dynamodb_coverage_is_substantial() {
     );
     assert!(cov.enums >= 30, "enums: {}", cov.enums);
     assert!(cov.error_variants >= 25, "errors: {}", cov.error_variants);
+    // paginators-1.json lists 5 paginated ops; the 3 List* ops have derivable
+    // string-token input, Query/Scan do not.
+    assert_eq!(cov.paginators, 3, "paginators: {}", cov.paginators);
+    assert_eq!(
+        cov.paginators_skipped, 2,
+        "paginators skipped: {}",
+        cov.paginators_skipped
+    );
 }
 
 #[test]
 fn generation_is_deterministic() {
-    let a = aws_codegen::generate_from_json(&dynamodb_model())
-        .unwrap()
-        .0;
-    let b = aws_codegen::generate_from_json(&dynamodb_model())
-        .unwrap()
-        .0;
+    let a = generate_dynamodb().0;
+    let b = generate_dynamodb().0;
     assert_eq!(a, b);
+}
+
+#[test]
+fn paginator_contract_shape() {
+    let (src, _cov) = generate_dynamodb();
+    // The three List* paginators are emitted as yield-based iterator methods on
+    // the client, threading the model's output_token back into the input_token.
+    assert!(src.contains("def paginate_list_tables(self, ListTablesInput input):"));
+    assert!(src.contains("def paginate_list_backups(self, ListBackupsInput input):"));
+    assert!(
+        src.contains("def paginate_list_tags_of_resource(self, ListTagsOfResourceInput input):")
+    );
+    // ListTables threads LastEvaluatedTableName -> ExclusiveStartTableName and
+    // stops when the output token is absent.
+    assert!(src.contains("auto np = next_page_json(page.body, \"LastEvaluatedTableName\")"));
+    assert!(src.contains("input.ExclusiveStartTableName = Optional.Some(np.token)"));
+    assert!(src.contains("yield page"));
+    assert!(src.contains("if not np.has_more:"));
+    // Query/Scan are paginated in the model but their input is not derivable, so
+    // they are documented as skipped rather than emitted wrong.
+    assert!(!src.contains("def paginate_query("));
+    assert!(!src.contains("def paginate_scan("));
+    assert!(src.contains("Query (input not derivable"));
+    assert!(src.contains("Scan (input not derivable"));
 }
 
 #[test]
