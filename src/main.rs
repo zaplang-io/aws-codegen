@@ -47,7 +47,17 @@ fn run(args: &[String]) -> Result<(), String> {
     })?;
     let json =
         std::fs::read_to_string(&model_path).map_err(|e| format!("reading {model_path}: {e}"))?;
-    let (src, cov) = aws_codegen::generate_from_json(&json)?;
+
+    // Botocore ships pagination metadata in a `paginators-1.json` sidecar next to
+    // the model; pick it up automatically when present.
+    let paginators_path = std::path::Path::new(&model_path).with_file_name("paginators-1.json");
+    let paginators_json = match std::fs::read_to_string(&paginators_path) {
+        Ok(s) => Some(s),
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => None,
+        Err(e) => return Err(format!("reading {}: {e}", paginators_path.display())),
+    };
+    let (src, cov) =
+        aws_codegen::generate_from_json_with_paginators(&json, paginators_json.as_deref())?;
 
     match &out_path {
         Some(p) => std::fs::write(p, &src).map_err(|e| format!("writing {p}: {e}"))?,
@@ -55,7 +65,7 @@ fn run(args: &[String]) -> Result<(), String> {
     }
 
     eprintln!(
-        "aws-codegen: {} operations ({} methods, {} skipped), {} structs ({} derived), {} enums, {} error variants{}",
+        "aws-codegen: {} operations ({} methods, {} skipped), {} structs ({} derived), {} enums, {} error variants, {} paginators ({} skipped){}",
         cov.operations_total,
         cov.operations_methods,
         cov.operations_skipped,
@@ -63,6 +73,8 @@ fn run(args: &[String]) -> Result<(), String> {
         cov.structs_derivable,
         cov.enums,
         cov.error_variants,
+        cov.paginators,
+        cov.paginators_skipped,
         out_path.map(|p| format!(" -> {p}")).unwrap_or_default(),
     );
     Ok(())

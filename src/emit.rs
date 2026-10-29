@@ -6,7 +6,7 @@
 //! struct whose methods build the input shape and dispatch through the
 //! `aws.awsjson` codec, returning ready-to-send signed request text.
 
-use crate::model::{Model, Shape};
+use crate::model::{Model, Paginators, Shape};
 use crate::naming::{escape_ident, snake_case};
 use crate::types::{compute_derivable, resolve, ZapType};
 use std::collections::HashMap;
@@ -21,18 +21,26 @@ pub struct Coverage {
     pub structs_derivable: usize,
     pub enums: usize,
     pub error_variants: usize,
+    /// Paginated operations that got a generated `paginate_*` iterator.
+    pub paginators: usize,
+    /// Paginated operations we could not surface (non-derivable input or a
+    /// token that is not a simple string field).
+    pub paginators_skipped: usize,
 }
 
 const IND: &str = "    ";
 
-/// Emit the full Zap client for `model`. Returns the source and a coverage summary.
-pub fn generate(model: &Model) -> (String, Coverage) {
-    let g = Generator::new(model);
+/// Emit the full Zap client for `model`, driving paginators off `paginators`
+/// (pass `&Paginators::default()` for none). Returns the source and a coverage
+/// summary.
+pub fn generate(model: &Model, paginators: &Paginators) -> (String, Coverage) {
+    let g = Generator::new(model, paginators);
     g.run()
 }
 
 struct Generator<'a> {
     model: &'a Model,
+    paginators: &'a Paginators,
     derivable: HashMap<String, bool>,
     /// Type-name prefix for client/error (serviceId, else PascalCase prefix).
     type_prefix: String,
@@ -41,7 +49,7 @@ struct Generator<'a> {
 }
 
 impl<'a> Generator<'a> {
-    fn new(model: &'a Model) -> Self {
+    fn new(model: &'a Model, paginators: &'a Paginators) -> Self {
         let md = &model.metadata;
         let type_prefix = if !md.service_id.is_empty() {
             escape_ident(&md.service_id).0
@@ -55,6 +63,7 @@ impl<'a> Generator<'a> {
         });
         Generator {
             model,
+            paginators,
             derivable: compute_derivable(model),
             type_prefix,
             fn_prefix,
@@ -125,6 +134,10 @@ impl<'a> Generator<'a> {
         );
         h.push_str("# no `import` yet). Each operation returns ready-to-send, SigV4-signed\n");
         h.push_str("# HTTP/1.1 request text, matching the hand-written aws.dynamodb client.\n");
+        h.push_str("# Paginators additionally use the live transport (aws.core `send` /\n");
+        h.push_str(
+            "# `regional_host` / `next_page_json`) to walk pages and yield each Response.\n",
+        );
         h.push_str("#\n");
         h.push_str(&format!(
             "# Coverage (v0, awsJson only): {} operations — {} with a generated method,\n",
@@ -137,6 +150,10 @@ impl<'a> Generator<'a> {
         h.push_str(&format!(
             "#   {} structs ({} @derive(Json)), {} enums, {} error variants.\n",
             cov.structs_total, cov.structs_derivable, cov.enums, cov.error_variants
+        ));
+        h.push_str(&format!(
+            "#   {} paginators generated ({} paginated ops skipped) from paginators-1.json.\n",
+            cov.paginators, cov.paginators_skipped
         ));
         h.push_str("# @derive(Json) is attached to structs whose members are all derive-\n");
         h.push_str("# serializable; structs containing list/map members are emitted plain,\n");
@@ -416,6 +433,8 @@ impl<'a> Generator<'a> {
             }
         }
 
+        let (paginator_methods, paginators_skipped) = self.paginator_methods(cov);
+
         let mut out = String::new();
         if !skipped.is_empty() {
             out.push_str(
@@ -429,13 +448,25 @@ impl<'a> Generator<'a> {
             }
             out.push('\n');
         }
+        if !paginators_skipped.is_empty() {
+            out.push_str(
+                "# Paginated operations (paginators-1.json) not surfaced in v0 — their input\n",
+            );
+            out.push_str(
+                "# is skipped above, or the continuation token is not a simple string field:\n",
+            );
+            for s in &paginators_skipped {
+                out.push_str(&format!("#   {s}\n"));
+            }
+            out.push('\n');
+        }
         out.push_str(&format!(
             "# A bound {} client: credentials + region, threaded into every operation.\n",
             self.type_prefix
         ));
         out.push_str(&format!("struct {client_name}:\n"));
         out.push_str(&format!("{IND}Credentials creds\n{IND}str region\n"));
-        if methods.is_empty() {
+        if methods.is_empty() && paginator_methods.is_empty() {
             // Defensive: keep the struct valid if nothing was derivable.
             out.push_str(&format!(
                 "\n{IND}# no derivable-input operations were generated for this service in v0\n"
@@ -443,6 +474,7 @@ impl<'a> Generator<'a> {
         } else {
             out.push('\n');
             out.push_str(&methods);
+            out.push_str(&paginator_methods);
         }
 
         out.push_str(&format!(
@@ -457,6 +489,160 @@ impl<'a> Generator<'a> {
             "{IND}{IND}return awsjson_request_now({}_protocol(), self.creds, self.region, \"{op_name}\", body)\n",
             self.fn_prefix
         )
+    }
+
+    // --- paginators --------------------------------------------------------
+
+    /// Emit a `paginate_*` iterator method for every paginated operation we can
+    /// surface, plus the list of paginated ops we skipped (with the reason).
+    ///
+    /// A paginator is generated only when the operation already has a generated
+    /// method (derivable, non-empty input — so `input.to_json()` exists) and its
+    /// `input_token`/`output_token` are each a single field whose input side is a
+    /// `str` member of the input shape. That rules out DynamoDB's `Query`/`Scan`
+    /// (non-derivable `AttributeValue`-map input; `ExclusiveStartKey` is a map,
+    /// not a string) while surfacing the `List*` listings.
+    fn paginator_methods(&self, cov: &mut Coverage) -> (String, Vec<String>) {
+        let mut methods = String::new();
+        let mut skipped: Vec<String> = Vec::new();
+
+        for op_name in self.paginators.sorted_operation_names() {
+            let pag = &self.paginators.pagination[op_name];
+            match self.plan_paginator(op_name, pag) {
+                Ok(plan) => {
+                    methods.push_str(&plan.emit(&self.fn_prefix));
+                    methods.push('\n');
+                    cov.paginators += 1;
+                }
+                Err(reason) => {
+                    skipped.push(format!("{op_name} ({reason})"));
+                    cov.paginators_skipped += 1;
+                }
+            }
+        }
+        (methods, skipped)
+    }
+
+    /// Decide whether `op_name` can get a paginator, returning the emission plan
+    /// or a short reason it was skipped.
+    fn plan_paginator(
+        &self,
+        op_name: &str,
+        pag: &crate::model::Paginator,
+    ) -> Result<PaginatorPlan, String> {
+        let op = self
+            .model
+            .operations
+            .get(op_name)
+            .ok_or("not in service-2.json")?;
+
+        let input_shape = op.input.as_ref().map(|r| r.shape.as_str());
+        let input_struct = input_shape.and_then(|s| {
+            self.model
+                .shape(s)
+                .filter(|sh| sh.is_structure())
+                .map(|sh| (s, sh))
+        });
+        let (input_name, input_sh) = match input_struct {
+            Some((n, sh)) if !sh.members.is_empty() && self.is_derivable(n) => (n, sh),
+            _ => return Err("input not derivable (no generated method)".to_string()),
+        };
+
+        let input_token = pag
+            .input_token
+            .single()
+            .ok_or("input_token is not a single field")?;
+        let output_token = pag
+            .output_token
+            .single()
+            .ok_or("output_token is not a single field")?;
+
+        // The continuation token must be a string member of the input shape so we
+        // can carry it on the next request.
+        let member = input_sh
+            .members
+            .get(input_token)
+            .ok_or_else(|| format!("input_token {input_token} is not a member of the input"))?;
+        if resolve(self.model, &member.shape) != ZapType::Str {
+            return Err(format!("input_token {input_token} is not a string field"));
+        }
+        let token_field = escape_ident(input_token).0;
+        let token_optional = !input_sh.required.contains(&input_token.to_string());
+
+        Ok(PaginatorPlan {
+            op_name: op_name.to_string(),
+            method: format!("paginate_{}", snake_case(op_name)),
+            input_type: escape_ident(input_name).0,
+            token_field,
+            token_optional,
+            output_token: output_token.to_string(),
+            result_keys: pag.result_key.0.clone(),
+        })
+    }
+}
+
+/// A ready-to-emit paginator for one operation.
+struct PaginatorPlan {
+    op_name: String,
+    method: String,
+    input_type: String,
+    /// The emitted input field that carries the continuation token.
+    token_field: String,
+    /// Whether that field is `Optional[str]` (vs a bare required `str`).
+    token_optional: bool,
+    /// The response body field holding the next token (wire name, read verbatim).
+    output_token: String,
+    /// Result key(s) the page's items live under — documentation only in v0.
+    result_keys: Vec<String>,
+}
+
+impl PaginatorPlan {
+    fn emit(&self, fn_prefix: &str) -> String {
+        let result_doc = if self.result_keys.is_empty() {
+            String::new()
+        } else {
+            format!(" (result key: {})", self.result_keys.join(", "))
+        };
+        let carry = if self.token_optional {
+            "Optional.Some(np.token)".to_string()
+        } else {
+            "np.token".to_string()
+        };
+        let mut out = String::new();
+        out.push_str(&format!(
+            "{IND}# Paginator for {} — yields each Response page, threading the\n",
+            self.op_name
+        ));
+        out.push_str(&format!(
+            "{IND}# {} -> {} continuation token until the output token is absent{}.\n",
+            self.output_token, self.token_field, result_doc
+        ));
+        out.push_str(&format!(
+            "{IND}def {}(self, {} input):\n",
+            self.method, self.input_type
+        ));
+        out.push_str(&format!(
+            "{IND}{IND}auto host = regional_host({fn_prefix}_protocol().service, self.region)\n"
+        ));
+        out.push_str(&format!("{IND}{IND}while True:\n"));
+        out.push_str(&format!("{IND}{IND}{IND}auto body = input.to_json()\n"));
+        out.push_str(&format!(
+            "{IND}{IND}{IND}auto raw = awsjson_request_now({fn_prefix}_protocol(), self.creds, self.region, \"{}\", body)\n",
+            self.op_name
+        ));
+        out.push_str(&format!("{IND}{IND}{IND}auto page = send(host, raw)\n"));
+        out.push_str(&format!("{IND}{IND}{IND}yield page\n"));
+        out.push_str(&format!(
+            "{IND}{IND}{IND}auto np = next_page_json(page.body, \"{}\")\n",
+            self.output_token
+        ));
+        out.push_str(&format!("{IND}{IND}{IND}if not np.has_more:\n"));
+        out.push_str(&format!("{IND}{IND}{IND}{IND}break\n"));
+        out.push_str(&format!(
+            "{IND}{IND}{IND}input.{} = {carry}\n",
+            self.token_field
+        ));
+        out
     }
 }
 

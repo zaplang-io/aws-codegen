@@ -33,6 +33,16 @@ Given a `service-2.json`, the generator emits one Zap file containing:
   one method per operation that builds the input shape and dispatches through the
   `aws.awsjson` codec — the same shape as the hand-written `aws.dynamodb` client.
   Each method returns ready-to-send, SigV4-signed HTTP/1.1 request text.
+- **Paginators** ([zaplang-io/zap#349](https://github.com/zaplang-io/zap/issues/349)),
+  driven by the botocore `paginators-1.json` sidecar. For each paginated operation
+  whose input is derivable and whose `input_token`/`output_token` are simple string
+  fields, the generator emits a `paginate_<op>(self, <Input>)` **yield-based
+  iterator** method: it signs + `send`s each page, `yield`s the `Response`, reads
+  the next token with `next_page_json(page.body, "<output_token>")`, threads it
+  back into the input's `<input_token>`, and stops when the token is absent.
+  Consume it with `for page in client.paginate_list_tables(input):`. Paginated ops
+  with a non-derivable input or a non-string token (DynamoDB `Query`/`Scan`, whose
+  `ExclusiveStartKey` is an `AttributeValue` map) are documented as skipped.
 
 ### The derive-collection gap
 
@@ -72,7 +82,7 @@ cargo run --release -- path/to/service-2.json
 
 ```
 src/            the generator (model parse, type resolution, emission)
-models/         pinned botocore service-2.json fixtures (docs stripped)
+models/         pinned botocore service-2.json + paginators-1.json fixtures
 generated/      checked-in generated Zap (regenerated + diffed in CI)
 vendor/         pinned aws-core runtime for the compile gate (see vendor/README)
 scripts/        compile_check.sh — best-effort bundle + run under the Zap image

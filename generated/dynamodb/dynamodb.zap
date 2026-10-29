@@ -9,10 +9,13 @@
 # Depends on aws.core + aws.awsjson (bundle them ahead of this file; there is
 # no `import` yet). Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
+# Paginators additionally use the live transport (aws.core `send` /
+# `regional_host` / `next_page_json`) to walk pages and yield each Response.
 #
 # Coverage (v0, awsJson only): 53 operations — 29 with a generated method,
 #   24 skipped (input uses collections not yet serializable by derive).
 #   234 structs (114 @derive(Json)), 36 enums, 31 error variants.
+#   3 paginators generated (2 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs containing list/map members are emitted plain,
 # pending derive collection support (zaplang-io/zap#346 follow-up).
@@ -2060,6 +2063,11 @@ def dynamodb_error_from_code(str code) -> DynamoDBError:
 #   UpdateTable (input UpdateTableInput)
 #   UpdateTableReplicaAutoScaling (input UpdateTableReplicaAutoScalingInput)
 
+# Paginated operations (paginators-1.json) not surfaced in v0 — their input
+# is skipped above, or the continuation token is not a simple string field:
+#   Query (input not derivable (no generated method))
+#   Scan (input not derivable (no generated method))
+
 # A bound DynamoDB client: credentials + region, threaded into every operation.
 struct DynamoDBClient:
     Credentials creds
@@ -2237,6 +2245,48 @@ struct DynamoDBClient:
     def update_time_to_live(self, UpdateTimeToLiveInput input) -> str:
         auto body = input.to_json()
         return awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "UpdateTimeToLive", body)
+
+    # Paginator for ListBackups — yields each Response page, threading the
+    # LastEvaluatedBackupArn -> ExclusiveStartBackupArn continuation token until the output token is absent (result key: BackupSummaries).
+    def paginate_list_backups(self, ListBackupsInput input):
+        auto host = regional_host(dynamodb_protocol().service, self.region)
+        while True:
+            auto body = input.to_json()
+            auto raw = awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "ListBackups", body)
+            auto page = send(host, raw)
+            yield page
+            auto np = next_page_json(page.body, "LastEvaluatedBackupArn")
+            if not np.has_more:
+                break
+            input.ExclusiveStartBackupArn = Optional.Some(np.token)
+
+    # Paginator for ListTables — yields each Response page, threading the
+    # LastEvaluatedTableName -> ExclusiveStartTableName continuation token until the output token is absent (result key: TableNames).
+    def paginate_list_tables(self, ListTablesInput input):
+        auto host = regional_host(dynamodb_protocol().service, self.region)
+        while True:
+            auto body = input.to_json()
+            auto raw = awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "ListTables", body)
+            auto page = send(host, raw)
+            yield page
+            auto np = next_page_json(page.body, "LastEvaluatedTableName")
+            if not np.has_more:
+                break
+            input.ExclusiveStartTableName = Optional.Some(np.token)
+
+    # Paginator for ListTagsOfResource — yields each Response page, threading the
+    # NextToken -> NextToken continuation token until the output token is absent (result key: Tags).
+    def paginate_list_tags_of_resource(self, ListTagsOfResourceInput input):
+        auto host = regional_host(dynamodb_protocol().service, self.region)
+        while True:
+            auto body = input.to_json()
+            auto raw = awsjson_request_now(dynamodb_protocol(), self.creds, self.region, "ListTagsOfResource", body)
+            auto page = send(host, raw)
+            yield page
+            auto np = next_page_json(page.body, "NextToken")
+            if not np.has_more:
+                break
+            input.NextToken = Optional.Some(np.token)
 
 # Construct a DynamoDBClient bound to credentials + region.
 def dynamodb_client(Credentials creds, str region) -> DynamoDBClient:
