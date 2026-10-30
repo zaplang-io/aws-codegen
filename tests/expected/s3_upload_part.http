@@ -1,0 +1,10 @@
+PUT /my-bucket/photos/2024/my%20object.jpg?partNumber=1&uploadId=abc123XYZ HTTP/1.1
+content-type: application/octet-stream
+host: s3.us-east-1.amazonaws.com
+x-amz-content-sha256: bf5f4ca488ea545d575c7d5bec3cf062ad5825ba2caa58217892336f5e6e22d0
+x-amz-date: 20150830T123600Z
+content-length: 19
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/s3/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=7f798d336766e1b527ead5b88defdfc247b983030ef372f8ecf6e44dbafc2e20
+Connection: close
+
+hello part contents

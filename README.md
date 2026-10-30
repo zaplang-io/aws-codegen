@@ -14,7 +14,7 @@ multiple services; the **rest-json** (restJson1) protocol
 and the XML family — **rest-xml** (CloudFront) and **query**/**ec2** (SimpleDB /
 EC2) ([#354](https://github.com/zaplang-io/aws-codegen/issues/354)), through the
 hand-written `aws.restxml` / `aws.query` codecs. Wiring the output into the `aws`
-package, and the remaining broad-coverage services (S3, SNS/IAM/EC2), are later
+package, and the remaining broad-coverage services (SNS/IAM/EC2), are later
 tickets.
 
 **Generated clients are the product.** The generated clients are the shipping
@@ -39,6 +39,7 @@ regenerates each from its pinned model and fails on any drift.
 | **SimpleDB** | **query** | `models/sdb/2009-04-15/` | `generated/sdb/sdb.zap` | The **query** (awsQuery) proof (#354): flat form-urlencoded bodies via the `aws.query` codec; `GetAttributes` (scalars + a flattened list + a boolean) byte-diffed. |
 | **EC2** | **ec2** | `models/ec2/2014-09-01/` | `generated/ec2/ec2.zap` | The **ec2** variant proof (#354): Capitalized keys + always-flattened lists; `MonitorInstances` byte-diffed. A deliberately small/old pin — EC2 productionization is a later ticket. |
 | **STS** | **query** | `models/sts/2011-06-15/` | `generated/sts/sts.zap` | First service under the **generated-is-product** policy ([#355](https://github.com/zaplang-io/aws-codegen/issues/355); DECISIONS.md D-0001) — no hand-written client. `query` protocol; `AssumeRole` (scalars + an int) and `GetCallerIdentity` (empty input) byte-diffed against the `aws.query` oracle. Unblocks the assume-role / SSO / web-identity credential providers. |
+| **S3** | **rest-xml** | `models/s3/2006-03-01/` | `generated/s3/s3.zap` | Under the **generated-is-product** policy ([#356](https://github.com/zaplang-io/aws-codegen/issues/356); D-0001) — the hand-written `aws.s3` retires in a follow-up `aws` PR. 116 ops → 73 methods; the **S3 binding variant** (canonical URI verbatim — S3 disables path normalization — + greedy `{Key+}` object keys, path-style regional host). `HeadBucket` / `ListBuckets` / `ListParts` / `UploadPart` (bucket op, listing, object GET, object PUT with a raw body) byte-diffed against the `aws.binding` oracle. **v0 limitations (follow-ups):** `GetObject` / `PutObject` / `ListObjectsV2` / `CreateBucket` are skipped (DateTime / bool header + query bindings, optional httpPayload structs); and S3's sub-resource markers (`?tagging`, `?versioning`, …) are left in the URI path rather than hoisted into the signed query, so those 67 methods are generated but **not yet byte-diff-verified** — a pre-existing binding-emitter gap (also latent in Lambda) that S3 is the first to exercise widely. |
 
 The awsJson services span both wire versions (1.0 and 1.1) and three protocol
 prefixes; Lambda adds the REST binding path; CloudFront/SimpleDB/EC2 add the XML

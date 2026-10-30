@@ -24,6 +24,10 @@ Coverage (the inputs are chosen to exercise each serialization trait):
     (GetSessionToken); STS is the first generated-is-product service (#355).
   * ec2 (EC2) — the ec2 key variant: Capitalized keys + an always-flattened list
     (MonitorInstances).
+  * rest-xml (S3) — the S3 binding variant (canonical URI verbatim, no second
+    quote_path pass; greedy {Key+} object keys): a bucket op (HeadBucket), a
+    service listing (ListBuckets), an object GET (ListParts) and an object PUT
+    with a raw body (UploadPart). S3 is the #356 generated-is-product service.
 
 This is a third, independent implementation of the serialize + SigV4 algorithm
 (besides `aws.restxml`/`aws.query` and the Rust reconstruction in
@@ -144,6 +148,50 @@ def binding_sign(service, host, method, path_template, labels, query, body, cont
     names = ";".join(sorted(signed))
     creq = f"{method}\n{canon_uri}\n{canon_q}\n{canon_headers}\n{names}\n{sha(body)}"
     return assemble(service, method, wire_path, canon_q, signed, names, creq, body)
+
+
+def s3_expand_path(template, labels, greedy):
+    """aws.binding.expand_path: {Name} is a non-greedy label (encodes "/"),
+    {Name+} is a greedy label (keeps "/", e.g. an S3 object key)."""
+    out, i, n = "", 0, len(template)
+    while i < n:
+        if template[i] == "{":
+            close = template.find("}", i)
+            token = template[i + 1:close]
+            if token.endswith("+"):
+                out += uri_encode(greedy.get(token[:-1], ""), True)
+            else:
+                out += uri_encode(labels.get(token, ""), False)
+            i = close + 1
+        else:
+            out += template[i]
+            i += 1
+    return out
+
+
+def s3_binding_sign(method, path_template, labels, greedy, query, headers, body, content_type):
+    """aws.binding.binding_sign for the S3 service. S3 disables path
+    normalization, so `canonical_uri_encoded` returns the already-wire-encoded
+    path VERBATIM — no second quote_path pass (unlike the non-S3 services). The
+    host is the path-style regional endpoint (s3.<region>.amazonaws.com), greedy
+    {Key+} labels keep "/", and member headers are signed alongside the transport
+    headers. Used by the generated rest-xml S3 client (via rest_xml_sign)."""
+    wire_path = s3_expand_path(path_template, labels, greedy)
+    signed = {
+        "host": regional_host("s3"),
+        "x-amz-date": AMZ,
+        "x-amz-content-sha256": sha(body),
+    }
+    for name, value in headers.items():
+        signed[name.lower()] = value
+    if content_type:
+        signed["content-type"] = content_type
+    canon_uri = wire_path  # S3: the wire path verbatim, no extra encode pass.
+    canon_q = canonical_query(query)
+    canon_headers = "".join(f"{n}:{signed[n].strip()}\n" for n in sorted(signed))
+    names = ";".join(sorted(signed))
+    creq = f"{method}\n{canon_uri}\n{canon_q}\n{canon_headers}\n{names}\n{sha(body)}"
+    return assemble("s3", method, wire_path, canon_q, signed, names, creq, body)
 
 
 def query_sign(service, host, body):
@@ -276,6 +324,53 @@ def sts_get_session_token():
     return query_sign("sts", regional_host("sts"), body)
 
 
+# --- S3 (rest-xml, the generated-is-product service #356) ---------------------
+#
+# The four pinned S3 operations the generator emits *correctly* end to end under
+# the v0 rest-xml emitter — a bucket op, a service-level listing, an object GET
+# and an object PUT with a raw body — each signed by the S3 binding variant. They
+# stand in for the ticket's named ops (GetObject / PutObject / ListObjectsV2 /
+# CreateBucket), which the v0 emitter skips (DateTime / bool header + query
+# bindings, optional httpPayload structs — see the generated file's skip block).
+# The `{Key+}` object key carries a space and "/"s to exercise greedy-label
+# encoding (keep "/", space -> %20), the S3-key case the hand-written aws.s3
+# reference calls out (zaplang-io/zap#335).
+
+S3_BUCKET = "my-bucket"
+S3_KEY = "photos/2024/my object.jpg"
+S3_UPLOAD_ID = "abc123XYZ"
+
+
+def s3_head_bucket():
+    # HEAD /{Bucket} — a bucket op: no query, no body, no member headers.
+    return s3_binding_sign(
+        "HEAD", "/{Bucket}", {"Bucket": S3_BUCKET}, {}, {}, {}, "", "")
+
+
+def s3_list_buckets():
+    # GET / — a service-level listing; httpQuery scalars (sorted canonically).
+    return s3_binding_sign(
+        "GET", "/", {}, {},
+        {"max-buckets": "100", "prefix": "team-"}, {}, "", "")
+
+
+def s3_list_parts():
+    # GET /{Bucket}/{Key+} — an object GET: greedy key + httpQuery (an int and a
+    # required string).
+    return s3_binding_sign(
+        "GET", "/{Bucket}/{Key+}", {"Bucket": S3_BUCKET}, {"Key": S3_KEY},
+        {"uploadId": S3_UPLOAD_ID, "max-parts": "50"}, {}, "", "")
+
+
+def s3_upload_part():
+    # PUT /{Bucket}/{Key+} — an object PUT: greedy key + httpQuery + a raw
+    # httpPayload body (application/octet-stream), the PutObject-shaped case.
+    return s3_binding_sign(
+        "PUT", "/{Bucket}/{Key+}", {"Bucket": S3_BUCKET}, {"Key": S3_KEY},
+        {"partNumber": "1", "uploadId": S3_UPLOAD_ID},
+        {}, "hello part contents", "application/octet-stream")
+
+
 FIXTURES = {
     "cloudfront_create_invalidation": cf_create_invalidation,
     "cloudfront_create_oai": cf_create_oai,
@@ -284,6 +379,10 @@ FIXTURES = {
     "ec2_monitor_instances": ec2_monitor_instances,
     "sts_get_caller_identity": sts_get_caller_identity,
     "sts_get_session_token": sts_get_session_token,
+    "s3_head_bucket": s3_head_bucket,
+    "s3_list_buckets": s3_list_buckets,
+    "s3_list_parts": s3_list_parts,
+    "s3_upload_part": s3_upload_part,
 }
 
 
