@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix OvertureService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -1514,9 +1516,16 @@ struct VirtualInterfaces:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by directconnect_error_from_code.
-enum Direct_ConnectError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Direct_ConnectErrorKind:
     DirectConnectClientException
     DirectConnectServerException
     DuplicateTagKeysException
@@ -1524,19 +1533,43 @@ enum Direct_ConnectError:
     TooManyTagsException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def directconnect_error_from_code(str code) -> Direct_ConnectError:
-    if code == "DirectConnectClientException":
-        return Direct_ConnectError.DirectConnectClientException
-    if code == "DirectConnectServerException":
-        return Direct_ConnectError.DirectConnectServerException
-    if code == "DuplicateTagKeysException":
-        return Direct_ConnectError.DuplicateTagKeysException
-    if code == "LimitExceededException":
-        return Direct_ConnectError.LimitExceededException
-    if code == "TooManyTagsException":
-        return Direct_ConnectError.TooManyTagsException
-    return Direct_ConnectError.Unknown(code=code)
+# Classify an AWS error code into `Direct_ConnectErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def directconnect_error_kind(str code) -> Direct_ConnectErrorKind:
+    auto name = errors.error_code(code)
+    if name == "DirectConnectClientException":
+        return Direct_ConnectErrorKind.DirectConnectClientException
+    if name == "DirectConnectServerException":
+        return Direct_ConnectErrorKind.DirectConnectServerException
+    if name == "DuplicateTagKeysException":
+        return Direct_ConnectErrorKind.DuplicateTagKeysException
+    if name == "LimitExceededException":
+        return Direct_ConnectErrorKind.LimitExceededException
+    if name == "TooManyTagsException":
+        return Direct_ConnectErrorKind.TooManyTagsException
+    return Direct_ConnectErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def directconnect_error_name(Direct_ConnectErrorKind k) -> str:
+    match k:
+        case Direct_ConnectErrorKind.DirectConnectClientException:
+            return "DirectConnectClientException"
+        case Direct_ConnectErrorKind.DirectConnectServerException:
+            return "DirectConnectServerException"
+        case Direct_ConnectErrorKind.DuplicateTagKeysException:
+            return "DuplicateTagKeysException"
+        case Direct_ConnectErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case Direct_ConnectErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case Direct_ConnectErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

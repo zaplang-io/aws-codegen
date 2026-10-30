@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix TrentService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import base64
@@ -1395,9 +1397,16 @@ struct XksProxyVpcEndpointServiceNotFoundException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by kms_error_from_code.
-enum KMSError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum KMSErrorKind:
     AlreadyExistsException
     CloudHsmClusterInUseException
     CloudHsmClusterInvalidConfigurationException
@@ -1448,105 +1457,215 @@ enum KMSError:
     XksProxyVpcEndpointServiceNotFoundException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def kms_error_from_code(str code) -> KMSError:
-    if code == "AlreadyExistsException":
-        return KMSError.AlreadyExistsException
-    if code == "CloudHsmClusterInUseException":
-        return KMSError.CloudHsmClusterInUseException
-    if code == "CloudHsmClusterInvalidConfigurationException":
-        return KMSError.CloudHsmClusterInvalidConfigurationException
-    if code == "CloudHsmClusterNotActiveException":
-        return KMSError.CloudHsmClusterNotActiveException
-    if code == "CloudHsmClusterNotFoundException":
-        return KMSError.CloudHsmClusterNotFoundException
-    if code == "CloudHsmClusterNotRelatedException":
-        return KMSError.CloudHsmClusterNotRelatedException
-    if code == "ConflictException":
-        return KMSError.ConflictException
-    if code == "CustomKeyStoreHasCMKsException":
-        return KMSError.CustomKeyStoreHasCMKsException
-    if code == "CustomKeyStoreInvalidStateException":
-        return KMSError.CustomKeyStoreInvalidStateException
-    if code == "CustomKeyStoreNameInUseException":
-        return KMSError.CustomKeyStoreNameInUseException
-    if code == "CustomKeyStoreNotFoundException":
-        return KMSError.CustomKeyStoreNotFoundException
-    if code == "DependencyTimeoutException":
-        return KMSError.DependencyTimeoutException
-    if code == "DisabledException":
-        return KMSError.DisabledException
-    if code == "DryRunOperationException":
-        return KMSError.DryRunOperationException
-    if code == "ExpiredImportTokenException":
-        return KMSError.ExpiredImportTokenException
-    if code == "IncorrectKeyException":
-        return KMSError.IncorrectKeyException
-    if code == "IncorrectKeyMaterialException":
-        return KMSError.IncorrectKeyMaterialException
-    if code == "IncorrectTrustAnchorException":
-        return KMSError.IncorrectTrustAnchorException
-    if code == "InvalidAliasNameException":
-        return KMSError.InvalidAliasNameException
-    if code == "InvalidArnException":
-        return KMSError.InvalidArnException
-    if code == "InvalidCiphertextException":
-        return KMSError.InvalidCiphertextException
-    if code == "InvalidGrantIdException":
-        return KMSError.InvalidGrantIdException
-    if code == "InvalidGrantTokenException":
-        return KMSError.InvalidGrantTokenException
-    if code == "InvalidImportTokenException":
-        return KMSError.InvalidImportTokenException
-    if code == "InvalidKeyUsageException":
-        return KMSError.InvalidKeyUsageException
-    if code == "InvalidMarkerException":
-        return KMSError.InvalidMarkerException
-    if code == "KMSInternalException":
-        return KMSError.KMSInternalException
-    if code == "KMSInvalidMacException":
-        return KMSError.KMSInvalidMacException
-    if code == "KMSInvalidSignatureException":
-        return KMSError.KMSInvalidSignatureException
-    if code == "KMSInvalidStateException":
-        return KMSError.KMSInvalidStateException
-    if code == "KeyUnavailableException":
-        return KMSError.KeyUnavailableException
-    if code == "LimitExceededException":
-        return KMSError.LimitExceededException
-    if code == "MalformedPolicyDocumentException":
-        return KMSError.MalformedPolicyDocumentException
-    if code == "NotFoundException":
-        return KMSError.NotFoundException
-    if code == "TagException":
-        return KMSError.TagException
-    if code == "UnsupportedOperationException":
-        return KMSError.UnsupportedOperationException
-    if code == "XksKeyAlreadyInUseException":
-        return KMSError.XksKeyAlreadyInUseException
-    if code == "XksKeyInvalidConfigurationException":
-        return KMSError.XksKeyInvalidConfigurationException
-    if code == "XksKeyNotFoundException":
-        return KMSError.XksKeyNotFoundException
-    if code == "XksProxyIncorrectAuthenticationCredentialException":
-        return KMSError.XksProxyIncorrectAuthenticationCredentialException
-    if code == "XksProxyInvalidConfigurationException":
-        return KMSError.XksProxyInvalidConfigurationException
-    if code == "XksProxyInvalidResponseException":
-        return KMSError.XksProxyInvalidResponseException
-    if code == "XksProxyUriEndpointInUseException":
-        return KMSError.XksProxyUriEndpointInUseException
-    if code == "XksProxyUriInUseException":
-        return KMSError.XksProxyUriInUseException
-    if code == "XksProxyUriUnreachableException":
-        return KMSError.XksProxyUriUnreachableException
-    if code == "XksProxyVpcEndpointServiceInUseException":
-        return KMSError.XksProxyVpcEndpointServiceInUseException
-    if code == "XksProxyVpcEndpointServiceInvalidConfigurationException":
-        return KMSError.XksProxyVpcEndpointServiceInvalidConfigurationException
-    if code == "XksProxyVpcEndpointServiceNotFoundException":
-        return KMSError.XksProxyVpcEndpointServiceNotFoundException
-    return KMSError.Unknown(code=code)
+# Classify an AWS error code into `KMSErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def kms_error_kind(str code) -> KMSErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AlreadyExistsException":
+        return KMSErrorKind.AlreadyExistsException
+    if name == "CloudHsmClusterInUseException":
+        return KMSErrorKind.CloudHsmClusterInUseException
+    if name == "CloudHsmClusterInvalidConfigurationException":
+        return KMSErrorKind.CloudHsmClusterInvalidConfigurationException
+    if name == "CloudHsmClusterNotActiveException":
+        return KMSErrorKind.CloudHsmClusterNotActiveException
+    if name == "CloudHsmClusterNotFoundException":
+        return KMSErrorKind.CloudHsmClusterNotFoundException
+    if name == "CloudHsmClusterNotRelatedException":
+        return KMSErrorKind.CloudHsmClusterNotRelatedException
+    if name == "ConflictException":
+        return KMSErrorKind.ConflictException
+    if name == "CustomKeyStoreHasCMKsException":
+        return KMSErrorKind.CustomKeyStoreHasCMKsException
+    if name == "CustomKeyStoreInvalidStateException":
+        return KMSErrorKind.CustomKeyStoreInvalidStateException
+    if name == "CustomKeyStoreNameInUseException":
+        return KMSErrorKind.CustomKeyStoreNameInUseException
+    if name == "CustomKeyStoreNotFoundException":
+        return KMSErrorKind.CustomKeyStoreNotFoundException
+    if name == "DependencyTimeoutException":
+        return KMSErrorKind.DependencyTimeoutException
+    if name == "DisabledException":
+        return KMSErrorKind.DisabledException
+    if name == "DryRunOperationException":
+        return KMSErrorKind.DryRunOperationException
+    if name == "ExpiredImportTokenException":
+        return KMSErrorKind.ExpiredImportTokenException
+    if name == "IncorrectKeyException":
+        return KMSErrorKind.IncorrectKeyException
+    if name == "IncorrectKeyMaterialException":
+        return KMSErrorKind.IncorrectKeyMaterialException
+    if name == "IncorrectTrustAnchorException":
+        return KMSErrorKind.IncorrectTrustAnchorException
+    if name == "InvalidAliasNameException":
+        return KMSErrorKind.InvalidAliasNameException
+    if name == "InvalidArnException":
+        return KMSErrorKind.InvalidArnException
+    if name == "InvalidCiphertextException":
+        return KMSErrorKind.InvalidCiphertextException
+    if name == "InvalidGrantIdException":
+        return KMSErrorKind.InvalidGrantIdException
+    if name == "InvalidGrantTokenException":
+        return KMSErrorKind.InvalidGrantTokenException
+    if name == "InvalidImportTokenException":
+        return KMSErrorKind.InvalidImportTokenException
+    if name == "InvalidKeyUsageException":
+        return KMSErrorKind.InvalidKeyUsageException
+    if name == "InvalidMarkerException":
+        return KMSErrorKind.InvalidMarkerException
+    if name == "KMSInternalException":
+        return KMSErrorKind.KMSInternalException
+    if name == "KMSInvalidMacException":
+        return KMSErrorKind.KMSInvalidMacException
+    if name == "KMSInvalidSignatureException":
+        return KMSErrorKind.KMSInvalidSignatureException
+    if name == "KMSInvalidStateException":
+        return KMSErrorKind.KMSInvalidStateException
+    if name == "KeyUnavailableException":
+        return KMSErrorKind.KeyUnavailableException
+    if name == "LimitExceededException":
+        return KMSErrorKind.LimitExceededException
+    if name == "MalformedPolicyDocumentException":
+        return KMSErrorKind.MalformedPolicyDocumentException
+    if name == "NotFoundException":
+        return KMSErrorKind.NotFoundException
+    if name == "TagException":
+        return KMSErrorKind.TagException
+    if name == "UnsupportedOperationException":
+        return KMSErrorKind.UnsupportedOperationException
+    if name == "XksKeyAlreadyInUseException":
+        return KMSErrorKind.XksKeyAlreadyInUseException
+    if name == "XksKeyInvalidConfigurationException":
+        return KMSErrorKind.XksKeyInvalidConfigurationException
+    if name == "XksKeyNotFoundException":
+        return KMSErrorKind.XksKeyNotFoundException
+    if name == "XksProxyIncorrectAuthenticationCredentialException":
+        return KMSErrorKind.XksProxyIncorrectAuthenticationCredentialException
+    if name == "XksProxyInvalidConfigurationException":
+        return KMSErrorKind.XksProxyInvalidConfigurationException
+    if name == "XksProxyInvalidResponseException":
+        return KMSErrorKind.XksProxyInvalidResponseException
+    if name == "XksProxyUriEndpointInUseException":
+        return KMSErrorKind.XksProxyUriEndpointInUseException
+    if name == "XksProxyUriInUseException":
+        return KMSErrorKind.XksProxyUriInUseException
+    if name == "XksProxyUriUnreachableException":
+        return KMSErrorKind.XksProxyUriUnreachableException
+    if name == "XksProxyVpcEndpointServiceInUseException":
+        return KMSErrorKind.XksProxyVpcEndpointServiceInUseException
+    if name == "XksProxyVpcEndpointServiceInvalidConfigurationException":
+        return KMSErrorKind.XksProxyVpcEndpointServiceInvalidConfigurationException
+    if name == "XksProxyVpcEndpointServiceNotFoundException":
+        return KMSErrorKind.XksProxyVpcEndpointServiceNotFoundException
+    return KMSErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def kms_error_name(KMSErrorKind k) -> str:
+    match k:
+        case KMSErrorKind.AlreadyExistsException:
+            return "AlreadyExistsException"
+        case KMSErrorKind.CloudHsmClusterInUseException:
+            return "CloudHsmClusterInUseException"
+        case KMSErrorKind.CloudHsmClusterInvalidConfigurationException:
+            return "CloudHsmClusterInvalidConfigurationException"
+        case KMSErrorKind.CloudHsmClusterNotActiveException:
+            return "CloudHsmClusterNotActiveException"
+        case KMSErrorKind.CloudHsmClusterNotFoundException:
+            return "CloudHsmClusterNotFoundException"
+        case KMSErrorKind.CloudHsmClusterNotRelatedException:
+            return "CloudHsmClusterNotRelatedException"
+        case KMSErrorKind.ConflictException:
+            return "ConflictException"
+        case KMSErrorKind.CustomKeyStoreHasCMKsException:
+            return "CustomKeyStoreHasCMKsException"
+        case KMSErrorKind.CustomKeyStoreInvalidStateException:
+            return "CustomKeyStoreInvalidStateException"
+        case KMSErrorKind.CustomKeyStoreNameInUseException:
+            return "CustomKeyStoreNameInUseException"
+        case KMSErrorKind.CustomKeyStoreNotFoundException:
+            return "CustomKeyStoreNotFoundException"
+        case KMSErrorKind.DependencyTimeoutException:
+            return "DependencyTimeoutException"
+        case KMSErrorKind.DisabledException:
+            return "DisabledException"
+        case KMSErrorKind.DryRunOperationException:
+            return "DryRunOperationException"
+        case KMSErrorKind.ExpiredImportTokenException:
+            return "ExpiredImportTokenException"
+        case KMSErrorKind.IncorrectKeyException:
+            return "IncorrectKeyException"
+        case KMSErrorKind.IncorrectKeyMaterialException:
+            return "IncorrectKeyMaterialException"
+        case KMSErrorKind.IncorrectTrustAnchorException:
+            return "IncorrectTrustAnchorException"
+        case KMSErrorKind.InvalidAliasNameException:
+            return "InvalidAliasNameException"
+        case KMSErrorKind.InvalidArnException:
+            return "InvalidArnException"
+        case KMSErrorKind.InvalidCiphertextException:
+            return "InvalidCiphertextException"
+        case KMSErrorKind.InvalidGrantIdException:
+            return "InvalidGrantIdException"
+        case KMSErrorKind.InvalidGrantTokenException:
+            return "InvalidGrantTokenException"
+        case KMSErrorKind.InvalidImportTokenException:
+            return "InvalidImportTokenException"
+        case KMSErrorKind.InvalidKeyUsageException:
+            return "InvalidKeyUsageException"
+        case KMSErrorKind.InvalidMarkerException:
+            return "InvalidMarkerException"
+        case KMSErrorKind.KMSInternalException:
+            return "KMSInternalException"
+        case KMSErrorKind.KMSInvalidMacException:
+            return "KMSInvalidMacException"
+        case KMSErrorKind.KMSInvalidSignatureException:
+            return "KMSInvalidSignatureException"
+        case KMSErrorKind.KMSInvalidStateException:
+            return "KMSInvalidStateException"
+        case KMSErrorKind.KeyUnavailableException:
+            return "KeyUnavailableException"
+        case KMSErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case KMSErrorKind.MalformedPolicyDocumentException:
+            return "MalformedPolicyDocumentException"
+        case KMSErrorKind.NotFoundException:
+            return "NotFoundException"
+        case KMSErrorKind.TagException:
+            return "TagException"
+        case KMSErrorKind.UnsupportedOperationException:
+            return "UnsupportedOperationException"
+        case KMSErrorKind.XksKeyAlreadyInUseException:
+            return "XksKeyAlreadyInUseException"
+        case KMSErrorKind.XksKeyInvalidConfigurationException:
+            return "XksKeyInvalidConfigurationException"
+        case KMSErrorKind.XksKeyNotFoundException:
+            return "XksKeyNotFoundException"
+        case KMSErrorKind.XksProxyIncorrectAuthenticationCredentialException:
+            return "XksProxyIncorrectAuthenticationCredentialException"
+        case KMSErrorKind.XksProxyInvalidConfigurationException:
+            return "XksProxyInvalidConfigurationException"
+        case KMSErrorKind.XksProxyInvalidResponseException:
+            return "XksProxyInvalidResponseException"
+        case KMSErrorKind.XksProxyUriEndpointInUseException:
+            return "XksProxyUriEndpointInUseException"
+        case KMSErrorKind.XksProxyUriInUseException:
+            return "XksProxyUriInUseException"
+        case KMSErrorKind.XksProxyUriUnreachableException:
+            return "XksProxyUriUnreachableException"
+        case KMSErrorKind.XksProxyVpcEndpointServiceInUseException:
+            return "XksProxyVpcEndpointServiceInUseException"
+        case KMSErrorKind.XksProxyVpcEndpointServiceInvalidConfigurationException:
+            return "XksProxyVpcEndpointServiceInvalidConfigurationException"
+        case KMSErrorKind.XksProxyVpcEndpointServiceNotFoundException:
+            return "XksProxyVpcEndpointServiceNotFoundException"
+        case KMSErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

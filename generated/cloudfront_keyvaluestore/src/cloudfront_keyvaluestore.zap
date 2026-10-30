@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service cloudfront-keyvaluestore)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -164,9 +165,16 @@ struct ValidationException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by cloudfront_keyvaluestore_error_from_code.
-enum CloudFront_KeyValueStoreError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum CloudFront_KeyValueStoreErrorKind:
     AccessDeniedException
     ConflictException
     InternalServerException
@@ -175,22 +183,47 @@ enum CloudFront_KeyValueStoreError:
     ValidationException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def cloudfront_keyvaluestore_error_from_code(str code) -> CloudFront_KeyValueStoreError:
-    if code == "AccessDeniedException":
-        return CloudFront_KeyValueStoreError.AccessDeniedException
-    if code == "ConflictException":
-        return CloudFront_KeyValueStoreError.ConflictException
-    if code == "InternalServerException":
-        return CloudFront_KeyValueStoreError.InternalServerException
-    if code == "ResourceNotFoundException":
-        return CloudFront_KeyValueStoreError.ResourceNotFoundException
-    if code == "ServiceQuotaExceededException":
-        return CloudFront_KeyValueStoreError.ServiceQuotaExceededException
-    if code == "ValidationException":
-        return CloudFront_KeyValueStoreError.ValidationException
-    return CloudFront_KeyValueStoreError.Unknown(code=code)
+# Classify an AWS error code into `CloudFront_KeyValueStoreErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def cloudfront_keyvaluestore_error_kind(str code) -> CloudFront_KeyValueStoreErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return CloudFront_KeyValueStoreErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return CloudFront_KeyValueStoreErrorKind.ConflictException
+    if name == "InternalServerException":
+        return CloudFront_KeyValueStoreErrorKind.InternalServerException
+    if name == "ResourceNotFoundException":
+        return CloudFront_KeyValueStoreErrorKind.ResourceNotFoundException
+    if name == "ServiceQuotaExceededException":
+        return CloudFront_KeyValueStoreErrorKind.ServiceQuotaExceededException
+    if name == "ValidationException":
+        return CloudFront_KeyValueStoreErrorKind.ValidationException
+    return CloudFront_KeyValueStoreErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def cloudfront_keyvaluestore_error_name(CloudFront_KeyValueStoreErrorKind k) -> str:
+    match k:
+        case CloudFront_KeyValueStoreErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case CloudFront_KeyValueStoreErrorKind.ConflictException:
+            return "ConflictException"
+        case CloudFront_KeyValueStoreErrorKind.InternalServerException:
+            return "InternalServerException"
+        case CloudFront_KeyValueStoreErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case CloudFront_KeyValueStoreErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case CloudFront_KeyValueStoreErrorKind.ValidationException:
+            return "ValidationException"
+        case CloudFront_KeyValueStoreErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

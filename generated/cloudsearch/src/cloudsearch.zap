@@ -6,7 +6,8 @@
 # Protocol: query (SigV4 service cloudsearch, Version 2013-01-01)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + query) via #283 module imports — see
+# Imports the aws_core package (core + errors + query) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: the whole input is a flat form-urlencoded POST body
 # (Action + Version + the members), the AWS query wire format.
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.query
 
 # The CloudSearch query protocol: SigV4 service "cloudsearch" (also the endpoint prefix
@@ -552,9 +554,16 @@ struct ValidationException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# query `<ErrorResponse><Error><Code>` element code by cloudsearch_error_from_code.
-enum CloudSearchError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the query `<ErrorResponse><Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum CloudSearchErrorKind:
     BaseException
     DisabledOperationException
     InternalException
@@ -565,26 +574,55 @@ enum CloudSearchError:
     ValidationException
     Unknown(str code)
 
-# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's
-# error helpers) to a variant.
-def cloudsearch_error_from_code(str code) -> CloudSearchError:
-    if code == "BaseException":
-        return CloudSearchError.BaseException
-    if code == "DisabledOperationException":
-        return CloudSearchError.DisabledOperationException
-    if code == "InternalException":
-        return CloudSearchError.InternalException
-    if code == "InvalidTypeException":
-        return CloudSearchError.InvalidTypeException
-    if code == "LimitExceededException":
-        return CloudSearchError.LimitExceededException
-    if code == "ResourceAlreadyExistsException":
-        return CloudSearchError.ResourceAlreadyExistsException
-    if code == "ResourceNotFoundException":
-        return CloudSearchError.ResourceNotFoundException
-    if code == "ValidationException":
-        return CloudSearchError.ValidationException
-    return CloudSearchError.Unknown(code=code)
+# Classify an AWS error code into `CloudSearchErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def cloudsearch_error_kind(str code) -> CloudSearchErrorKind:
+    auto name = errors.error_code(code)
+    if name == "BaseException":
+        return CloudSearchErrorKind.BaseException
+    if name == "DisabledOperationException":
+        return CloudSearchErrorKind.DisabledOperationException
+    if name == "InternalException":
+        return CloudSearchErrorKind.InternalException
+    if name == "InvalidTypeException":
+        return CloudSearchErrorKind.InvalidTypeException
+    if name == "LimitExceededException":
+        return CloudSearchErrorKind.LimitExceededException
+    if name == "ResourceAlreadyExistsException":
+        return CloudSearchErrorKind.ResourceAlreadyExistsException
+    if name == "ResourceNotFoundException":
+        return CloudSearchErrorKind.ResourceNotFoundException
+    if name == "ValidationException":
+        return CloudSearchErrorKind.ValidationException
+    return CloudSearchErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def cloudsearch_error_name(CloudSearchErrorKind k) -> str:
+    match k:
+        case CloudSearchErrorKind.BaseException:
+            return "BaseException"
+        case CloudSearchErrorKind.DisabledOperationException:
+            return "DisabledOperationException"
+        case CloudSearchErrorKind.InternalException:
+            return "InternalException"
+        case CloudSearchErrorKind.InvalidTypeException:
+            return "InvalidTypeException"
+        case CloudSearchErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case CloudSearchErrorKind.ResourceAlreadyExistsException:
+            return "ResourceAlreadyExistsException"
+        case CloudSearchErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case CloudSearchErrorKind.ValidationException:
+            return "ValidationException"
+        case CloudSearchErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

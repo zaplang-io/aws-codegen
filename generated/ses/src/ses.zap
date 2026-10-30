@@ -6,7 +6,8 @@
 # Protocol: query (SigV4 service ses, Version 2010-12-01)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + query) via #283 module imports — see
+# Imports the aws_core package (core + errors + query) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: the whole input is a flat form-urlencoded POST body
 # (Action + Version + the members), the AWS query wire format.
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.query
 
 # The SES query protocol: SigV4 service "ses" (also the endpoint prefix
@@ -1037,9 +1039,16 @@ struct WorkmailAction:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# query `<ErrorResponse><Error><Code>` element code by email_error_from_code.
-enum SESError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the query `<ErrorResponse><Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum SESErrorKind:
     AccountSendingPausedException
     AlreadyExistsException
     CannotDeleteException
@@ -1076,78 +1085,159 @@ enum SESError:
     TrackingOptionsDoesNotExistException
     Unknown(str code)
 
-# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's
-# error helpers) to a variant.
-def email_error_from_code(str code) -> SESError:
-    if code == "AccountSendingPausedException":
-        return SESError.AccountSendingPausedException
-    if code == "AlreadyExistsException":
-        return SESError.AlreadyExistsException
-    if code == "CannotDeleteException":
-        return SESError.CannotDeleteException
-    if code == "ConfigurationSetAlreadyExistsException":
-        return SESError.ConfigurationSetAlreadyExistsException
-    if code == "ConfigurationSetDoesNotExistException":
-        return SESError.ConfigurationSetDoesNotExistException
-    if code == "ConfigurationSetSendingPausedException":
-        return SESError.ConfigurationSetSendingPausedException
-    if code == "CustomVerificationEmailInvalidContentException":
-        return SESError.CustomVerificationEmailInvalidContentException
-    if code == "CustomVerificationEmailTemplateAlreadyExistsException":
-        return SESError.CustomVerificationEmailTemplateAlreadyExistsException
-    if code == "CustomVerificationEmailTemplateDoesNotExistException":
-        return SESError.CustomVerificationEmailTemplateDoesNotExistException
-    if code == "EventDestinationAlreadyExistsException":
-        return SESError.EventDestinationAlreadyExistsException
-    if code == "EventDestinationDoesNotExistException":
-        return SESError.EventDestinationDoesNotExistException
-    if code == "FromEmailAddressNotVerifiedException":
-        return SESError.FromEmailAddressNotVerifiedException
-    if code == "InvalidCloudWatchDestinationException":
-        return SESError.InvalidCloudWatchDestinationException
-    if code == "InvalidConfigurationSetException":
-        return SESError.InvalidConfigurationSetException
-    if code == "InvalidDeliveryOptionsException":
-        return SESError.InvalidDeliveryOptionsException
-    if code == "InvalidFirehoseDestinationException":
-        return SESError.InvalidFirehoseDestinationException
-    if code == "InvalidLambdaFunctionException":
-        return SESError.InvalidLambdaFunctionException
-    if code == "InvalidPolicyException":
-        return SESError.InvalidPolicyException
-    if code == "InvalidRenderingParameterException":
-        return SESError.InvalidRenderingParameterException
-    if code == "InvalidS3ConfigurationException":
-        return SESError.InvalidS3ConfigurationException
-    if code == "InvalidSNSDestinationException":
-        return SESError.InvalidSNSDestinationException
-    if code == "InvalidSnsTopicException":
-        return SESError.InvalidSnsTopicException
-    if code == "InvalidTemplateException":
-        return SESError.InvalidTemplateException
-    if code == "InvalidTrackingOptionsException":
-        return SESError.InvalidTrackingOptionsException
-    if code == "LimitExceededException":
-        return SESError.LimitExceededException
-    if code == "MailFromDomainNotVerifiedException":
-        return SESError.MailFromDomainNotVerifiedException
-    if code == "MessageRejected":
-        return SESError.MessageRejected
-    if code == "MissingRenderingAttributeException":
-        return SESError.MissingRenderingAttributeException
-    if code == "ProductionAccessNotGrantedException":
-        return SESError.ProductionAccessNotGrantedException
-    if code == "RuleDoesNotExistException":
-        return SESError.RuleDoesNotExistException
-    if code == "RuleSetDoesNotExistException":
-        return SESError.RuleSetDoesNotExistException
-    if code == "TemplateDoesNotExistException":
-        return SESError.TemplateDoesNotExistException
-    if code == "TrackingOptionsAlreadyExistsException":
-        return SESError.TrackingOptionsAlreadyExistsException
-    if code == "TrackingOptionsDoesNotExistException":
-        return SESError.TrackingOptionsDoesNotExistException
-    return SESError.Unknown(code=code)
+# Classify an AWS error code into `SESErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def email_error_kind(str code) -> SESErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccountSendingPausedException":
+        return SESErrorKind.AccountSendingPausedException
+    if name == "AlreadyExistsException":
+        return SESErrorKind.AlreadyExistsException
+    if name == "CannotDeleteException":
+        return SESErrorKind.CannotDeleteException
+    if name == "ConfigurationSetAlreadyExistsException":
+        return SESErrorKind.ConfigurationSetAlreadyExistsException
+    if name == "ConfigurationSetDoesNotExistException":
+        return SESErrorKind.ConfigurationSetDoesNotExistException
+    if name == "ConfigurationSetSendingPausedException":
+        return SESErrorKind.ConfigurationSetSendingPausedException
+    if name == "CustomVerificationEmailInvalidContentException":
+        return SESErrorKind.CustomVerificationEmailInvalidContentException
+    if name == "CustomVerificationEmailTemplateAlreadyExistsException":
+        return SESErrorKind.CustomVerificationEmailTemplateAlreadyExistsException
+    if name == "CustomVerificationEmailTemplateDoesNotExistException":
+        return SESErrorKind.CustomVerificationEmailTemplateDoesNotExistException
+    if name == "EventDestinationAlreadyExistsException":
+        return SESErrorKind.EventDestinationAlreadyExistsException
+    if name == "EventDestinationDoesNotExistException":
+        return SESErrorKind.EventDestinationDoesNotExistException
+    if name == "FromEmailAddressNotVerifiedException":
+        return SESErrorKind.FromEmailAddressNotVerifiedException
+    if name == "InvalidCloudWatchDestinationException":
+        return SESErrorKind.InvalidCloudWatchDestinationException
+    if name == "InvalidConfigurationSetException":
+        return SESErrorKind.InvalidConfigurationSetException
+    if name == "InvalidDeliveryOptionsException":
+        return SESErrorKind.InvalidDeliveryOptionsException
+    if name == "InvalidFirehoseDestinationException":
+        return SESErrorKind.InvalidFirehoseDestinationException
+    if name == "InvalidLambdaFunctionException":
+        return SESErrorKind.InvalidLambdaFunctionException
+    if name == "InvalidPolicyException":
+        return SESErrorKind.InvalidPolicyException
+    if name == "InvalidRenderingParameterException":
+        return SESErrorKind.InvalidRenderingParameterException
+    if name == "InvalidS3ConfigurationException":
+        return SESErrorKind.InvalidS3ConfigurationException
+    if name == "InvalidSNSDestinationException":
+        return SESErrorKind.InvalidSNSDestinationException
+    if name == "InvalidSnsTopicException":
+        return SESErrorKind.InvalidSnsTopicException
+    if name == "InvalidTemplateException":
+        return SESErrorKind.InvalidTemplateException
+    if name == "InvalidTrackingOptionsException":
+        return SESErrorKind.InvalidTrackingOptionsException
+    if name == "LimitExceededException":
+        return SESErrorKind.LimitExceededException
+    if name == "MailFromDomainNotVerifiedException":
+        return SESErrorKind.MailFromDomainNotVerifiedException
+    if name == "MessageRejected":
+        return SESErrorKind.MessageRejected
+    if name == "MissingRenderingAttributeException":
+        return SESErrorKind.MissingRenderingAttributeException
+    if name == "ProductionAccessNotGrantedException":
+        return SESErrorKind.ProductionAccessNotGrantedException
+    if name == "RuleDoesNotExistException":
+        return SESErrorKind.RuleDoesNotExistException
+    if name == "RuleSetDoesNotExistException":
+        return SESErrorKind.RuleSetDoesNotExistException
+    if name == "TemplateDoesNotExistException":
+        return SESErrorKind.TemplateDoesNotExistException
+    if name == "TrackingOptionsAlreadyExistsException":
+        return SESErrorKind.TrackingOptionsAlreadyExistsException
+    if name == "TrackingOptionsDoesNotExistException":
+        return SESErrorKind.TrackingOptionsDoesNotExistException
+    return SESErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def email_error_name(SESErrorKind k) -> str:
+    match k:
+        case SESErrorKind.AccountSendingPausedException:
+            return "AccountSendingPausedException"
+        case SESErrorKind.AlreadyExistsException:
+            return "AlreadyExistsException"
+        case SESErrorKind.CannotDeleteException:
+            return "CannotDeleteException"
+        case SESErrorKind.ConfigurationSetAlreadyExistsException:
+            return "ConfigurationSetAlreadyExistsException"
+        case SESErrorKind.ConfigurationSetDoesNotExistException:
+            return "ConfigurationSetDoesNotExistException"
+        case SESErrorKind.ConfigurationSetSendingPausedException:
+            return "ConfigurationSetSendingPausedException"
+        case SESErrorKind.CustomVerificationEmailInvalidContentException:
+            return "CustomVerificationEmailInvalidContentException"
+        case SESErrorKind.CustomVerificationEmailTemplateAlreadyExistsException:
+            return "CustomVerificationEmailTemplateAlreadyExistsException"
+        case SESErrorKind.CustomVerificationEmailTemplateDoesNotExistException:
+            return "CustomVerificationEmailTemplateDoesNotExistException"
+        case SESErrorKind.EventDestinationAlreadyExistsException:
+            return "EventDestinationAlreadyExistsException"
+        case SESErrorKind.EventDestinationDoesNotExistException:
+            return "EventDestinationDoesNotExistException"
+        case SESErrorKind.FromEmailAddressNotVerifiedException:
+            return "FromEmailAddressNotVerifiedException"
+        case SESErrorKind.InvalidCloudWatchDestinationException:
+            return "InvalidCloudWatchDestinationException"
+        case SESErrorKind.InvalidConfigurationSetException:
+            return "InvalidConfigurationSetException"
+        case SESErrorKind.InvalidDeliveryOptionsException:
+            return "InvalidDeliveryOptionsException"
+        case SESErrorKind.InvalidFirehoseDestinationException:
+            return "InvalidFirehoseDestinationException"
+        case SESErrorKind.InvalidLambdaFunctionException:
+            return "InvalidLambdaFunctionException"
+        case SESErrorKind.InvalidPolicyException:
+            return "InvalidPolicyException"
+        case SESErrorKind.InvalidRenderingParameterException:
+            return "InvalidRenderingParameterException"
+        case SESErrorKind.InvalidS3ConfigurationException:
+            return "InvalidS3ConfigurationException"
+        case SESErrorKind.InvalidSNSDestinationException:
+            return "InvalidSNSDestinationException"
+        case SESErrorKind.InvalidSnsTopicException:
+            return "InvalidSnsTopicException"
+        case SESErrorKind.InvalidTemplateException:
+            return "InvalidTemplateException"
+        case SESErrorKind.InvalidTrackingOptionsException:
+            return "InvalidTrackingOptionsException"
+        case SESErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case SESErrorKind.MailFromDomainNotVerifiedException:
+            return "MailFromDomainNotVerifiedException"
+        case SESErrorKind.MessageRejected:
+            return "MessageRejected"
+        case SESErrorKind.MissingRenderingAttributeException:
+            return "MissingRenderingAttributeException"
+        case SESErrorKind.ProductionAccessNotGrantedException:
+            return "ProductionAccessNotGrantedException"
+        case SESErrorKind.RuleDoesNotExistException:
+            return "RuleDoesNotExistException"
+        case SESErrorKind.RuleSetDoesNotExistException:
+            return "RuleSetDoesNotExistException"
+        case SESErrorKind.TemplateDoesNotExistException:
+            return "TemplateDoesNotExistException"
+        case SESErrorKind.TrackingOptionsAlreadyExistsException:
+            return "TrackingOptionsAlreadyExistsException"
+        case SESErrorKind.TrackingOptionsDoesNotExistException:
+            return "TrackingOptionsDoesNotExistException"
+        case SESErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

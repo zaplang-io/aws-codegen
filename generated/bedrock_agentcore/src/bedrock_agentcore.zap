@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service bedrock-agentcore)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -3515,9 +3516,16 @@ struct ViewPort:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by bedrock_agentcore_error_from_code.
-enum Bedrock_AgentCoreError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Bedrock_AgentCoreErrorKind:
     AccessDeniedException
     ConflictException
     DuplicateIdException
@@ -3535,40 +3543,83 @@ enum Bedrock_AgentCoreError:
     ValidationException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def bedrock_agentcore_error_from_code(str code) -> Bedrock_AgentCoreError:
-    if code == "AccessDeniedException":
-        return Bedrock_AgentCoreError.AccessDeniedException
-    if code == "ConflictException":
-        return Bedrock_AgentCoreError.ConflictException
-    if code == "DuplicateIdException":
-        return Bedrock_AgentCoreError.DuplicateIdException
-    if code == "InternalServerException":
-        return Bedrock_AgentCoreError.InternalServerException
-    if code == "InvalidInputException":
-        return Bedrock_AgentCoreError.InvalidInputException
-    if code == "ResourceNotFoundException":
-        return Bedrock_AgentCoreError.ResourceNotFoundException
-    if code == "RetryableConflictException":
-        return Bedrock_AgentCoreError.RetryableConflictException
-    if code == "RuntimeClientError":
-        return Bedrock_AgentCoreError.RuntimeClientError
-    if code == "ServiceException":
-        return Bedrock_AgentCoreError.ServiceException
-    if code == "ServiceQuotaExceededException":
-        return Bedrock_AgentCoreError.ServiceQuotaExceededException
-    if code == "SubscriptionRequiredException":
-        return Bedrock_AgentCoreError.SubscriptionRequiredException
-    if code == "ThrottledException":
-        return Bedrock_AgentCoreError.ThrottledException
-    if code == "ThrottlingException":
-        return Bedrock_AgentCoreError.ThrottlingException
-    if code == "UnauthorizedException":
-        return Bedrock_AgentCoreError.UnauthorizedException
-    if code == "ValidationException":
-        return Bedrock_AgentCoreError.ValidationException
-    return Bedrock_AgentCoreError.Unknown(code=code)
+# Classify an AWS error code into `Bedrock_AgentCoreErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def bedrock_agentcore_error_kind(str code) -> Bedrock_AgentCoreErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return Bedrock_AgentCoreErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return Bedrock_AgentCoreErrorKind.ConflictException
+    if name == "DuplicateIdException":
+        return Bedrock_AgentCoreErrorKind.DuplicateIdException
+    if name == "InternalServerException":
+        return Bedrock_AgentCoreErrorKind.InternalServerException
+    if name == "InvalidInputException":
+        return Bedrock_AgentCoreErrorKind.InvalidInputException
+    if name == "ResourceNotFoundException":
+        return Bedrock_AgentCoreErrorKind.ResourceNotFoundException
+    if name == "RetryableConflictException":
+        return Bedrock_AgentCoreErrorKind.RetryableConflictException
+    if name == "RuntimeClientError":
+        return Bedrock_AgentCoreErrorKind.RuntimeClientError
+    if name == "ServiceException":
+        return Bedrock_AgentCoreErrorKind.ServiceException
+    if name == "ServiceQuotaExceededException":
+        return Bedrock_AgentCoreErrorKind.ServiceQuotaExceededException
+    if name == "SubscriptionRequiredException":
+        return Bedrock_AgentCoreErrorKind.SubscriptionRequiredException
+    if name == "ThrottledException":
+        return Bedrock_AgentCoreErrorKind.ThrottledException
+    if name == "ThrottlingException":
+        return Bedrock_AgentCoreErrorKind.ThrottlingException
+    if name == "UnauthorizedException":
+        return Bedrock_AgentCoreErrorKind.UnauthorizedException
+    if name == "ValidationException":
+        return Bedrock_AgentCoreErrorKind.ValidationException
+    return Bedrock_AgentCoreErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def bedrock_agentcore_error_name(Bedrock_AgentCoreErrorKind k) -> str:
+    match k:
+        case Bedrock_AgentCoreErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case Bedrock_AgentCoreErrorKind.ConflictException:
+            return "ConflictException"
+        case Bedrock_AgentCoreErrorKind.DuplicateIdException:
+            return "DuplicateIdException"
+        case Bedrock_AgentCoreErrorKind.InternalServerException:
+            return "InternalServerException"
+        case Bedrock_AgentCoreErrorKind.InvalidInputException:
+            return "InvalidInputException"
+        case Bedrock_AgentCoreErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case Bedrock_AgentCoreErrorKind.RetryableConflictException:
+            return "RetryableConflictException"
+        case Bedrock_AgentCoreErrorKind.RuntimeClientError:
+            return "RuntimeClientError"
+        case Bedrock_AgentCoreErrorKind.ServiceException:
+            return "ServiceException"
+        case Bedrock_AgentCoreErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case Bedrock_AgentCoreErrorKind.SubscriptionRequiredException:
+            return "SubscriptionRequiredException"
+        case Bedrock_AgentCoreErrorKind.ThrottledException:
+            return "ThrottledException"
+        case Bedrock_AgentCoreErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case Bedrock_AgentCoreErrorKind.UnauthorizedException:
+            return "UnauthorizedException"
+        case Bedrock_AgentCoreErrorKind.ValidationException:
+            return "ValidationException"
+        case Bedrock_AgentCoreErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

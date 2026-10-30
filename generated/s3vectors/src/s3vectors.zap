@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service s3vectors)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -498,9 +499,16 @@ struct VectorMetadata:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by s3vectors_error_from_code.
-enum S3VectorsError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum S3VectorsErrorKind:
     AccessDeniedException
     ConflictException
     InternalServerException
@@ -516,36 +524,75 @@ enum S3VectorsError:
     ValidationException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def s3vectors_error_from_code(str code) -> S3VectorsError:
-    if code == "AccessDeniedException":
-        return S3VectorsError.AccessDeniedException
-    if code == "ConflictException":
-        return S3VectorsError.ConflictException
-    if code == "InternalServerException":
-        return S3VectorsError.InternalServerException
-    if code == "KmsDisabledException":
-        return S3VectorsError.KmsDisabledException
-    if code == "KmsInvalidKeyUsageException":
-        return S3VectorsError.KmsInvalidKeyUsageException
-    if code == "KmsInvalidStateException":
-        return S3VectorsError.KmsInvalidStateException
-    if code == "KmsNotFoundException":
-        return S3VectorsError.KmsNotFoundException
-    if code == "NotFoundException":
-        return S3VectorsError.NotFoundException
-    if code == "RequestTimeoutException":
-        return S3VectorsError.RequestTimeoutException
-    if code == "ServiceQuotaExceededException":
-        return S3VectorsError.ServiceQuotaExceededException
-    if code == "ServiceUnavailableException":
-        return S3VectorsError.ServiceUnavailableException
-    if code == "TooManyRequestsException":
-        return S3VectorsError.TooManyRequestsException
-    if code == "ValidationException":
-        return S3VectorsError.ValidationException
-    return S3VectorsError.Unknown(code=code)
+# Classify an AWS error code into `S3VectorsErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def s3vectors_error_kind(str code) -> S3VectorsErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return S3VectorsErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return S3VectorsErrorKind.ConflictException
+    if name == "InternalServerException":
+        return S3VectorsErrorKind.InternalServerException
+    if name == "KmsDisabledException":
+        return S3VectorsErrorKind.KmsDisabledException
+    if name == "KmsInvalidKeyUsageException":
+        return S3VectorsErrorKind.KmsInvalidKeyUsageException
+    if name == "KmsInvalidStateException":
+        return S3VectorsErrorKind.KmsInvalidStateException
+    if name == "KmsNotFoundException":
+        return S3VectorsErrorKind.KmsNotFoundException
+    if name == "NotFoundException":
+        return S3VectorsErrorKind.NotFoundException
+    if name == "RequestTimeoutException":
+        return S3VectorsErrorKind.RequestTimeoutException
+    if name == "ServiceQuotaExceededException":
+        return S3VectorsErrorKind.ServiceQuotaExceededException
+    if name == "ServiceUnavailableException":
+        return S3VectorsErrorKind.ServiceUnavailableException
+    if name == "TooManyRequestsException":
+        return S3VectorsErrorKind.TooManyRequestsException
+    if name == "ValidationException":
+        return S3VectorsErrorKind.ValidationException
+    return S3VectorsErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def s3vectors_error_name(S3VectorsErrorKind k) -> str:
+    match k:
+        case S3VectorsErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case S3VectorsErrorKind.ConflictException:
+            return "ConflictException"
+        case S3VectorsErrorKind.InternalServerException:
+            return "InternalServerException"
+        case S3VectorsErrorKind.KmsDisabledException:
+            return "KmsDisabledException"
+        case S3VectorsErrorKind.KmsInvalidKeyUsageException:
+            return "KmsInvalidKeyUsageException"
+        case S3VectorsErrorKind.KmsInvalidStateException:
+            return "KmsInvalidStateException"
+        case S3VectorsErrorKind.KmsNotFoundException:
+            return "KmsNotFoundException"
+        case S3VectorsErrorKind.NotFoundException:
+            return "NotFoundException"
+        case S3VectorsErrorKind.RequestTimeoutException:
+            return "RequestTimeoutException"
+        case S3VectorsErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case S3VectorsErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
+        case S3VectorsErrorKind.TooManyRequestsException:
+            return "TooManyRequestsException"
+        case S3VectorsErrorKind.ValidationException:
+            return "ValidationException"
+        case S3VectorsErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

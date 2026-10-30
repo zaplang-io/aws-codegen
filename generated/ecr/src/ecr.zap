@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix AmazonEC2ContainerRegistry_V20150921)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -1785,9 +1787,16 @@ struct VulnerablePackage:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by api_ecr_error_from_code.
-enum ECRError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum ECRErrorKind:
     BlockedByOrganizationPolicyException
     EmptyUploadException
     ExclusionAlreadyExistsException
@@ -1840,109 +1849,223 @@ enum ECRError:
     ValidationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def api_ecr_error_from_code(str code) -> ECRError:
-    if code == "BlockedByOrganizationPolicyException":
-        return ECRError.BlockedByOrganizationPolicyException
-    if code == "EmptyUploadException":
-        return ECRError.EmptyUploadException
-    if code == "ExclusionAlreadyExistsException":
-        return ECRError.ExclusionAlreadyExistsException
-    if code == "ExclusionNotFoundException":
-        return ECRError.ExclusionNotFoundException
-    if code == "ImageAlreadyExistsException":
-        return ECRError.ImageAlreadyExistsException
-    if code == "ImageArchivedException":
-        return ECRError.ImageArchivedException
-    if code == "ImageDigestDoesNotMatchException":
-        return ECRError.ImageDigestDoesNotMatchException
-    if code == "ImageNotFoundException":
-        return ECRError.ImageNotFoundException
-    if code == "ImageStorageClassUpdateNotSupportedException":
-        return ECRError.ImageStorageClassUpdateNotSupportedException
-    if code == "ImageTagAlreadyExistsException":
-        return ECRError.ImageTagAlreadyExistsException
-    if code == "InvalidLayerException":
-        return ECRError.InvalidLayerException
-    if code == "InvalidLayerPartException":
-        return ECRError.InvalidLayerPartException
-    if code == "InvalidParameterException":
-        return ECRError.InvalidParameterException
-    if code == "InvalidTagParameterException":
-        return ECRError.InvalidTagParameterException
-    if code == "KmsException":
-        return ECRError.KmsException
-    if code == "LayerAlreadyExistsException":
-        return ECRError.LayerAlreadyExistsException
-    if code == "LayerInaccessibleException":
-        return ECRError.LayerInaccessibleException
-    if code == "LayerPartTooSmallException":
-        return ECRError.LayerPartTooSmallException
-    if code == "LayersNotFoundException":
-        return ECRError.LayersNotFoundException
-    if code == "LifecyclePolicyNotFoundException":
-        return ECRError.LifecyclePolicyNotFoundException
-    if code == "LifecyclePolicyPreviewInProgressException":
-        return ECRError.LifecyclePolicyPreviewInProgressException
-    if code == "LifecyclePolicyPreviewNotFoundException":
-        return ECRError.LifecyclePolicyPreviewNotFoundException
-    if code == "LimitExceededException":
-        return ECRError.LimitExceededException
-    if code == "PullThroughCacheRuleAlreadyExistsException":
-        return ECRError.PullThroughCacheRuleAlreadyExistsException
-    if code == "PullThroughCacheRuleNotFoundException":
-        return ECRError.PullThroughCacheRuleNotFoundException
-    if code == "ReferencedImagesNotFoundException":
-        return ECRError.ReferencedImagesNotFoundException
-    if code == "RegistryPolicyNotFoundException":
-        return ECRError.RegistryPolicyNotFoundException
-    if code == "ReplicationBackfillInProgressException":
-        return ECRError.ReplicationBackfillInProgressException
-    if code == "ReplicationBackfillInvalidStatusException":
-        return ECRError.ReplicationBackfillInvalidStatusException
-    if code == "ReplicationBackfillNotFoundException":
-        return ECRError.ReplicationBackfillNotFoundException
-    if code == "RepositoryAlreadyExistsException":
-        return ECRError.RepositoryAlreadyExistsException
-    if code == "RepositoryNotEmptyException":
-        return ECRError.RepositoryNotEmptyException
-    if code == "RepositoryNotFoundException":
-        return ECRError.RepositoryNotFoundException
-    if code == "RepositoryPolicyNotFoundException":
-        return ECRError.RepositoryPolicyNotFoundException
-    if code == "ScanNotFoundException":
-        return ECRError.ScanNotFoundException
-    if code == "SecretNotFoundException":
-        return ECRError.SecretNotFoundException
-    if code == "ServerException":
-        return ECRError.ServerException
-    if code == "SigningConfigurationNotFoundException":
-        return ECRError.SigningConfigurationNotFoundException
-    if code == "TemplateAlreadyExistsException":
-        return ECRError.TemplateAlreadyExistsException
-    if code == "TemplateNotFoundException":
-        return ECRError.TemplateNotFoundException
-    if code == "TooManyTagsException":
-        return ECRError.TooManyTagsException
-    if code == "UnableToAccessSecretException":
-        return ECRError.UnableToAccessSecretException
-    if code == "UnableToDecryptSecretValueException":
-        return ECRError.UnableToDecryptSecretValueException
-    if code == "UnableToGetUpstreamImageException":
-        return ECRError.UnableToGetUpstreamImageException
-    if code == "UnableToGetUpstreamLayerException":
-        return ECRError.UnableToGetUpstreamLayerException
-    if code == "UnableToListUpstreamImageReferrersException":
-        return ECRError.UnableToListUpstreamImageReferrersException
-    if code == "UnsupportedImageTypeException":
-        return ECRError.UnsupportedImageTypeException
-    if code == "UnsupportedUpstreamRegistryException":
-        return ECRError.UnsupportedUpstreamRegistryException
-    if code == "UploadNotFoundException":
-        return ECRError.UploadNotFoundException
-    if code == "ValidationException":
-        return ECRError.ValidationException
-    return ECRError.Unknown(code=code)
+# Classify an AWS error code into `ECRErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def api_ecr_error_kind(str code) -> ECRErrorKind:
+    auto name = errors.error_code(code)
+    if name == "BlockedByOrganizationPolicyException":
+        return ECRErrorKind.BlockedByOrganizationPolicyException
+    if name == "EmptyUploadException":
+        return ECRErrorKind.EmptyUploadException
+    if name == "ExclusionAlreadyExistsException":
+        return ECRErrorKind.ExclusionAlreadyExistsException
+    if name == "ExclusionNotFoundException":
+        return ECRErrorKind.ExclusionNotFoundException
+    if name == "ImageAlreadyExistsException":
+        return ECRErrorKind.ImageAlreadyExistsException
+    if name == "ImageArchivedException":
+        return ECRErrorKind.ImageArchivedException
+    if name == "ImageDigestDoesNotMatchException":
+        return ECRErrorKind.ImageDigestDoesNotMatchException
+    if name == "ImageNotFoundException":
+        return ECRErrorKind.ImageNotFoundException
+    if name == "ImageStorageClassUpdateNotSupportedException":
+        return ECRErrorKind.ImageStorageClassUpdateNotSupportedException
+    if name == "ImageTagAlreadyExistsException":
+        return ECRErrorKind.ImageTagAlreadyExistsException
+    if name == "InvalidLayerException":
+        return ECRErrorKind.InvalidLayerException
+    if name == "InvalidLayerPartException":
+        return ECRErrorKind.InvalidLayerPartException
+    if name == "InvalidParameterException":
+        return ECRErrorKind.InvalidParameterException
+    if name == "InvalidTagParameterException":
+        return ECRErrorKind.InvalidTagParameterException
+    if name == "KmsException":
+        return ECRErrorKind.KmsException
+    if name == "LayerAlreadyExistsException":
+        return ECRErrorKind.LayerAlreadyExistsException
+    if name == "LayerInaccessibleException":
+        return ECRErrorKind.LayerInaccessibleException
+    if name == "LayerPartTooSmallException":
+        return ECRErrorKind.LayerPartTooSmallException
+    if name == "LayersNotFoundException":
+        return ECRErrorKind.LayersNotFoundException
+    if name == "LifecyclePolicyNotFoundException":
+        return ECRErrorKind.LifecyclePolicyNotFoundException
+    if name == "LifecyclePolicyPreviewInProgressException":
+        return ECRErrorKind.LifecyclePolicyPreviewInProgressException
+    if name == "LifecyclePolicyPreviewNotFoundException":
+        return ECRErrorKind.LifecyclePolicyPreviewNotFoundException
+    if name == "LimitExceededException":
+        return ECRErrorKind.LimitExceededException
+    if name == "PullThroughCacheRuleAlreadyExistsException":
+        return ECRErrorKind.PullThroughCacheRuleAlreadyExistsException
+    if name == "PullThroughCacheRuleNotFoundException":
+        return ECRErrorKind.PullThroughCacheRuleNotFoundException
+    if name == "ReferencedImagesNotFoundException":
+        return ECRErrorKind.ReferencedImagesNotFoundException
+    if name == "RegistryPolicyNotFoundException":
+        return ECRErrorKind.RegistryPolicyNotFoundException
+    if name == "ReplicationBackfillInProgressException":
+        return ECRErrorKind.ReplicationBackfillInProgressException
+    if name == "ReplicationBackfillInvalidStatusException":
+        return ECRErrorKind.ReplicationBackfillInvalidStatusException
+    if name == "ReplicationBackfillNotFoundException":
+        return ECRErrorKind.ReplicationBackfillNotFoundException
+    if name == "RepositoryAlreadyExistsException":
+        return ECRErrorKind.RepositoryAlreadyExistsException
+    if name == "RepositoryNotEmptyException":
+        return ECRErrorKind.RepositoryNotEmptyException
+    if name == "RepositoryNotFoundException":
+        return ECRErrorKind.RepositoryNotFoundException
+    if name == "RepositoryPolicyNotFoundException":
+        return ECRErrorKind.RepositoryPolicyNotFoundException
+    if name == "ScanNotFoundException":
+        return ECRErrorKind.ScanNotFoundException
+    if name == "SecretNotFoundException":
+        return ECRErrorKind.SecretNotFoundException
+    if name == "ServerException":
+        return ECRErrorKind.ServerException
+    if name == "SigningConfigurationNotFoundException":
+        return ECRErrorKind.SigningConfigurationNotFoundException
+    if name == "TemplateAlreadyExistsException":
+        return ECRErrorKind.TemplateAlreadyExistsException
+    if name == "TemplateNotFoundException":
+        return ECRErrorKind.TemplateNotFoundException
+    if name == "TooManyTagsException":
+        return ECRErrorKind.TooManyTagsException
+    if name == "UnableToAccessSecretException":
+        return ECRErrorKind.UnableToAccessSecretException
+    if name == "UnableToDecryptSecretValueException":
+        return ECRErrorKind.UnableToDecryptSecretValueException
+    if name == "UnableToGetUpstreamImageException":
+        return ECRErrorKind.UnableToGetUpstreamImageException
+    if name == "UnableToGetUpstreamLayerException":
+        return ECRErrorKind.UnableToGetUpstreamLayerException
+    if name == "UnableToListUpstreamImageReferrersException":
+        return ECRErrorKind.UnableToListUpstreamImageReferrersException
+    if name == "UnsupportedImageTypeException":
+        return ECRErrorKind.UnsupportedImageTypeException
+    if name == "UnsupportedUpstreamRegistryException":
+        return ECRErrorKind.UnsupportedUpstreamRegistryException
+    if name == "UploadNotFoundException":
+        return ECRErrorKind.UploadNotFoundException
+    if name == "ValidationException":
+        return ECRErrorKind.ValidationException
+    return ECRErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def api_ecr_error_name(ECRErrorKind k) -> str:
+    match k:
+        case ECRErrorKind.BlockedByOrganizationPolicyException:
+            return "BlockedByOrganizationPolicyException"
+        case ECRErrorKind.EmptyUploadException:
+            return "EmptyUploadException"
+        case ECRErrorKind.ExclusionAlreadyExistsException:
+            return "ExclusionAlreadyExistsException"
+        case ECRErrorKind.ExclusionNotFoundException:
+            return "ExclusionNotFoundException"
+        case ECRErrorKind.ImageAlreadyExistsException:
+            return "ImageAlreadyExistsException"
+        case ECRErrorKind.ImageArchivedException:
+            return "ImageArchivedException"
+        case ECRErrorKind.ImageDigestDoesNotMatchException:
+            return "ImageDigestDoesNotMatchException"
+        case ECRErrorKind.ImageNotFoundException:
+            return "ImageNotFoundException"
+        case ECRErrorKind.ImageStorageClassUpdateNotSupportedException:
+            return "ImageStorageClassUpdateNotSupportedException"
+        case ECRErrorKind.ImageTagAlreadyExistsException:
+            return "ImageTagAlreadyExistsException"
+        case ECRErrorKind.InvalidLayerException:
+            return "InvalidLayerException"
+        case ECRErrorKind.InvalidLayerPartException:
+            return "InvalidLayerPartException"
+        case ECRErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case ECRErrorKind.InvalidTagParameterException:
+            return "InvalidTagParameterException"
+        case ECRErrorKind.KmsException:
+            return "KmsException"
+        case ECRErrorKind.LayerAlreadyExistsException:
+            return "LayerAlreadyExistsException"
+        case ECRErrorKind.LayerInaccessibleException:
+            return "LayerInaccessibleException"
+        case ECRErrorKind.LayerPartTooSmallException:
+            return "LayerPartTooSmallException"
+        case ECRErrorKind.LayersNotFoundException:
+            return "LayersNotFoundException"
+        case ECRErrorKind.LifecyclePolicyNotFoundException:
+            return "LifecyclePolicyNotFoundException"
+        case ECRErrorKind.LifecyclePolicyPreviewInProgressException:
+            return "LifecyclePolicyPreviewInProgressException"
+        case ECRErrorKind.LifecyclePolicyPreviewNotFoundException:
+            return "LifecyclePolicyPreviewNotFoundException"
+        case ECRErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case ECRErrorKind.PullThroughCacheRuleAlreadyExistsException:
+            return "PullThroughCacheRuleAlreadyExistsException"
+        case ECRErrorKind.PullThroughCacheRuleNotFoundException:
+            return "PullThroughCacheRuleNotFoundException"
+        case ECRErrorKind.ReferencedImagesNotFoundException:
+            return "ReferencedImagesNotFoundException"
+        case ECRErrorKind.RegistryPolicyNotFoundException:
+            return "RegistryPolicyNotFoundException"
+        case ECRErrorKind.ReplicationBackfillInProgressException:
+            return "ReplicationBackfillInProgressException"
+        case ECRErrorKind.ReplicationBackfillInvalidStatusException:
+            return "ReplicationBackfillInvalidStatusException"
+        case ECRErrorKind.ReplicationBackfillNotFoundException:
+            return "ReplicationBackfillNotFoundException"
+        case ECRErrorKind.RepositoryAlreadyExistsException:
+            return "RepositoryAlreadyExistsException"
+        case ECRErrorKind.RepositoryNotEmptyException:
+            return "RepositoryNotEmptyException"
+        case ECRErrorKind.RepositoryNotFoundException:
+            return "RepositoryNotFoundException"
+        case ECRErrorKind.RepositoryPolicyNotFoundException:
+            return "RepositoryPolicyNotFoundException"
+        case ECRErrorKind.ScanNotFoundException:
+            return "ScanNotFoundException"
+        case ECRErrorKind.SecretNotFoundException:
+            return "SecretNotFoundException"
+        case ECRErrorKind.ServerException:
+            return "ServerException"
+        case ECRErrorKind.SigningConfigurationNotFoundException:
+            return "SigningConfigurationNotFoundException"
+        case ECRErrorKind.TemplateAlreadyExistsException:
+            return "TemplateAlreadyExistsException"
+        case ECRErrorKind.TemplateNotFoundException:
+            return "TemplateNotFoundException"
+        case ECRErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case ECRErrorKind.UnableToAccessSecretException:
+            return "UnableToAccessSecretException"
+        case ECRErrorKind.UnableToDecryptSecretValueException:
+            return "UnableToDecryptSecretValueException"
+        case ECRErrorKind.UnableToGetUpstreamImageException:
+            return "UnableToGetUpstreamImageException"
+        case ECRErrorKind.UnableToGetUpstreamLayerException:
+            return "UnableToGetUpstreamLayerException"
+        case ECRErrorKind.UnableToListUpstreamImageReferrersException:
+            return "UnableToListUpstreamImageReferrersException"
+        case ECRErrorKind.UnsupportedImageTypeException:
+            return "UnsupportedImageTypeException"
+        case ECRErrorKind.UnsupportedUpstreamRegistryException:
+            return "UnsupportedUpstreamRegistryException"
+        case ECRErrorKind.UploadNotFoundException:
+            return "UploadNotFoundException"
+        case ECRErrorKind.ValidationException:
+            return "ValidationException"
+        case ECRErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

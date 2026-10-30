@@ -6,7 +6,8 @@
 # Protocol: query (SigV4 service autoscaling, Version 2011-01-01)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + query) via #283 module imports — see
+# Imports the aws_core package (core + errors + query) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: the whole input is a flat form-urlencoded POST body
 # (Action + Version + the members), the AWS query wire format.
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.query
 
 # The Auto_Scaling query protocol: SigV4 service "autoscaling" (also the endpoint prefix
@@ -1550,9 +1552,16 @@ struct WarmPoolConfiguration:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# query `<ErrorResponse><Error><Code>` element code by autoscaling_error_from_code.
-enum Auto_ScalingError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the query `<ErrorResponse><Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Auto_ScalingErrorKind:
     ActiveInstanceRefreshNotFoundFault
     AlreadyExistsFault
     IdempotentCallInProgressFault
@@ -1567,34 +1576,71 @@ enum Auto_ScalingError:
     ServiceLinkedRoleFailure
     Unknown(str code)
 
-# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's
-# error helpers) to a variant.
-def autoscaling_error_from_code(str code) -> Auto_ScalingError:
-    if code == "ActiveInstanceRefreshNotFoundFault":
-        return Auto_ScalingError.ActiveInstanceRefreshNotFoundFault
-    if code == "AlreadyExistsFault":
-        return Auto_ScalingError.AlreadyExistsFault
-    if code == "IdempotentCallInProgressFault":
-        return Auto_ScalingError.IdempotentCallInProgressFault
-    if code == "IdempotentParameterMismatchError":
-        return Auto_ScalingError.IdempotentParameterMismatchError
-    if code == "InstanceRefreshInProgressFault":
-        return Auto_ScalingError.InstanceRefreshInProgressFault
-    if code == "InvalidNextToken":
-        return Auto_ScalingError.InvalidNextToken
-    if code == "IrreversibleInstanceRefreshFault":
-        return Auto_ScalingError.IrreversibleInstanceRefreshFault
-    if code == "LimitExceededFault":
-        return Auto_ScalingError.LimitExceededFault
-    if code == "ResourceContentionFault":
-        return Auto_ScalingError.ResourceContentionFault
-    if code == "ResourceInUseFault":
-        return Auto_ScalingError.ResourceInUseFault
-    if code == "ScalingActivityInProgressFault":
-        return Auto_ScalingError.ScalingActivityInProgressFault
-    if code == "ServiceLinkedRoleFailure":
-        return Auto_ScalingError.ServiceLinkedRoleFailure
-    return Auto_ScalingError.Unknown(code=code)
+# Classify an AWS error code into `Auto_ScalingErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def autoscaling_error_kind(str code) -> Auto_ScalingErrorKind:
+    auto name = errors.error_code(code)
+    if name == "ActiveInstanceRefreshNotFoundFault":
+        return Auto_ScalingErrorKind.ActiveInstanceRefreshNotFoundFault
+    if name == "AlreadyExistsFault":
+        return Auto_ScalingErrorKind.AlreadyExistsFault
+    if name == "IdempotentCallInProgressFault":
+        return Auto_ScalingErrorKind.IdempotentCallInProgressFault
+    if name == "IdempotentParameterMismatchError":
+        return Auto_ScalingErrorKind.IdempotentParameterMismatchError
+    if name == "InstanceRefreshInProgressFault":
+        return Auto_ScalingErrorKind.InstanceRefreshInProgressFault
+    if name == "InvalidNextToken":
+        return Auto_ScalingErrorKind.InvalidNextToken
+    if name == "IrreversibleInstanceRefreshFault":
+        return Auto_ScalingErrorKind.IrreversibleInstanceRefreshFault
+    if name == "LimitExceededFault":
+        return Auto_ScalingErrorKind.LimitExceededFault
+    if name == "ResourceContentionFault":
+        return Auto_ScalingErrorKind.ResourceContentionFault
+    if name == "ResourceInUseFault":
+        return Auto_ScalingErrorKind.ResourceInUseFault
+    if name == "ScalingActivityInProgressFault":
+        return Auto_ScalingErrorKind.ScalingActivityInProgressFault
+    if name == "ServiceLinkedRoleFailure":
+        return Auto_ScalingErrorKind.ServiceLinkedRoleFailure
+    return Auto_ScalingErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def autoscaling_error_name(Auto_ScalingErrorKind k) -> str:
+    match k:
+        case Auto_ScalingErrorKind.ActiveInstanceRefreshNotFoundFault:
+            return "ActiveInstanceRefreshNotFoundFault"
+        case Auto_ScalingErrorKind.AlreadyExistsFault:
+            return "AlreadyExistsFault"
+        case Auto_ScalingErrorKind.IdempotentCallInProgressFault:
+            return "IdempotentCallInProgressFault"
+        case Auto_ScalingErrorKind.IdempotentParameterMismatchError:
+            return "IdempotentParameterMismatchError"
+        case Auto_ScalingErrorKind.InstanceRefreshInProgressFault:
+            return "InstanceRefreshInProgressFault"
+        case Auto_ScalingErrorKind.InvalidNextToken:
+            return "InvalidNextToken"
+        case Auto_ScalingErrorKind.IrreversibleInstanceRefreshFault:
+            return "IrreversibleInstanceRefreshFault"
+        case Auto_ScalingErrorKind.LimitExceededFault:
+            return "LimitExceededFault"
+        case Auto_ScalingErrorKind.ResourceContentionFault:
+            return "ResourceContentionFault"
+        case Auto_ScalingErrorKind.ResourceInUseFault:
+            return "ResourceInUseFault"
+        case Auto_ScalingErrorKind.ScalingActivityInProgressFault:
+            return "ScalingActivityInProgressFault"
+        case Auto_ScalingErrorKind.ServiceLinkedRoleFailure:
+            return "ServiceLinkedRoleFailure"
+        case Auto_ScalingErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

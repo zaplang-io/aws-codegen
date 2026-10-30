@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix AmazonDAXV3)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -640,9 +642,16 @@ struct UpdateSubnetGroupResponse:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by dax_error_from_code.
-enum DAXError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum DAXErrorKind:
     ClusterAlreadyExistsFault
     ClusterNotFoundFault
     ClusterQuotaForCustomerExceededFault
@@ -673,65 +682,135 @@ enum DAXError:
     TagQuotaPerResourceExceeded
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def dax_error_from_code(str code) -> DAXError:
-    if code == "ClusterAlreadyExistsFault":
-        return DAXError.ClusterAlreadyExistsFault
-    if code == "ClusterNotFoundFault":
-        return DAXError.ClusterNotFoundFault
-    if code == "ClusterQuotaForCustomerExceededFault":
-        return DAXError.ClusterQuotaForCustomerExceededFault
-    if code == "InsufficientClusterCapacityFault":
-        return DAXError.InsufficientClusterCapacityFault
-    if code == "InvalidARNFault":
-        return DAXError.InvalidARNFault
-    if code == "InvalidClusterStateFault":
-        return DAXError.InvalidClusterStateFault
-    if code == "InvalidParameterCombinationException":
-        return DAXError.InvalidParameterCombinationException
-    if code == "InvalidParameterGroupStateFault":
-        return DAXError.InvalidParameterGroupStateFault
-    if code == "InvalidParameterValueException":
-        return DAXError.InvalidParameterValueException
-    if code == "InvalidSubnet":
-        return DAXError.InvalidSubnet
-    if code == "InvalidVPCNetworkStateFault":
-        return DAXError.InvalidVPCNetworkStateFault
-    if code == "NodeNotFoundFault":
-        return DAXError.NodeNotFoundFault
-    if code == "NodeQuotaForClusterExceededFault":
-        return DAXError.NodeQuotaForClusterExceededFault
-    if code == "NodeQuotaForCustomerExceededFault":
-        return DAXError.NodeQuotaForCustomerExceededFault
-    if code == "ParameterGroupAlreadyExistsFault":
-        return DAXError.ParameterGroupAlreadyExistsFault
-    if code == "ParameterGroupNotFoundFault":
-        return DAXError.ParameterGroupNotFoundFault
-    if code == "ParameterGroupQuotaExceededFault":
-        return DAXError.ParameterGroupQuotaExceededFault
-    if code == "ServiceLinkedRoleNotFoundFault":
-        return DAXError.ServiceLinkedRoleNotFoundFault
-    if code == "ServiceQuotaExceededException":
-        return DAXError.ServiceQuotaExceededException
-    if code == "SubnetGroupAlreadyExistsFault":
-        return DAXError.SubnetGroupAlreadyExistsFault
-    if code == "SubnetGroupInUseFault":
-        return DAXError.SubnetGroupInUseFault
-    if code == "SubnetGroupNotFoundFault":
-        return DAXError.SubnetGroupNotFoundFault
-    if code == "SubnetGroupQuotaExceededFault":
-        return DAXError.SubnetGroupQuotaExceededFault
-    if code == "SubnetInUse":
-        return DAXError.SubnetInUse
-    if code == "SubnetNotAllowedFault":
-        return DAXError.SubnetNotAllowedFault
-    if code == "SubnetQuotaExceededFault":
-        return DAXError.SubnetQuotaExceededFault
-    if code == "TagNotFoundFault":
-        return DAXError.TagNotFoundFault
-    if code == "TagQuotaPerResourceExceeded":
-        return DAXError.TagQuotaPerResourceExceeded
-    return DAXError.Unknown(code=code)
+# Classify an AWS error code into `DAXErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def dax_error_kind(str code) -> DAXErrorKind:
+    auto name = errors.error_code(code)
+    if name == "ClusterAlreadyExistsFault":
+        return DAXErrorKind.ClusterAlreadyExistsFault
+    if name == "ClusterNotFoundFault":
+        return DAXErrorKind.ClusterNotFoundFault
+    if name == "ClusterQuotaForCustomerExceededFault":
+        return DAXErrorKind.ClusterQuotaForCustomerExceededFault
+    if name == "InsufficientClusterCapacityFault":
+        return DAXErrorKind.InsufficientClusterCapacityFault
+    if name == "InvalidARNFault":
+        return DAXErrorKind.InvalidARNFault
+    if name == "InvalidClusterStateFault":
+        return DAXErrorKind.InvalidClusterStateFault
+    if name == "InvalidParameterCombinationException":
+        return DAXErrorKind.InvalidParameterCombinationException
+    if name == "InvalidParameterGroupStateFault":
+        return DAXErrorKind.InvalidParameterGroupStateFault
+    if name == "InvalidParameterValueException":
+        return DAXErrorKind.InvalidParameterValueException
+    if name == "InvalidSubnet":
+        return DAXErrorKind.InvalidSubnet
+    if name == "InvalidVPCNetworkStateFault":
+        return DAXErrorKind.InvalidVPCNetworkStateFault
+    if name == "NodeNotFoundFault":
+        return DAXErrorKind.NodeNotFoundFault
+    if name == "NodeQuotaForClusterExceededFault":
+        return DAXErrorKind.NodeQuotaForClusterExceededFault
+    if name == "NodeQuotaForCustomerExceededFault":
+        return DAXErrorKind.NodeQuotaForCustomerExceededFault
+    if name == "ParameterGroupAlreadyExistsFault":
+        return DAXErrorKind.ParameterGroupAlreadyExistsFault
+    if name == "ParameterGroupNotFoundFault":
+        return DAXErrorKind.ParameterGroupNotFoundFault
+    if name == "ParameterGroupQuotaExceededFault":
+        return DAXErrorKind.ParameterGroupQuotaExceededFault
+    if name == "ServiceLinkedRoleNotFoundFault":
+        return DAXErrorKind.ServiceLinkedRoleNotFoundFault
+    if name == "ServiceQuotaExceededException":
+        return DAXErrorKind.ServiceQuotaExceededException
+    if name == "SubnetGroupAlreadyExistsFault":
+        return DAXErrorKind.SubnetGroupAlreadyExistsFault
+    if name == "SubnetGroupInUseFault":
+        return DAXErrorKind.SubnetGroupInUseFault
+    if name == "SubnetGroupNotFoundFault":
+        return DAXErrorKind.SubnetGroupNotFoundFault
+    if name == "SubnetGroupQuotaExceededFault":
+        return DAXErrorKind.SubnetGroupQuotaExceededFault
+    if name == "SubnetInUse":
+        return DAXErrorKind.SubnetInUse
+    if name == "SubnetNotAllowedFault":
+        return DAXErrorKind.SubnetNotAllowedFault
+    if name == "SubnetQuotaExceededFault":
+        return DAXErrorKind.SubnetQuotaExceededFault
+    if name == "TagNotFoundFault":
+        return DAXErrorKind.TagNotFoundFault
+    if name == "TagQuotaPerResourceExceeded":
+        return DAXErrorKind.TagQuotaPerResourceExceeded
+    return DAXErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def dax_error_name(DAXErrorKind k) -> str:
+    match k:
+        case DAXErrorKind.ClusterAlreadyExistsFault:
+            return "ClusterAlreadyExistsFault"
+        case DAXErrorKind.ClusterNotFoundFault:
+            return "ClusterNotFoundFault"
+        case DAXErrorKind.ClusterQuotaForCustomerExceededFault:
+            return "ClusterQuotaForCustomerExceededFault"
+        case DAXErrorKind.InsufficientClusterCapacityFault:
+            return "InsufficientClusterCapacityFault"
+        case DAXErrorKind.InvalidARNFault:
+            return "InvalidARNFault"
+        case DAXErrorKind.InvalidClusterStateFault:
+            return "InvalidClusterStateFault"
+        case DAXErrorKind.InvalidParameterCombinationException:
+            return "InvalidParameterCombinationException"
+        case DAXErrorKind.InvalidParameterGroupStateFault:
+            return "InvalidParameterGroupStateFault"
+        case DAXErrorKind.InvalidParameterValueException:
+            return "InvalidParameterValueException"
+        case DAXErrorKind.InvalidSubnet:
+            return "InvalidSubnet"
+        case DAXErrorKind.InvalidVPCNetworkStateFault:
+            return "InvalidVPCNetworkStateFault"
+        case DAXErrorKind.NodeNotFoundFault:
+            return "NodeNotFoundFault"
+        case DAXErrorKind.NodeQuotaForClusterExceededFault:
+            return "NodeQuotaForClusterExceededFault"
+        case DAXErrorKind.NodeQuotaForCustomerExceededFault:
+            return "NodeQuotaForCustomerExceededFault"
+        case DAXErrorKind.ParameterGroupAlreadyExistsFault:
+            return "ParameterGroupAlreadyExistsFault"
+        case DAXErrorKind.ParameterGroupNotFoundFault:
+            return "ParameterGroupNotFoundFault"
+        case DAXErrorKind.ParameterGroupQuotaExceededFault:
+            return "ParameterGroupQuotaExceededFault"
+        case DAXErrorKind.ServiceLinkedRoleNotFoundFault:
+            return "ServiceLinkedRoleNotFoundFault"
+        case DAXErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case DAXErrorKind.SubnetGroupAlreadyExistsFault:
+            return "SubnetGroupAlreadyExistsFault"
+        case DAXErrorKind.SubnetGroupInUseFault:
+            return "SubnetGroupInUseFault"
+        case DAXErrorKind.SubnetGroupNotFoundFault:
+            return "SubnetGroupNotFoundFault"
+        case DAXErrorKind.SubnetGroupQuotaExceededFault:
+            return "SubnetGroupQuotaExceededFault"
+        case DAXErrorKind.SubnetInUse:
+            return "SubnetInUse"
+        case DAXErrorKind.SubnetNotAllowedFault:
+            return "SubnetNotAllowedFault"
+        case DAXErrorKind.SubnetQuotaExceededFault:
+            return "SubnetQuotaExceededFault"
+        case DAXErrorKind.TagNotFoundFault:
+            return "TagNotFoundFault"
+        case DAXErrorKind.TagQuotaPerResourceExceeded:
+            return "TagQuotaPerResourceExceeded"
+        case DAXErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

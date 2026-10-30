@@ -6,8 +6,8 @@
 # Protocol: smithy-rpc-v2-cbor (SigV4 service events, service shape AWSEventsV2)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + cbor) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
 # POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.cbor
 import datetime
@@ -727,9 +728,16 @@ struct UpdateSubscriberResponse:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# smithy-rpc-v2-cbor body `__type` (cbor.cbor_error_type) code by eventsv2_error_from_code.
-enum EventBridgeV2Error:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the smithy-rpc-v2-cbor body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum EventBridgeV2ErrorKind:
     AccessDeniedException
     ConcurrentModificationException
     ConflictException
@@ -747,42 +755,83 @@ enum EventBridgeV2Error:
     ThrottlingException
     Unknown(str code)
 
-# Map a smithy-rpc-v2-cbor error code to a variant. The code is the body's
-# `__type` (cbor.cbor_error_type / cbor.cbor_error.code); it is namespaced like
-# awsJson (e.g. "com.amazonaws.<svc>#<Name>"), so strip to the bare shape name
-# (the text after the last '#') before dispatching.
-def eventsv2_error_from_code(str code) -> EventBridgeV2Error:
-    if code == "AccessDeniedException":
-        return EventBridgeV2Error.AccessDeniedException
-    if code == "ConcurrentModificationException":
-        return EventBridgeV2Error.ConcurrentModificationException
-    if code == "ConflictException":
-        return EventBridgeV2Error.ConflictException
-    if code == "IdempotentParameterMismatchException":
-        return EventBridgeV2Error.IdempotentParameterMismatchException
-    if code == "InternalException":
-        return EventBridgeV2Error.InternalException
-    if code == "InvalidInputException":
-        return EventBridgeV2Error.InvalidInputException
-    if code == "InvalidStateException":
-        return EventBridgeV2Error.InvalidStateException
-    if code == "LimitExceededException":
-        return EventBridgeV2Error.LimitExceededException
-    if code == "PolicyLengthExceededException":
-        return EventBridgeV2Error.PolicyLengthExceededException
-    if code == "PublicPolicyException":
-        return EventBridgeV2Error.PublicPolicyException
-    if code == "ResourceAlreadyExistsException":
-        return EventBridgeV2Error.ResourceAlreadyExistsException
-    if code == "ResourceInUseException":
-        return EventBridgeV2Error.ResourceInUseException
-    if code == "ResourceNotFoundException":
-        return EventBridgeV2Error.ResourceNotFoundException
-    if code == "SchemaRegistryUnavailableException":
-        return EventBridgeV2Error.SchemaRegistryUnavailableException
-    if code == "ThrottlingException":
-        return EventBridgeV2Error.ThrottlingException
-    return EventBridgeV2Error.Unknown(code=code)
+# Classify an AWS error code into `EventBridgeV2ErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def eventsv2_error_kind(str code) -> EventBridgeV2ErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return EventBridgeV2ErrorKind.AccessDeniedException
+    if name == "ConcurrentModificationException":
+        return EventBridgeV2ErrorKind.ConcurrentModificationException
+    if name == "ConflictException":
+        return EventBridgeV2ErrorKind.ConflictException
+    if name == "IdempotentParameterMismatchException":
+        return EventBridgeV2ErrorKind.IdempotentParameterMismatchException
+    if name == "InternalException":
+        return EventBridgeV2ErrorKind.InternalException
+    if name == "InvalidInputException":
+        return EventBridgeV2ErrorKind.InvalidInputException
+    if name == "InvalidStateException":
+        return EventBridgeV2ErrorKind.InvalidStateException
+    if name == "LimitExceededException":
+        return EventBridgeV2ErrorKind.LimitExceededException
+    if name == "PolicyLengthExceededException":
+        return EventBridgeV2ErrorKind.PolicyLengthExceededException
+    if name == "PublicPolicyException":
+        return EventBridgeV2ErrorKind.PublicPolicyException
+    if name == "ResourceAlreadyExistsException":
+        return EventBridgeV2ErrorKind.ResourceAlreadyExistsException
+    if name == "ResourceInUseException":
+        return EventBridgeV2ErrorKind.ResourceInUseException
+    if name == "ResourceNotFoundException":
+        return EventBridgeV2ErrorKind.ResourceNotFoundException
+    if name == "SchemaRegistryUnavailableException":
+        return EventBridgeV2ErrorKind.SchemaRegistryUnavailableException
+    if name == "ThrottlingException":
+        return EventBridgeV2ErrorKind.ThrottlingException
+    return EventBridgeV2ErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def eventsv2_error_name(EventBridgeV2ErrorKind k) -> str:
+    match k:
+        case EventBridgeV2ErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case EventBridgeV2ErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case EventBridgeV2ErrorKind.ConflictException:
+            return "ConflictException"
+        case EventBridgeV2ErrorKind.IdempotentParameterMismatchException:
+            return "IdempotentParameterMismatchException"
+        case EventBridgeV2ErrorKind.InternalException:
+            return "InternalException"
+        case EventBridgeV2ErrorKind.InvalidInputException:
+            return "InvalidInputException"
+        case EventBridgeV2ErrorKind.InvalidStateException:
+            return "InvalidStateException"
+        case EventBridgeV2ErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case EventBridgeV2ErrorKind.PolicyLengthExceededException:
+            return "PolicyLengthExceededException"
+        case EventBridgeV2ErrorKind.PublicPolicyException:
+            return "PublicPolicyException"
+        case EventBridgeV2ErrorKind.ResourceAlreadyExistsException:
+            return "ResourceAlreadyExistsException"
+        case EventBridgeV2ErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case EventBridgeV2ErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case EventBridgeV2ErrorKind.SchemaRegistryUnavailableException:
+            return "SchemaRegistryUnavailableException"
+        case EventBridgeV2ErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case EventBridgeV2ErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

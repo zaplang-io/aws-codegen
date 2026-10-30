@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.0 (targetPrefix PartnerCentralChannel)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -669,9 +671,16 @@ struct ValidationExceptionField:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by partnercentral_channel_error_from_code.
-enum PartnerCentral_ChannelError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum PartnerCentral_ChannelErrorKind:
     AccessDeniedException
     ConflictException
     InternalServerException
@@ -681,23 +690,51 @@ enum PartnerCentral_ChannelError:
     ValidationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def partnercentral_channel_error_from_code(str code) -> PartnerCentral_ChannelError:
-    if code == "AccessDeniedException":
-        return PartnerCentral_ChannelError.AccessDeniedException
-    if code == "ConflictException":
-        return PartnerCentral_ChannelError.ConflictException
-    if code == "InternalServerException":
-        return PartnerCentral_ChannelError.InternalServerException
-    if code == "ResourceNotFoundException":
-        return PartnerCentral_ChannelError.ResourceNotFoundException
-    if code == "ServiceQuotaExceededException":
-        return PartnerCentral_ChannelError.ServiceQuotaExceededException
-    if code == "ThrottlingException":
-        return PartnerCentral_ChannelError.ThrottlingException
-    if code == "ValidationException":
-        return PartnerCentral_ChannelError.ValidationException
-    return PartnerCentral_ChannelError.Unknown(code=code)
+# Classify an AWS error code into `PartnerCentral_ChannelErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def partnercentral_channel_error_kind(str code) -> PartnerCentral_ChannelErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return PartnerCentral_ChannelErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return PartnerCentral_ChannelErrorKind.ConflictException
+    if name == "InternalServerException":
+        return PartnerCentral_ChannelErrorKind.InternalServerException
+    if name == "ResourceNotFoundException":
+        return PartnerCentral_ChannelErrorKind.ResourceNotFoundException
+    if name == "ServiceQuotaExceededException":
+        return PartnerCentral_ChannelErrorKind.ServiceQuotaExceededException
+    if name == "ThrottlingException":
+        return PartnerCentral_ChannelErrorKind.ThrottlingException
+    if name == "ValidationException":
+        return PartnerCentral_ChannelErrorKind.ValidationException
+    return PartnerCentral_ChannelErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def partnercentral_channel_error_name(PartnerCentral_ChannelErrorKind k) -> str:
+    match k:
+        case PartnerCentral_ChannelErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case PartnerCentral_ChannelErrorKind.ConflictException:
+            return "ConflictException"
+        case PartnerCentral_ChannelErrorKind.InternalServerException:
+            return "InternalServerException"
+        case PartnerCentral_ChannelErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case PartnerCentral_ChannelErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case PartnerCentral_ChannelErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case PartnerCentral_ChannelErrorKind.ValidationException:
+            return "ValidationException"
+        case PartnerCentral_ChannelErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

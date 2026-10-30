@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service imagebuilder)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -2582,9 +2583,16 @@ struct WorkflowVersion:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by imagebuilder_error_from_code.
-enum imagebuilderError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum imagebuilderErrorKind:
     AccessDeniedException
     CallRateLimitExceededException
     ClientException
@@ -2607,50 +2615,103 @@ enum imagebuilderError:
     TooManyRequestsException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def imagebuilder_error_from_code(str code) -> imagebuilderError:
-    if code == "AccessDeniedException":
-        return imagebuilderError.AccessDeniedException
-    if code == "CallRateLimitExceededException":
-        return imagebuilderError.CallRateLimitExceededException
-    if code == "ClientException":
-        return imagebuilderError.ClientException
-    if code == "DryRunOperationException":
-        return imagebuilderError.DryRunOperationException
-    if code == "ForbiddenException":
-        return imagebuilderError.ForbiddenException
-    if code == "IdempotentParameterMismatchException":
-        return imagebuilderError.IdempotentParameterMismatchException
-    if code == "InvalidPaginationTokenException":
-        return imagebuilderError.InvalidPaginationTokenException
-    if code == "InvalidParameterCombinationException":
-        return imagebuilderError.InvalidParameterCombinationException
-    if code == "InvalidParameterException":
-        return imagebuilderError.InvalidParameterException
-    if code == "InvalidParameterValueException":
-        return imagebuilderError.InvalidParameterValueException
-    if code == "InvalidRequestException":
-        return imagebuilderError.InvalidRequestException
-    if code == "InvalidVersionNumberException":
-        return imagebuilderError.InvalidVersionNumberException
-    if code == "ResourceAlreadyExistsException":
-        return imagebuilderError.ResourceAlreadyExistsException
-    if code == "ResourceDependencyException":
-        return imagebuilderError.ResourceDependencyException
-    if code == "ResourceInUseException":
-        return imagebuilderError.ResourceInUseException
-    if code == "ResourceNotFoundException":
-        return imagebuilderError.ResourceNotFoundException
-    if code == "ServiceException":
-        return imagebuilderError.ServiceException
-    if code == "ServiceQuotaExceededException":
-        return imagebuilderError.ServiceQuotaExceededException
-    if code == "ServiceUnavailableException":
-        return imagebuilderError.ServiceUnavailableException
-    if code == "TooManyRequestsException":
-        return imagebuilderError.TooManyRequestsException
-    return imagebuilderError.Unknown(code=code)
+# Classify an AWS error code into `imagebuilderErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def imagebuilder_error_kind(str code) -> imagebuilderErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return imagebuilderErrorKind.AccessDeniedException
+    if name == "CallRateLimitExceededException":
+        return imagebuilderErrorKind.CallRateLimitExceededException
+    if name == "ClientException":
+        return imagebuilderErrorKind.ClientException
+    if name == "DryRunOperationException":
+        return imagebuilderErrorKind.DryRunOperationException
+    if name == "ForbiddenException":
+        return imagebuilderErrorKind.ForbiddenException
+    if name == "IdempotentParameterMismatchException":
+        return imagebuilderErrorKind.IdempotentParameterMismatchException
+    if name == "InvalidPaginationTokenException":
+        return imagebuilderErrorKind.InvalidPaginationTokenException
+    if name == "InvalidParameterCombinationException":
+        return imagebuilderErrorKind.InvalidParameterCombinationException
+    if name == "InvalidParameterException":
+        return imagebuilderErrorKind.InvalidParameterException
+    if name == "InvalidParameterValueException":
+        return imagebuilderErrorKind.InvalidParameterValueException
+    if name == "InvalidRequestException":
+        return imagebuilderErrorKind.InvalidRequestException
+    if name == "InvalidVersionNumberException":
+        return imagebuilderErrorKind.InvalidVersionNumberException
+    if name == "ResourceAlreadyExistsException":
+        return imagebuilderErrorKind.ResourceAlreadyExistsException
+    if name == "ResourceDependencyException":
+        return imagebuilderErrorKind.ResourceDependencyException
+    if name == "ResourceInUseException":
+        return imagebuilderErrorKind.ResourceInUseException
+    if name == "ResourceNotFoundException":
+        return imagebuilderErrorKind.ResourceNotFoundException
+    if name == "ServiceException":
+        return imagebuilderErrorKind.ServiceException
+    if name == "ServiceQuotaExceededException":
+        return imagebuilderErrorKind.ServiceQuotaExceededException
+    if name == "ServiceUnavailableException":
+        return imagebuilderErrorKind.ServiceUnavailableException
+    if name == "TooManyRequestsException":
+        return imagebuilderErrorKind.TooManyRequestsException
+    return imagebuilderErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def imagebuilder_error_name(imagebuilderErrorKind k) -> str:
+    match k:
+        case imagebuilderErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case imagebuilderErrorKind.CallRateLimitExceededException:
+            return "CallRateLimitExceededException"
+        case imagebuilderErrorKind.ClientException:
+            return "ClientException"
+        case imagebuilderErrorKind.DryRunOperationException:
+            return "DryRunOperationException"
+        case imagebuilderErrorKind.ForbiddenException:
+            return "ForbiddenException"
+        case imagebuilderErrorKind.IdempotentParameterMismatchException:
+            return "IdempotentParameterMismatchException"
+        case imagebuilderErrorKind.InvalidPaginationTokenException:
+            return "InvalidPaginationTokenException"
+        case imagebuilderErrorKind.InvalidParameterCombinationException:
+            return "InvalidParameterCombinationException"
+        case imagebuilderErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case imagebuilderErrorKind.InvalidParameterValueException:
+            return "InvalidParameterValueException"
+        case imagebuilderErrorKind.InvalidRequestException:
+            return "InvalidRequestException"
+        case imagebuilderErrorKind.InvalidVersionNumberException:
+            return "InvalidVersionNumberException"
+        case imagebuilderErrorKind.ResourceAlreadyExistsException:
+            return "ResourceAlreadyExistsException"
+        case imagebuilderErrorKind.ResourceDependencyException:
+            return "ResourceDependencyException"
+        case imagebuilderErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case imagebuilderErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case imagebuilderErrorKind.ServiceException:
+            return "ServiceException"
+        case imagebuilderErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case imagebuilderErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
+        case imagebuilderErrorKind.TooManyRequestsException:
+            return "TooManyRequestsException"
+        case imagebuilderErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

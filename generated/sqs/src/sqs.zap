@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.0 (targetPrefix AmazonSQS)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import base64
@@ -521,9 +523,16 @@ struct UntagQueueRequest:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by sqs_error_from_code.
-enum SQSError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum SQSErrorKind:
     BatchEntryIdsNotDistinct
     BatchRequestTooLong
     EmptyBatchRequest
@@ -554,65 +563,135 @@ enum SQSError:
     UnsupportedOperation
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def sqs_error_from_code(str code) -> SQSError:
-    if code == "BatchEntryIdsNotDistinct":
-        return SQSError.BatchEntryIdsNotDistinct
-    if code == "BatchRequestTooLong":
-        return SQSError.BatchRequestTooLong
-    if code == "EmptyBatchRequest":
-        return SQSError.EmptyBatchRequest
-    if code == "InvalidAddress":
-        return SQSError.InvalidAddress
-    if code == "InvalidAttributeName":
-        return SQSError.InvalidAttributeName
-    if code == "InvalidAttributeValue":
-        return SQSError.InvalidAttributeValue
-    if code == "InvalidBatchEntryId":
-        return SQSError.InvalidBatchEntryId
-    if code == "InvalidIdFormat":
-        return SQSError.InvalidIdFormat
-    if code == "InvalidMessageContents":
-        return SQSError.InvalidMessageContents
-    if code == "InvalidSecurity":
-        return SQSError.InvalidSecurity
-    if code == "KmsAccessDenied":
-        return SQSError.KmsAccessDenied
-    if code == "KmsDisabled":
-        return SQSError.KmsDisabled
-    if code == "KmsInvalidKeyUsage":
-        return SQSError.KmsInvalidKeyUsage
-    if code == "KmsInvalidState":
-        return SQSError.KmsInvalidState
-    if code == "KmsNotFound":
-        return SQSError.KmsNotFound
-    if code == "KmsOptInRequired":
-        return SQSError.KmsOptInRequired
-    if code == "KmsThrottled":
-        return SQSError.KmsThrottled
-    if code == "MessageNotInflight":
-        return SQSError.MessageNotInflight
-    if code == "OverLimit":
-        return SQSError.OverLimit
-    if code == "PurgeQueueInProgress":
-        return SQSError.PurgeQueueInProgress
-    if code == "QueueDeletedRecently":
-        return SQSError.QueueDeletedRecently
-    if code == "QueueDoesNotExist":
-        return SQSError.QueueDoesNotExist
-    if code == "QueueNameExists":
-        return SQSError.QueueNameExists
-    if code == "ReceiptHandleIsInvalid":
-        return SQSError.ReceiptHandleIsInvalid
-    if code == "RequestThrottled":
-        return SQSError.RequestThrottled
-    if code == "ResourceNotFoundException":
-        return SQSError.ResourceNotFoundException
-    if code == "TooManyEntriesInBatchRequest":
-        return SQSError.TooManyEntriesInBatchRequest
-    if code == "UnsupportedOperation":
-        return SQSError.UnsupportedOperation
-    return SQSError.Unknown(code=code)
+# Classify an AWS error code into `SQSErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def sqs_error_kind(str code) -> SQSErrorKind:
+    auto name = errors.error_code(code)
+    if name == "BatchEntryIdsNotDistinct":
+        return SQSErrorKind.BatchEntryIdsNotDistinct
+    if name == "BatchRequestTooLong":
+        return SQSErrorKind.BatchRequestTooLong
+    if name == "EmptyBatchRequest":
+        return SQSErrorKind.EmptyBatchRequest
+    if name == "InvalidAddress":
+        return SQSErrorKind.InvalidAddress
+    if name == "InvalidAttributeName":
+        return SQSErrorKind.InvalidAttributeName
+    if name == "InvalidAttributeValue":
+        return SQSErrorKind.InvalidAttributeValue
+    if name == "InvalidBatchEntryId":
+        return SQSErrorKind.InvalidBatchEntryId
+    if name == "InvalidIdFormat":
+        return SQSErrorKind.InvalidIdFormat
+    if name == "InvalidMessageContents":
+        return SQSErrorKind.InvalidMessageContents
+    if name == "InvalidSecurity":
+        return SQSErrorKind.InvalidSecurity
+    if name == "KmsAccessDenied":
+        return SQSErrorKind.KmsAccessDenied
+    if name == "KmsDisabled":
+        return SQSErrorKind.KmsDisabled
+    if name == "KmsInvalidKeyUsage":
+        return SQSErrorKind.KmsInvalidKeyUsage
+    if name == "KmsInvalidState":
+        return SQSErrorKind.KmsInvalidState
+    if name == "KmsNotFound":
+        return SQSErrorKind.KmsNotFound
+    if name == "KmsOptInRequired":
+        return SQSErrorKind.KmsOptInRequired
+    if name == "KmsThrottled":
+        return SQSErrorKind.KmsThrottled
+    if name == "MessageNotInflight":
+        return SQSErrorKind.MessageNotInflight
+    if name == "OverLimit":
+        return SQSErrorKind.OverLimit
+    if name == "PurgeQueueInProgress":
+        return SQSErrorKind.PurgeQueueInProgress
+    if name == "QueueDeletedRecently":
+        return SQSErrorKind.QueueDeletedRecently
+    if name == "QueueDoesNotExist":
+        return SQSErrorKind.QueueDoesNotExist
+    if name == "QueueNameExists":
+        return SQSErrorKind.QueueNameExists
+    if name == "ReceiptHandleIsInvalid":
+        return SQSErrorKind.ReceiptHandleIsInvalid
+    if name == "RequestThrottled":
+        return SQSErrorKind.RequestThrottled
+    if name == "ResourceNotFoundException":
+        return SQSErrorKind.ResourceNotFoundException
+    if name == "TooManyEntriesInBatchRequest":
+        return SQSErrorKind.TooManyEntriesInBatchRequest
+    if name == "UnsupportedOperation":
+        return SQSErrorKind.UnsupportedOperation
+    return SQSErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def sqs_error_name(SQSErrorKind k) -> str:
+    match k:
+        case SQSErrorKind.BatchEntryIdsNotDistinct:
+            return "BatchEntryIdsNotDistinct"
+        case SQSErrorKind.BatchRequestTooLong:
+            return "BatchRequestTooLong"
+        case SQSErrorKind.EmptyBatchRequest:
+            return "EmptyBatchRequest"
+        case SQSErrorKind.InvalidAddress:
+            return "InvalidAddress"
+        case SQSErrorKind.InvalidAttributeName:
+            return "InvalidAttributeName"
+        case SQSErrorKind.InvalidAttributeValue:
+            return "InvalidAttributeValue"
+        case SQSErrorKind.InvalidBatchEntryId:
+            return "InvalidBatchEntryId"
+        case SQSErrorKind.InvalidIdFormat:
+            return "InvalidIdFormat"
+        case SQSErrorKind.InvalidMessageContents:
+            return "InvalidMessageContents"
+        case SQSErrorKind.InvalidSecurity:
+            return "InvalidSecurity"
+        case SQSErrorKind.KmsAccessDenied:
+            return "KmsAccessDenied"
+        case SQSErrorKind.KmsDisabled:
+            return "KmsDisabled"
+        case SQSErrorKind.KmsInvalidKeyUsage:
+            return "KmsInvalidKeyUsage"
+        case SQSErrorKind.KmsInvalidState:
+            return "KmsInvalidState"
+        case SQSErrorKind.KmsNotFound:
+            return "KmsNotFound"
+        case SQSErrorKind.KmsOptInRequired:
+            return "KmsOptInRequired"
+        case SQSErrorKind.KmsThrottled:
+            return "KmsThrottled"
+        case SQSErrorKind.MessageNotInflight:
+            return "MessageNotInflight"
+        case SQSErrorKind.OverLimit:
+            return "OverLimit"
+        case SQSErrorKind.PurgeQueueInProgress:
+            return "PurgeQueueInProgress"
+        case SQSErrorKind.QueueDeletedRecently:
+            return "QueueDeletedRecently"
+        case SQSErrorKind.QueueDoesNotExist:
+            return "QueueDoesNotExist"
+        case SQSErrorKind.QueueNameExists:
+            return "QueueNameExists"
+        case SQSErrorKind.ReceiptHandleIsInvalid:
+            return "ReceiptHandleIsInvalid"
+        case SQSErrorKind.RequestThrottled:
+            return "RequestThrottled"
+        case SQSErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case SQSErrorKind.TooManyEntriesInBatchRequest:
+            return "TooManyEntriesInBatchRequest"
+        case SQSErrorKind.UnsupportedOperation:
+            return "UnsupportedOperation"
+        case SQSErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

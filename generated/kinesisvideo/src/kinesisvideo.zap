@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service kinesisvideo)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -791,9 +792,16 @@ struct VersionMismatchException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by kinesisvideo_error_from_code.
-enum Kinesis_VideoError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Kinesis_VideoErrorKind:
     AccessDeniedException
     AccountChannelLimitExceededException
     AccountStreamLimitExceededException
@@ -811,40 +819,83 @@ enum Kinesis_VideoError:
     VersionMismatchException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def kinesisvideo_error_from_code(str code) -> Kinesis_VideoError:
-    if code == "AccessDeniedException":
-        return Kinesis_VideoError.AccessDeniedException
-    if code == "AccountChannelLimitExceededException":
-        return Kinesis_VideoError.AccountChannelLimitExceededException
-    if code == "AccountStreamLimitExceededException":
-        return Kinesis_VideoError.AccountStreamLimitExceededException
-    if code == "ClientLimitExceededException":
-        return Kinesis_VideoError.ClientLimitExceededException
-    if code == "DeviceStreamLimitExceededException":
-        return Kinesis_VideoError.DeviceStreamLimitExceededException
-    if code == "InvalidArgumentException":
-        return Kinesis_VideoError.InvalidArgumentException
-    if code == "InvalidDeviceException":
-        return Kinesis_VideoError.InvalidDeviceException
-    if code == "InvalidResourceFormatException":
-        return Kinesis_VideoError.InvalidResourceFormatException
-    if code == "NoDataRetentionException":
-        return Kinesis_VideoError.NoDataRetentionException
-    if code == "NotAuthorizedException":
-        return Kinesis_VideoError.NotAuthorizedException
-    if code == "ResourceInUseException":
-        return Kinesis_VideoError.ResourceInUseException
-    if code == "ResourceNotFoundException":
-        return Kinesis_VideoError.ResourceNotFoundException
-    if code == "StreamEdgeConfigurationNotFoundException":
-        return Kinesis_VideoError.StreamEdgeConfigurationNotFoundException
-    if code == "TagsPerResourceExceededLimitException":
-        return Kinesis_VideoError.TagsPerResourceExceededLimitException
-    if code == "VersionMismatchException":
-        return Kinesis_VideoError.VersionMismatchException
-    return Kinesis_VideoError.Unknown(code=code)
+# Classify an AWS error code into `Kinesis_VideoErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def kinesisvideo_error_kind(str code) -> Kinesis_VideoErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return Kinesis_VideoErrorKind.AccessDeniedException
+    if name == "AccountChannelLimitExceededException":
+        return Kinesis_VideoErrorKind.AccountChannelLimitExceededException
+    if name == "AccountStreamLimitExceededException":
+        return Kinesis_VideoErrorKind.AccountStreamLimitExceededException
+    if name == "ClientLimitExceededException":
+        return Kinesis_VideoErrorKind.ClientLimitExceededException
+    if name == "DeviceStreamLimitExceededException":
+        return Kinesis_VideoErrorKind.DeviceStreamLimitExceededException
+    if name == "InvalidArgumentException":
+        return Kinesis_VideoErrorKind.InvalidArgumentException
+    if name == "InvalidDeviceException":
+        return Kinesis_VideoErrorKind.InvalidDeviceException
+    if name == "InvalidResourceFormatException":
+        return Kinesis_VideoErrorKind.InvalidResourceFormatException
+    if name == "NoDataRetentionException":
+        return Kinesis_VideoErrorKind.NoDataRetentionException
+    if name == "NotAuthorizedException":
+        return Kinesis_VideoErrorKind.NotAuthorizedException
+    if name == "ResourceInUseException":
+        return Kinesis_VideoErrorKind.ResourceInUseException
+    if name == "ResourceNotFoundException":
+        return Kinesis_VideoErrorKind.ResourceNotFoundException
+    if name == "StreamEdgeConfigurationNotFoundException":
+        return Kinesis_VideoErrorKind.StreamEdgeConfigurationNotFoundException
+    if name == "TagsPerResourceExceededLimitException":
+        return Kinesis_VideoErrorKind.TagsPerResourceExceededLimitException
+    if name == "VersionMismatchException":
+        return Kinesis_VideoErrorKind.VersionMismatchException
+    return Kinesis_VideoErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def kinesisvideo_error_name(Kinesis_VideoErrorKind k) -> str:
+    match k:
+        case Kinesis_VideoErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case Kinesis_VideoErrorKind.AccountChannelLimitExceededException:
+            return "AccountChannelLimitExceededException"
+        case Kinesis_VideoErrorKind.AccountStreamLimitExceededException:
+            return "AccountStreamLimitExceededException"
+        case Kinesis_VideoErrorKind.ClientLimitExceededException:
+            return "ClientLimitExceededException"
+        case Kinesis_VideoErrorKind.DeviceStreamLimitExceededException:
+            return "DeviceStreamLimitExceededException"
+        case Kinesis_VideoErrorKind.InvalidArgumentException:
+            return "InvalidArgumentException"
+        case Kinesis_VideoErrorKind.InvalidDeviceException:
+            return "InvalidDeviceException"
+        case Kinesis_VideoErrorKind.InvalidResourceFormatException:
+            return "InvalidResourceFormatException"
+        case Kinesis_VideoErrorKind.NoDataRetentionException:
+            return "NoDataRetentionException"
+        case Kinesis_VideoErrorKind.NotAuthorizedException:
+            return "NotAuthorizedException"
+        case Kinesis_VideoErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case Kinesis_VideoErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case Kinesis_VideoErrorKind.StreamEdgeConfigurationNotFoundException:
+            return "StreamEdgeConfigurationNotFoundException"
+        case Kinesis_VideoErrorKind.TagsPerResourceExceededLimitException:
+            return "TagsPerResourceExceededLimitException"
+        case Kinesis_VideoErrorKind.VersionMismatchException:
+            return "VersionMismatchException"
+        case Kinesis_VideoErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

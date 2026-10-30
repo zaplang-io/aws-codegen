@@ -6,8 +6,8 @@
 # Protocol: rest-xml (SigV4 service route53)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restxml) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restxml) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and an
 # httpPayload structure is serialized as the XML document body.
@@ -27,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restxml
@@ -1441,9 +1442,16 @@ struct VPCAssociationNotFound:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# rest-xml `<Error><Code>` element code by route53_error_from_code.
-enum Route_53Error:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the rest-xml `<Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Route_53ErrorKind:
     CidrBlockInUseException
     CidrCollectionAlreadyExistsException
     CidrCollectionInUseException
@@ -1515,148 +1523,299 @@ enum Route_53Error:
     VPCAssociationNotFound
     Unknown(str code)
 
-# Map a rest-xml error code (the <Error><Code> text from rest_xml_error_code)
-# to a variant.
-def route53_error_from_code(str code) -> Route_53Error:
-    if code == "CidrBlockInUseException":
-        return Route_53Error.CidrBlockInUseException
-    if code == "CidrCollectionAlreadyExistsException":
-        return Route_53Error.CidrCollectionAlreadyExistsException
-    if code == "CidrCollectionInUseException":
-        return Route_53Error.CidrCollectionInUseException
-    if code == "CidrCollectionVersionMismatchException":
-        return Route_53Error.CidrCollectionVersionMismatchException
-    if code == "ConcurrentModification":
-        return Route_53Error.ConcurrentModification
-    if code == "ConflictingDomainExists":
-        return Route_53Error.ConflictingDomainExists
-    if code == "ConflictingTypes":
-        return Route_53Error.ConflictingTypes
-    if code == "DNSSECNotFound":
-        return Route_53Error.DNSSECNotFound
-    if code == "DelegationSetAlreadyCreated":
-        return Route_53Error.DelegationSetAlreadyCreated
-    if code == "DelegationSetAlreadyReusable":
-        return Route_53Error.DelegationSetAlreadyReusable
-    if code == "DelegationSetInUse":
-        return Route_53Error.DelegationSetInUse
-    if code == "DelegationSetNotAvailable":
-        return Route_53Error.DelegationSetNotAvailable
-    if code == "DelegationSetNotReusable":
-        return Route_53Error.DelegationSetNotReusable
-    if code == "HealthCheckAlreadyExists":
-        return Route_53Error.HealthCheckAlreadyExists
-    if code == "HealthCheckInUse":
-        return Route_53Error.HealthCheckInUse
-    if code == "HealthCheckVersionMismatch":
-        return Route_53Error.HealthCheckVersionMismatch
-    if code == "HostedZoneAlreadyExists":
-        return Route_53Error.HostedZoneAlreadyExists
-    if code == "HostedZoneNotEmpty":
-        return Route_53Error.HostedZoneNotEmpty
-    if code == "HostedZoneNotFound":
-        return Route_53Error.HostedZoneNotFound
-    if code == "HostedZoneNotPrivate":
-        return Route_53Error.HostedZoneNotPrivate
-    if code == "HostedZonePartiallyDelegated":
-        return Route_53Error.HostedZonePartiallyDelegated
-    if code == "IncompatibleVersion":
-        return Route_53Error.IncompatibleVersion
-    if code == "InsufficientCloudWatchLogsResourcePolicy":
-        return Route_53Error.InsufficientCloudWatchLogsResourcePolicy
-    if code == "InvalidArgument":
-        return Route_53Error.InvalidArgument
-    if code == "InvalidChangeBatch":
-        return Route_53Error.InvalidChangeBatch
-    if code == "InvalidDomainName":
-        return Route_53Error.InvalidDomainName
-    if code == "InvalidInput":
-        return Route_53Error.InvalidInput
-    if code == "InvalidKMSArn":
-        return Route_53Error.InvalidKMSArn
-    if code == "InvalidKeySigningKeyName":
-        return Route_53Error.InvalidKeySigningKeyName
-    if code == "InvalidKeySigningKeyStatus":
-        return Route_53Error.InvalidKeySigningKeyStatus
-    if code == "InvalidPaginationToken":
-        return Route_53Error.InvalidPaginationToken
-    if code == "InvalidSigningStatus":
-        return Route_53Error.InvalidSigningStatus
-    if code == "InvalidTrafficPolicyDocument":
-        return Route_53Error.InvalidTrafficPolicyDocument
-    if code == "InvalidVPCId":
-        return Route_53Error.InvalidVPCId
-    if code == "KeySigningKeyAlreadyExists":
-        return Route_53Error.KeySigningKeyAlreadyExists
-    if code == "KeySigningKeyInParentDSRecord":
-        return Route_53Error.KeySigningKeyInParentDSRecord
-    if code == "KeySigningKeyInUse":
-        return Route_53Error.KeySigningKeyInUse
-    if code == "KeySigningKeyWithActiveStatusNotFound":
-        return Route_53Error.KeySigningKeyWithActiveStatusNotFound
-    if code == "LastVPCAssociation":
-        return Route_53Error.LastVPCAssociation
-    if code == "LimitsExceeded":
-        return Route_53Error.LimitsExceeded
-    if code == "NoSuchChange":
-        return Route_53Error.NoSuchChange
-    if code == "NoSuchCidrCollectionException":
-        return Route_53Error.NoSuchCidrCollectionException
-    if code == "NoSuchCidrLocationException":
-        return Route_53Error.NoSuchCidrLocationException
-    if code == "NoSuchCloudWatchLogsLogGroup":
-        return Route_53Error.NoSuchCloudWatchLogsLogGroup
-    if code == "NoSuchDelegationSet":
-        return Route_53Error.NoSuchDelegationSet
-    if code == "NoSuchGeoLocation":
-        return Route_53Error.NoSuchGeoLocation
-    if code == "NoSuchHealthCheck":
-        return Route_53Error.NoSuchHealthCheck
-    if code == "NoSuchHostedZone":
-        return Route_53Error.NoSuchHostedZone
-    if code == "NoSuchKeySigningKey":
-        return Route_53Error.NoSuchKeySigningKey
-    if code == "NoSuchQueryLoggingConfig":
-        return Route_53Error.NoSuchQueryLoggingConfig
-    if code == "NoSuchTrafficPolicy":
-        return Route_53Error.NoSuchTrafficPolicy
-    if code == "NoSuchTrafficPolicyInstance":
-        return Route_53Error.NoSuchTrafficPolicyInstance
-    if code == "NotAuthorizedException":
-        return Route_53Error.NotAuthorizedException
-    if code == "PriorRequestNotComplete":
-        return Route_53Error.PriorRequestNotComplete
-    if code == "PublicZoneVPCAssociation":
-        return Route_53Error.PublicZoneVPCAssociation
-    if code == "QueryLoggingConfigAlreadyExists":
-        return Route_53Error.QueryLoggingConfigAlreadyExists
-    if code == "ThrottlingException":
-        return Route_53Error.ThrottlingException
-    if code == "TooManyHealthChecks":
-        return Route_53Error.TooManyHealthChecks
-    if code == "TooManyHostedZones":
-        return Route_53Error.TooManyHostedZones
-    if code == "TooManyKeySigningKeys":
-        return Route_53Error.TooManyKeySigningKeys
-    if code == "TooManyTrafficPolicies":
-        return Route_53Error.TooManyTrafficPolicies
-    if code == "TooManyTrafficPolicyInstances":
-        return Route_53Error.TooManyTrafficPolicyInstances
-    if code == "TooManyTrafficPolicyVersionsForCurrentPolicy":
-        return Route_53Error.TooManyTrafficPolicyVersionsForCurrentPolicy
-    if code == "TooManyVPCAssociationAuthorizations":
-        return Route_53Error.TooManyVPCAssociationAuthorizations
-    if code == "TrafficPolicyAlreadyExists":
-        return Route_53Error.TrafficPolicyAlreadyExists
-    if code == "TrafficPolicyInUse":
-        return Route_53Error.TrafficPolicyInUse
-    if code == "TrafficPolicyInstanceAlreadyExists":
-        return Route_53Error.TrafficPolicyInstanceAlreadyExists
-    if code == "VPCAssociationAuthorizationNotFound":
-        return Route_53Error.VPCAssociationAuthorizationNotFound
-    if code == "VPCAssociationNotFound":
-        return Route_53Error.VPCAssociationNotFound
-    return Route_53Error.Unknown(code=code)
+# Classify an AWS error code into `Route_53ErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def route53_error_kind(str code) -> Route_53ErrorKind:
+    auto name = errors.error_code(code)
+    if name == "CidrBlockInUseException":
+        return Route_53ErrorKind.CidrBlockInUseException
+    if name == "CidrCollectionAlreadyExistsException":
+        return Route_53ErrorKind.CidrCollectionAlreadyExistsException
+    if name == "CidrCollectionInUseException":
+        return Route_53ErrorKind.CidrCollectionInUseException
+    if name == "CidrCollectionVersionMismatchException":
+        return Route_53ErrorKind.CidrCollectionVersionMismatchException
+    if name == "ConcurrentModification":
+        return Route_53ErrorKind.ConcurrentModification
+    if name == "ConflictingDomainExists":
+        return Route_53ErrorKind.ConflictingDomainExists
+    if name == "ConflictingTypes":
+        return Route_53ErrorKind.ConflictingTypes
+    if name == "DNSSECNotFound":
+        return Route_53ErrorKind.DNSSECNotFound
+    if name == "DelegationSetAlreadyCreated":
+        return Route_53ErrorKind.DelegationSetAlreadyCreated
+    if name == "DelegationSetAlreadyReusable":
+        return Route_53ErrorKind.DelegationSetAlreadyReusable
+    if name == "DelegationSetInUse":
+        return Route_53ErrorKind.DelegationSetInUse
+    if name == "DelegationSetNotAvailable":
+        return Route_53ErrorKind.DelegationSetNotAvailable
+    if name == "DelegationSetNotReusable":
+        return Route_53ErrorKind.DelegationSetNotReusable
+    if name == "HealthCheckAlreadyExists":
+        return Route_53ErrorKind.HealthCheckAlreadyExists
+    if name == "HealthCheckInUse":
+        return Route_53ErrorKind.HealthCheckInUse
+    if name == "HealthCheckVersionMismatch":
+        return Route_53ErrorKind.HealthCheckVersionMismatch
+    if name == "HostedZoneAlreadyExists":
+        return Route_53ErrorKind.HostedZoneAlreadyExists
+    if name == "HostedZoneNotEmpty":
+        return Route_53ErrorKind.HostedZoneNotEmpty
+    if name == "HostedZoneNotFound":
+        return Route_53ErrorKind.HostedZoneNotFound
+    if name == "HostedZoneNotPrivate":
+        return Route_53ErrorKind.HostedZoneNotPrivate
+    if name == "HostedZonePartiallyDelegated":
+        return Route_53ErrorKind.HostedZonePartiallyDelegated
+    if name == "IncompatibleVersion":
+        return Route_53ErrorKind.IncompatibleVersion
+    if name == "InsufficientCloudWatchLogsResourcePolicy":
+        return Route_53ErrorKind.InsufficientCloudWatchLogsResourcePolicy
+    if name == "InvalidArgument":
+        return Route_53ErrorKind.InvalidArgument
+    if name == "InvalidChangeBatch":
+        return Route_53ErrorKind.InvalidChangeBatch
+    if name == "InvalidDomainName":
+        return Route_53ErrorKind.InvalidDomainName
+    if name == "InvalidInput":
+        return Route_53ErrorKind.InvalidInput
+    if name == "InvalidKMSArn":
+        return Route_53ErrorKind.InvalidKMSArn
+    if name == "InvalidKeySigningKeyName":
+        return Route_53ErrorKind.InvalidKeySigningKeyName
+    if name == "InvalidKeySigningKeyStatus":
+        return Route_53ErrorKind.InvalidKeySigningKeyStatus
+    if name == "InvalidPaginationToken":
+        return Route_53ErrorKind.InvalidPaginationToken
+    if name == "InvalidSigningStatus":
+        return Route_53ErrorKind.InvalidSigningStatus
+    if name == "InvalidTrafficPolicyDocument":
+        return Route_53ErrorKind.InvalidTrafficPolicyDocument
+    if name == "InvalidVPCId":
+        return Route_53ErrorKind.InvalidVPCId
+    if name == "KeySigningKeyAlreadyExists":
+        return Route_53ErrorKind.KeySigningKeyAlreadyExists
+    if name == "KeySigningKeyInParentDSRecord":
+        return Route_53ErrorKind.KeySigningKeyInParentDSRecord
+    if name == "KeySigningKeyInUse":
+        return Route_53ErrorKind.KeySigningKeyInUse
+    if name == "KeySigningKeyWithActiveStatusNotFound":
+        return Route_53ErrorKind.KeySigningKeyWithActiveStatusNotFound
+    if name == "LastVPCAssociation":
+        return Route_53ErrorKind.LastVPCAssociation
+    if name == "LimitsExceeded":
+        return Route_53ErrorKind.LimitsExceeded
+    if name == "NoSuchChange":
+        return Route_53ErrorKind.NoSuchChange
+    if name == "NoSuchCidrCollectionException":
+        return Route_53ErrorKind.NoSuchCidrCollectionException
+    if name == "NoSuchCidrLocationException":
+        return Route_53ErrorKind.NoSuchCidrLocationException
+    if name == "NoSuchCloudWatchLogsLogGroup":
+        return Route_53ErrorKind.NoSuchCloudWatchLogsLogGroup
+    if name == "NoSuchDelegationSet":
+        return Route_53ErrorKind.NoSuchDelegationSet
+    if name == "NoSuchGeoLocation":
+        return Route_53ErrorKind.NoSuchGeoLocation
+    if name == "NoSuchHealthCheck":
+        return Route_53ErrorKind.NoSuchHealthCheck
+    if name == "NoSuchHostedZone":
+        return Route_53ErrorKind.NoSuchHostedZone
+    if name == "NoSuchKeySigningKey":
+        return Route_53ErrorKind.NoSuchKeySigningKey
+    if name == "NoSuchQueryLoggingConfig":
+        return Route_53ErrorKind.NoSuchQueryLoggingConfig
+    if name == "NoSuchTrafficPolicy":
+        return Route_53ErrorKind.NoSuchTrafficPolicy
+    if name == "NoSuchTrafficPolicyInstance":
+        return Route_53ErrorKind.NoSuchTrafficPolicyInstance
+    if name == "NotAuthorizedException":
+        return Route_53ErrorKind.NotAuthorizedException
+    if name == "PriorRequestNotComplete":
+        return Route_53ErrorKind.PriorRequestNotComplete
+    if name == "PublicZoneVPCAssociation":
+        return Route_53ErrorKind.PublicZoneVPCAssociation
+    if name == "QueryLoggingConfigAlreadyExists":
+        return Route_53ErrorKind.QueryLoggingConfigAlreadyExists
+    if name == "ThrottlingException":
+        return Route_53ErrorKind.ThrottlingException
+    if name == "TooManyHealthChecks":
+        return Route_53ErrorKind.TooManyHealthChecks
+    if name == "TooManyHostedZones":
+        return Route_53ErrorKind.TooManyHostedZones
+    if name == "TooManyKeySigningKeys":
+        return Route_53ErrorKind.TooManyKeySigningKeys
+    if name == "TooManyTrafficPolicies":
+        return Route_53ErrorKind.TooManyTrafficPolicies
+    if name == "TooManyTrafficPolicyInstances":
+        return Route_53ErrorKind.TooManyTrafficPolicyInstances
+    if name == "TooManyTrafficPolicyVersionsForCurrentPolicy":
+        return Route_53ErrorKind.TooManyTrafficPolicyVersionsForCurrentPolicy
+    if name == "TooManyVPCAssociationAuthorizations":
+        return Route_53ErrorKind.TooManyVPCAssociationAuthorizations
+    if name == "TrafficPolicyAlreadyExists":
+        return Route_53ErrorKind.TrafficPolicyAlreadyExists
+    if name == "TrafficPolicyInUse":
+        return Route_53ErrorKind.TrafficPolicyInUse
+    if name == "TrafficPolicyInstanceAlreadyExists":
+        return Route_53ErrorKind.TrafficPolicyInstanceAlreadyExists
+    if name == "VPCAssociationAuthorizationNotFound":
+        return Route_53ErrorKind.VPCAssociationAuthorizationNotFound
+    if name == "VPCAssociationNotFound":
+        return Route_53ErrorKind.VPCAssociationNotFound
+    return Route_53ErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def route53_error_name(Route_53ErrorKind k) -> str:
+    match k:
+        case Route_53ErrorKind.CidrBlockInUseException:
+            return "CidrBlockInUseException"
+        case Route_53ErrorKind.CidrCollectionAlreadyExistsException:
+            return "CidrCollectionAlreadyExistsException"
+        case Route_53ErrorKind.CidrCollectionInUseException:
+            return "CidrCollectionInUseException"
+        case Route_53ErrorKind.CidrCollectionVersionMismatchException:
+            return "CidrCollectionVersionMismatchException"
+        case Route_53ErrorKind.ConcurrentModification:
+            return "ConcurrentModification"
+        case Route_53ErrorKind.ConflictingDomainExists:
+            return "ConflictingDomainExists"
+        case Route_53ErrorKind.ConflictingTypes:
+            return "ConflictingTypes"
+        case Route_53ErrorKind.DNSSECNotFound:
+            return "DNSSECNotFound"
+        case Route_53ErrorKind.DelegationSetAlreadyCreated:
+            return "DelegationSetAlreadyCreated"
+        case Route_53ErrorKind.DelegationSetAlreadyReusable:
+            return "DelegationSetAlreadyReusable"
+        case Route_53ErrorKind.DelegationSetInUse:
+            return "DelegationSetInUse"
+        case Route_53ErrorKind.DelegationSetNotAvailable:
+            return "DelegationSetNotAvailable"
+        case Route_53ErrorKind.DelegationSetNotReusable:
+            return "DelegationSetNotReusable"
+        case Route_53ErrorKind.HealthCheckAlreadyExists:
+            return "HealthCheckAlreadyExists"
+        case Route_53ErrorKind.HealthCheckInUse:
+            return "HealthCheckInUse"
+        case Route_53ErrorKind.HealthCheckVersionMismatch:
+            return "HealthCheckVersionMismatch"
+        case Route_53ErrorKind.HostedZoneAlreadyExists:
+            return "HostedZoneAlreadyExists"
+        case Route_53ErrorKind.HostedZoneNotEmpty:
+            return "HostedZoneNotEmpty"
+        case Route_53ErrorKind.HostedZoneNotFound:
+            return "HostedZoneNotFound"
+        case Route_53ErrorKind.HostedZoneNotPrivate:
+            return "HostedZoneNotPrivate"
+        case Route_53ErrorKind.HostedZonePartiallyDelegated:
+            return "HostedZonePartiallyDelegated"
+        case Route_53ErrorKind.IncompatibleVersion:
+            return "IncompatibleVersion"
+        case Route_53ErrorKind.InsufficientCloudWatchLogsResourcePolicy:
+            return "InsufficientCloudWatchLogsResourcePolicy"
+        case Route_53ErrorKind.InvalidArgument:
+            return "InvalidArgument"
+        case Route_53ErrorKind.InvalidChangeBatch:
+            return "InvalidChangeBatch"
+        case Route_53ErrorKind.InvalidDomainName:
+            return "InvalidDomainName"
+        case Route_53ErrorKind.InvalidInput:
+            return "InvalidInput"
+        case Route_53ErrorKind.InvalidKMSArn:
+            return "InvalidKMSArn"
+        case Route_53ErrorKind.InvalidKeySigningKeyName:
+            return "InvalidKeySigningKeyName"
+        case Route_53ErrorKind.InvalidKeySigningKeyStatus:
+            return "InvalidKeySigningKeyStatus"
+        case Route_53ErrorKind.InvalidPaginationToken:
+            return "InvalidPaginationToken"
+        case Route_53ErrorKind.InvalidSigningStatus:
+            return "InvalidSigningStatus"
+        case Route_53ErrorKind.InvalidTrafficPolicyDocument:
+            return "InvalidTrafficPolicyDocument"
+        case Route_53ErrorKind.InvalidVPCId:
+            return "InvalidVPCId"
+        case Route_53ErrorKind.KeySigningKeyAlreadyExists:
+            return "KeySigningKeyAlreadyExists"
+        case Route_53ErrorKind.KeySigningKeyInParentDSRecord:
+            return "KeySigningKeyInParentDSRecord"
+        case Route_53ErrorKind.KeySigningKeyInUse:
+            return "KeySigningKeyInUse"
+        case Route_53ErrorKind.KeySigningKeyWithActiveStatusNotFound:
+            return "KeySigningKeyWithActiveStatusNotFound"
+        case Route_53ErrorKind.LastVPCAssociation:
+            return "LastVPCAssociation"
+        case Route_53ErrorKind.LimitsExceeded:
+            return "LimitsExceeded"
+        case Route_53ErrorKind.NoSuchChange:
+            return "NoSuchChange"
+        case Route_53ErrorKind.NoSuchCidrCollectionException:
+            return "NoSuchCidrCollectionException"
+        case Route_53ErrorKind.NoSuchCidrLocationException:
+            return "NoSuchCidrLocationException"
+        case Route_53ErrorKind.NoSuchCloudWatchLogsLogGroup:
+            return "NoSuchCloudWatchLogsLogGroup"
+        case Route_53ErrorKind.NoSuchDelegationSet:
+            return "NoSuchDelegationSet"
+        case Route_53ErrorKind.NoSuchGeoLocation:
+            return "NoSuchGeoLocation"
+        case Route_53ErrorKind.NoSuchHealthCheck:
+            return "NoSuchHealthCheck"
+        case Route_53ErrorKind.NoSuchHostedZone:
+            return "NoSuchHostedZone"
+        case Route_53ErrorKind.NoSuchKeySigningKey:
+            return "NoSuchKeySigningKey"
+        case Route_53ErrorKind.NoSuchQueryLoggingConfig:
+            return "NoSuchQueryLoggingConfig"
+        case Route_53ErrorKind.NoSuchTrafficPolicy:
+            return "NoSuchTrafficPolicy"
+        case Route_53ErrorKind.NoSuchTrafficPolicyInstance:
+            return "NoSuchTrafficPolicyInstance"
+        case Route_53ErrorKind.NotAuthorizedException:
+            return "NotAuthorizedException"
+        case Route_53ErrorKind.PriorRequestNotComplete:
+            return "PriorRequestNotComplete"
+        case Route_53ErrorKind.PublicZoneVPCAssociation:
+            return "PublicZoneVPCAssociation"
+        case Route_53ErrorKind.QueryLoggingConfigAlreadyExists:
+            return "QueryLoggingConfigAlreadyExists"
+        case Route_53ErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case Route_53ErrorKind.TooManyHealthChecks:
+            return "TooManyHealthChecks"
+        case Route_53ErrorKind.TooManyHostedZones:
+            return "TooManyHostedZones"
+        case Route_53ErrorKind.TooManyKeySigningKeys:
+            return "TooManyKeySigningKeys"
+        case Route_53ErrorKind.TooManyTrafficPolicies:
+            return "TooManyTrafficPolicies"
+        case Route_53ErrorKind.TooManyTrafficPolicyInstances:
+            return "TooManyTrafficPolicyInstances"
+        case Route_53ErrorKind.TooManyTrafficPolicyVersionsForCurrentPolicy:
+            return "TooManyTrafficPolicyVersionsForCurrentPolicy"
+        case Route_53ErrorKind.TooManyVPCAssociationAuthorizations:
+            return "TooManyVPCAssociationAuthorizations"
+        case Route_53ErrorKind.TrafficPolicyAlreadyExists:
+            return "TrafficPolicyAlreadyExists"
+        case Route_53ErrorKind.TrafficPolicyInUse:
+            return "TrafficPolicyInUse"
+        case Route_53ErrorKind.TrafficPolicyInstanceAlreadyExists:
+            return "TrafficPolicyInstanceAlreadyExists"
+        case Route_53ErrorKind.VPCAssociationAuthorizationNotFound:
+            return "VPCAssociationAuthorizationNotFound"
+        case Route_53ErrorKind.VPCAssociationNotFound:
+            return "VPCAssociationNotFound"
+        case Route_53ErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

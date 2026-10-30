@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix AWSMigrationHub)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -433,9 +435,16 @@ struct UnauthorizedOperation:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by mgh_error_from_code.
-enum Migration_HubError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Migration_HubErrorKind:
     AccessDeniedException
     DryRunOperation
     HomeRegionNotSetException
@@ -448,29 +457,63 @@ enum Migration_HubError:
     UnauthorizedOperation
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def mgh_error_from_code(str code) -> Migration_HubError:
-    if code == "AccessDeniedException":
-        return Migration_HubError.AccessDeniedException
-    if code == "DryRunOperation":
-        return Migration_HubError.DryRunOperation
-    if code == "HomeRegionNotSetException":
-        return Migration_HubError.HomeRegionNotSetException
-    if code == "InternalServerError":
-        return Migration_HubError.InternalServerError
-    if code == "InvalidInputException":
-        return Migration_HubError.InvalidInputException
-    if code == "PolicyErrorException":
-        return Migration_HubError.PolicyErrorException
-    if code == "ResourceNotFoundException":
-        return Migration_HubError.ResourceNotFoundException
-    if code == "ServiceUnavailableException":
-        return Migration_HubError.ServiceUnavailableException
-    if code == "ThrottlingException":
-        return Migration_HubError.ThrottlingException
-    if code == "UnauthorizedOperation":
-        return Migration_HubError.UnauthorizedOperation
-    return Migration_HubError.Unknown(code=code)
+# Classify an AWS error code into `Migration_HubErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def mgh_error_kind(str code) -> Migration_HubErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return Migration_HubErrorKind.AccessDeniedException
+    if name == "DryRunOperation":
+        return Migration_HubErrorKind.DryRunOperation
+    if name == "HomeRegionNotSetException":
+        return Migration_HubErrorKind.HomeRegionNotSetException
+    if name == "InternalServerError":
+        return Migration_HubErrorKind.InternalServerError
+    if name == "InvalidInputException":
+        return Migration_HubErrorKind.InvalidInputException
+    if name == "PolicyErrorException":
+        return Migration_HubErrorKind.PolicyErrorException
+    if name == "ResourceNotFoundException":
+        return Migration_HubErrorKind.ResourceNotFoundException
+    if name == "ServiceUnavailableException":
+        return Migration_HubErrorKind.ServiceUnavailableException
+    if name == "ThrottlingException":
+        return Migration_HubErrorKind.ThrottlingException
+    if name == "UnauthorizedOperation":
+        return Migration_HubErrorKind.UnauthorizedOperation
+    return Migration_HubErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def mgh_error_name(Migration_HubErrorKind k) -> str:
+    match k:
+        case Migration_HubErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case Migration_HubErrorKind.DryRunOperation:
+            return "DryRunOperation"
+        case Migration_HubErrorKind.HomeRegionNotSetException:
+            return "HomeRegionNotSetException"
+        case Migration_HubErrorKind.InternalServerError:
+            return "InternalServerError"
+        case Migration_HubErrorKind.InvalidInputException:
+            return "InvalidInputException"
+        case Migration_HubErrorKind.PolicyErrorException:
+            return "PolicyErrorException"
+        case Migration_HubErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case Migration_HubErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
+        case Migration_HubErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case Migration_HubErrorKind.UnauthorizedOperation:
+            return "UnauthorizedOperation"
+        case Migration_HubErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

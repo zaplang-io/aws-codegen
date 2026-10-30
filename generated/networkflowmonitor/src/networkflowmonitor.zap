@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service networkflowmonitor)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -628,9 +629,16 @@ struct WorkloadInsightsTopContributorsRow:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by networkflowmonitor_error_from_code.
-enum NetworkFlowMonitorError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum NetworkFlowMonitorErrorKind:
     AccessDeniedException
     ConflictException
     InternalServerException
@@ -640,24 +648,51 @@ enum NetworkFlowMonitorError:
     ValidationException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def networkflowmonitor_error_from_code(str code) -> NetworkFlowMonitorError:
-    if code == "AccessDeniedException":
-        return NetworkFlowMonitorError.AccessDeniedException
-    if code == "ConflictException":
-        return NetworkFlowMonitorError.ConflictException
-    if code == "InternalServerException":
-        return NetworkFlowMonitorError.InternalServerException
-    if code == "ResourceNotFoundException":
-        return NetworkFlowMonitorError.ResourceNotFoundException
-    if code == "ServiceQuotaExceededException":
-        return NetworkFlowMonitorError.ServiceQuotaExceededException
-    if code == "ThrottlingException":
-        return NetworkFlowMonitorError.ThrottlingException
-    if code == "ValidationException":
-        return NetworkFlowMonitorError.ValidationException
-    return NetworkFlowMonitorError.Unknown(code=code)
+# Classify an AWS error code into `NetworkFlowMonitorErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def networkflowmonitor_error_kind(str code) -> NetworkFlowMonitorErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return NetworkFlowMonitorErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return NetworkFlowMonitorErrorKind.ConflictException
+    if name == "InternalServerException":
+        return NetworkFlowMonitorErrorKind.InternalServerException
+    if name == "ResourceNotFoundException":
+        return NetworkFlowMonitorErrorKind.ResourceNotFoundException
+    if name == "ServiceQuotaExceededException":
+        return NetworkFlowMonitorErrorKind.ServiceQuotaExceededException
+    if name == "ThrottlingException":
+        return NetworkFlowMonitorErrorKind.ThrottlingException
+    if name == "ValidationException":
+        return NetworkFlowMonitorErrorKind.ValidationException
+    return NetworkFlowMonitorErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def networkflowmonitor_error_name(NetworkFlowMonitorErrorKind k) -> str:
+    match k:
+        case NetworkFlowMonitorErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case NetworkFlowMonitorErrorKind.ConflictException:
+            return "ConflictException"
+        case NetworkFlowMonitorErrorKind.InternalServerException:
+            return "InternalServerException"
+        case NetworkFlowMonitorErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case NetworkFlowMonitorErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case NetworkFlowMonitorErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case NetworkFlowMonitorErrorKind.ValidationException:
+            return "ValidationException"
+        case NetworkFlowMonitorErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

@@ -6,8 +6,8 @@
 # Protocol: rest-xml (SigV4 service cloudfront)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restxml) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restxml) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and an
 # httpPayload structure is serialized as the XML document body.
@@ -27,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restxml
@@ -694,9 +695,16 @@ struct ViewerCertificate:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# rest-xml `<Error><Code>` element code by cloudfront_error_from_code.
-enum CloudFrontError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the rest-xml `<Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum CloudFrontErrorKind:
     AccessDenied
     BatchTooLarge
     CNAMEAlreadyExists
@@ -748,108 +756,219 @@ enum CloudFrontError:
     TrustedSignerDoesNotExist
     Unknown(str code)
 
-# Map a rest-xml error code (the <Error><Code> text from rest_xml_error_code)
-# to a variant.
-def cloudfront_error_from_code(str code) -> CloudFrontError:
-    if code == "AccessDenied":
-        return CloudFrontError.AccessDenied
-    if code == "BatchTooLarge":
-        return CloudFrontError.BatchTooLarge
-    if code == "CNAMEAlreadyExists":
-        return CloudFrontError.CNAMEAlreadyExists
-    if code == "CloudFrontOriginAccessIdentityAlreadyExists":
-        return CloudFrontError.CloudFrontOriginAccessIdentityAlreadyExists
-    if code == "CloudFrontOriginAccessIdentityInUse":
-        return CloudFrontError.CloudFrontOriginAccessIdentityInUse
-    if code == "DistributionAlreadyExists":
-        return CloudFrontError.DistributionAlreadyExists
-    if code == "DistributionNotDisabled":
-        return CloudFrontError.DistributionNotDisabled
-    if code == "IllegalUpdate":
-        return CloudFrontError.IllegalUpdate
-    if code == "InconsistentQuantities":
-        return CloudFrontError.InconsistentQuantities
-    if code == "InvalidArgument":
-        return CloudFrontError.InvalidArgument
-    if code == "InvalidDefaultRootObject":
-        return CloudFrontError.InvalidDefaultRootObject
-    if code == "InvalidErrorCode":
-        return CloudFrontError.InvalidErrorCode
-    if code == "InvalidForwardCookies":
-        return CloudFrontError.InvalidForwardCookies
-    if code == "InvalidGeoRestrictionParameter":
-        return CloudFrontError.InvalidGeoRestrictionParameter
-    if code == "InvalidHeadersForS3Origin":
-        return CloudFrontError.InvalidHeadersForS3Origin
-    if code == "InvalidIfMatchVersion":
-        return CloudFrontError.InvalidIfMatchVersion
-    if code == "InvalidLocationCode":
-        return CloudFrontError.InvalidLocationCode
-    if code == "InvalidMinimumProtocolVersion":
-        return CloudFrontError.InvalidMinimumProtocolVersion
-    if code == "InvalidOrigin":
-        return CloudFrontError.InvalidOrigin
-    if code == "InvalidOriginAccessIdentity":
-        return CloudFrontError.InvalidOriginAccessIdentity
-    if code == "InvalidProtocolSettings":
-        return CloudFrontError.InvalidProtocolSettings
-    if code == "InvalidRelativePath":
-        return CloudFrontError.InvalidRelativePath
-    if code == "InvalidRequiredProtocol":
-        return CloudFrontError.InvalidRequiredProtocol
-    if code == "InvalidResponseCode":
-        return CloudFrontError.InvalidResponseCode
-    if code == "InvalidTTLOrder":
-        return CloudFrontError.InvalidTTLOrder
-    if code == "InvalidViewerCertificate":
-        return CloudFrontError.InvalidViewerCertificate
-    if code == "InvalidWebACLId":
-        return CloudFrontError.InvalidWebACLId
-    if code == "MissingBody":
-        return CloudFrontError.MissingBody
-    if code == "NoSuchCloudFrontOriginAccessIdentity":
-        return CloudFrontError.NoSuchCloudFrontOriginAccessIdentity
-    if code == "NoSuchDistribution":
-        return CloudFrontError.NoSuchDistribution
-    if code == "NoSuchInvalidation":
-        return CloudFrontError.NoSuchInvalidation
-    if code == "NoSuchOrigin":
-        return CloudFrontError.NoSuchOrigin
-    if code == "NoSuchStreamingDistribution":
-        return CloudFrontError.NoSuchStreamingDistribution
-    if code == "PreconditionFailed":
-        return CloudFrontError.PreconditionFailed
-    if code == "StreamingDistributionAlreadyExists":
-        return CloudFrontError.StreamingDistributionAlreadyExists
-    if code == "StreamingDistributionNotDisabled":
-        return CloudFrontError.StreamingDistributionNotDisabled
-    if code == "TooManyCacheBehaviors":
-        return CloudFrontError.TooManyCacheBehaviors
-    if code == "TooManyCertificates":
-        return CloudFrontError.TooManyCertificates
-    if code == "TooManyCloudFrontOriginAccessIdentities":
-        return CloudFrontError.TooManyCloudFrontOriginAccessIdentities
-    if code == "TooManyCookieNamesInWhiteList":
-        return CloudFrontError.TooManyCookieNamesInWhiteList
-    if code == "TooManyDistributionCNAMEs":
-        return CloudFrontError.TooManyDistributionCNAMEs
-    if code == "TooManyDistributions":
-        return CloudFrontError.TooManyDistributions
-    if code == "TooManyHeadersInForwardedValues":
-        return CloudFrontError.TooManyHeadersInForwardedValues
-    if code == "TooManyInvalidationsInProgress":
-        return CloudFrontError.TooManyInvalidationsInProgress
-    if code == "TooManyOrigins":
-        return CloudFrontError.TooManyOrigins
-    if code == "TooManyStreamingDistributionCNAMEs":
-        return CloudFrontError.TooManyStreamingDistributionCNAMEs
-    if code == "TooManyStreamingDistributions":
-        return CloudFrontError.TooManyStreamingDistributions
-    if code == "TooManyTrustedSigners":
-        return CloudFrontError.TooManyTrustedSigners
-    if code == "TrustedSignerDoesNotExist":
-        return CloudFrontError.TrustedSignerDoesNotExist
-    return CloudFrontError.Unknown(code=code)
+# Classify an AWS error code into `CloudFrontErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def cloudfront_error_kind(str code) -> CloudFrontErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDenied":
+        return CloudFrontErrorKind.AccessDenied
+    if name == "BatchTooLarge":
+        return CloudFrontErrorKind.BatchTooLarge
+    if name == "CNAMEAlreadyExists":
+        return CloudFrontErrorKind.CNAMEAlreadyExists
+    if name == "CloudFrontOriginAccessIdentityAlreadyExists":
+        return CloudFrontErrorKind.CloudFrontOriginAccessIdentityAlreadyExists
+    if name == "CloudFrontOriginAccessIdentityInUse":
+        return CloudFrontErrorKind.CloudFrontOriginAccessIdentityInUse
+    if name == "DistributionAlreadyExists":
+        return CloudFrontErrorKind.DistributionAlreadyExists
+    if name == "DistributionNotDisabled":
+        return CloudFrontErrorKind.DistributionNotDisabled
+    if name == "IllegalUpdate":
+        return CloudFrontErrorKind.IllegalUpdate
+    if name == "InconsistentQuantities":
+        return CloudFrontErrorKind.InconsistentQuantities
+    if name == "InvalidArgument":
+        return CloudFrontErrorKind.InvalidArgument
+    if name == "InvalidDefaultRootObject":
+        return CloudFrontErrorKind.InvalidDefaultRootObject
+    if name == "InvalidErrorCode":
+        return CloudFrontErrorKind.InvalidErrorCode
+    if name == "InvalidForwardCookies":
+        return CloudFrontErrorKind.InvalidForwardCookies
+    if name == "InvalidGeoRestrictionParameter":
+        return CloudFrontErrorKind.InvalidGeoRestrictionParameter
+    if name == "InvalidHeadersForS3Origin":
+        return CloudFrontErrorKind.InvalidHeadersForS3Origin
+    if name == "InvalidIfMatchVersion":
+        return CloudFrontErrorKind.InvalidIfMatchVersion
+    if name == "InvalidLocationCode":
+        return CloudFrontErrorKind.InvalidLocationCode
+    if name == "InvalidMinimumProtocolVersion":
+        return CloudFrontErrorKind.InvalidMinimumProtocolVersion
+    if name == "InvalidOrigin":
+        return CloudFrontErrorKind.InvalidOrigin
+    if name == "InvalidOriginAccessIdentity":
+        return CloudFrontErrorKind.InvalidOriginAccessIdentity
+    if name == "InvalidProtocolSettings":
+        return CloudFrontErrorKind.InvalidProtocolSettings
+    if name == "InvalidRelativePath":
+        return CloudFrontErrorKind.InvalidRelativePath
+    if name == "InvalidRequiredProtocol":
+        return CloudFrontErrorKind.InvalidRequiredProtocol
+    if name == "InvalidResponseCode":
+        return CloudFrontErrorKind.InvalidResponseCode
+    if name == "InvalidTTLOrder":
+        return CloudFrontErrorKind.InvalidTTLOrder
+    if name == "InvalidViewerCertificate":
+        return CloudFrontErrorKind.InvalidViewerCertificate
+    if name == "InvalidWebACLId":
+        return CloudFrontErrorKind.InvalidWebACLId
+    if name == "MissingBody":
+        return CloudFrontErrorKind.MissingBody
+    if name == "NoSuchCloudFrontOriginAccessIdentity":
+        return CloudFrontErrorKind.NoSuchCloudFrontOriginAccessIdentity
+    if name == "NoSuchDistribution":
+        return CloudFrontErrorKind.NoSuchDistribution
+    if name == "NoSuchInvalidation":
+        return CloudFrontErrorKind.NoSuchInvalidation
+    if name == "NoSuchOrigin":
+        return CloudFrontErrorKind.NoSuchOrigin
+    if name == "NoSuchStreamingDistribution":
+        return CloudFrontErrorKind.NoSuchStreamingDistribution
+    if name == "PreconditionFailed":
+        return CloudFrontErrorKind.PreconditionFailed
+    if name == "StreamingDistributionAlreadyExists":
+        return CloudFrontErrorKind.StreamingDistributionAlreadyExists
+    if name == "StreamingDistributionNotDisabled":
+        return CloudFrontErrorKind.StreamingDistributionNotDisabled
+    if name == "TooManyCacheBehaviors":
+        return CloudFrontErrorKind.TooManyCacheBehaviors
+    if name == "TooManyCertificates":
+        return CloudFrontErrorKind.TooManyCertificates
+    if name == "TooManyCloudFrontOriginAccessIdentities":
+        return CloudFrontErrorKind.TooManyCloudFrontOriginAccessIdentities
+    if name == "TooManyCookieNamesInWhiteList":
+        return CloudFrontErrorKind.TooManyCookieNamesInWhiteList
+    if name == "TooManyDistributionCNAMEs":
+        return CloudFrontErrorKind.TooManyDistributionCNAMEs
+    if name == "TooManyDistributions":
+        return CloudFrontErrorKind.TooManyDistributions
+    if name == "TooManyHeadersInForwardedValues":
+        return CloudFrontErrorKind.TooManyHeadersInForwardedValues
+    if name == "TooManyInvalidationsInProgress":
+        return CloudFrontErrorKind.TooManyInvalidationsInProgress
+    if name == "TooManyOrigins":
+        return CloudFrontErrorKind.TooManyOrigins
+    if name == "TooManyStreamingDistributionCNAMEs":
+        return CloudFrontErrorKind.TooManyStreamingDistributionCNAMEs
+    if name == "TooManyStreamingDistributions":
+        return CloudFrontErrorKind.TooManyStreamingDistributions
+    if name == "TooManyTrustedSigners":
+        return CloudFrontErrorKind.TooManyTrustedSigners
+    if name == "TrustedSignerDoesNotExist":
+        return CloudFrontErrorKind.TrustedSignerDoesNotExist
+    return CloudFrontErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def cloudfront_error_name(CloudFrontErrorKind k) -> str:
+    match k:
+        case CloudFrontErrorKind.AccessDenied:
+            return "AccessDenied"
+        case CloudFrontErrorKind.BatchTooLarge:
+            return "BatchTooLarge"
+        case CloudFrontErrorKind.CNAMEAlreadyExists:
+            return "CNAMEAlreadyExists"
+        case CloudFrontErrorKind.CloudFrontOriginAccessIdentityAlreadyExists:
+            return "CloudFrontOriginAccessIdentityAlreadyExists"
+        case CloudFrontErrorKind.CloudFrontOriginAccessIdentityInUse:
+            return "CloudFrontOriginAccessIdentityInUse"
+        case CloudFrontErrorKind.DistributionAlreadyExists:
+            return "DistributionAlreadyExists"
+        case CloudFrontErrorKind.DistributionNotDisabled:
+            return "DistributionNotDisabled"
+        case CloudFrontErrorKind.IllegalUpdate:
+            return "IllegalUpdate"
+        case CloudFrontErrorKind.InconsistentQuantities:
+            return "InconsistentQuantities"
+        case CloudFrontErrorKind.InvalidArgument:
+            return "InvalidArgument"
+        case CloudFrontErrorKind.InvalidDefaultRootObject:
+            return "InvalidDefaultRootObject"
+        case CloudFrontErrorKind.InvalidErrorCode:
+            return "InvalidErrorCode"
+        case CloudFrontErrorKind.InvalidForwardCookies:
+            return "InvalidForwardCookies"
+        case CloudFrontErrorKind.InvalidGeoRestrictionParameter:
+            return "InvalidGeoRestrictionParameter"
+        case CloudFrontErrorKind.InvalidHeadersForS3Origin:
+            return "InvalidHeadersForS3Origin"
+        case CloudFrontErrorKind.InvalidIfMatchVersion:
+            return "InvalidIfMatchVersion"
+        case CloudFrontErrorKind.InvalidLocationCode:
+            return "InvalidLocationCode"
+        case CloudFrontErrorKind.InvalidMinimumProtocolVersion:
+            return "InvalidMinimumProtocolVersion"
+        case CloudFrontErrorKind.InvalidOrigin:
+            return "InvalidOrigin"
+        case CloudFrontErrorKind.InvalidOriginAccessIdentity:
+            return "InvalidOriginAccessIdentity"
+        case CloudFrontErrorKind.InvalidProtocolSettings:
+            return "InvalidProtocolSettings"
+        case CloudFrontErrorKind.InvalidRelativePath:
+            return "InvalidRelativePath"
+        case CloudFrontErrorKind.InvalidRequiredProtocol:
+            return "InvalidRequiredProtocol"
+        case CloudFrontErrorKind.InvalidResponseCode:
+            return "InvalidResponseCode"
+        case CloudFrontErrorKind.InvalidTTLOrder:
+            return "InvalidTTLOrder"
+        case CloudFrontErrorKind.InvalidViewerCertificate:
+            return "InvalidViewerCertificate"
+        case CloudFrontErrorKind.InvalidWebACLId:
+            return "InvalidWebACLId"
+        case CloudFrontErrorKind.MissingBody:
+            return "MissingBody"
+        case CloudFrontErrorKind.NoSuchCloudFrontOriginAccessIdentity:
+            return "NoSuchCloudFrontOriginAccessIdentity"
+        case CloudFrontErrorKind.NoSuchDistribution:
+            return "NoSuchDistribution"
+        case CloudFrontErrorKind.NoSuchInvalidation:
+            return "NoSuchInvalidation"
+        case CloudFrontErrorKind.NoSuchOrigin:
+            return "NoSuchOrigin"
+        case CloudFrontErrorKind.NoSuchStreamingDistribution:
+            return "NoSuchStreamingDistribution"
+        case CloudFrontErrorKind.PreconditionFailed:
+            return "PreconditionFailed"
+        case CloudFrontErrorKind.StreamingDistributionAlreadyExists:
+            return "StreamingDistributionAlreadyExists"
+        case CloudFrontErrorKind.StreamingDistributionNotDisabled:
+            return "StreamingDistributionNotDisabled"
+        case CloudFrontErrorKind.TooManyCacheBehaviors:
+            return "TooManyCacheBehaviors"
+        case CloudFrontErrorKind.TooManyCertificates:
+            return "TooManyCertificates"
+        case CloudFrontErrorKind.TooManyCloudFrontOriginAccessIdentities:
+            return "TooManyCloudFrontOriginAccessIdentities"
+        case CloudFrontErrorKind.TooManyCookieNamesInWhiteList:
+            return "TooManyCookieNamesInWhiteList"
+        case CloudFrontErrorKind.TooManyDistributionCNAMEs:
+            return "TooManyDistributionCNAMEs"
+        case CloudFrontErrorKind.TooManyDistributions:
+            return "TooManyDistributions"
+        case CloudFrontErrorKind.TooManyHeadersInForwardedValues:
+            return "TooManyHeadersInForwardedValues"
+        case CloudFrontErrorKind.TooManyInvalidationsInProgress:
+            return "TooManyInvalidationsInProgress"
+        case CloudFrontErrorKind.TooManyOrigins:
+            return "TooManyOrigins"
+        case CloudFrontErrorKind.TooManyStreamingDistributionCNAMEs:
+            return "TooManyStreamingDistributionCNAMEs"
+        case CloudFrontErrorKind.TooManyStreamingDistributions:
+            return "TooManyStreamingDistributions"
+        case CloudFrontErrorKind.TooManyTrustedSigners:
+            return "TooManyTrustedSigners"
+        case CloudFrontErrorKind.TrustedSignerDoesNotExist:
+            return "TrustedSignerDoesNotExist"
+        case CloudFrontErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

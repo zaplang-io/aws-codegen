@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix Logs_20140328)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -2791,9 +2793,16 @@ struct ValidationException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by logs_error_from_code.
-enum CloudWatch_LogsError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum CloudWatch_LogsErrorKind:
     AccessDeniedException
     ConflictException
     DataAlreadyAcceptedException
@@ -2814,45 +2823,95 @@ enum CloudWatch_LogsError:
     ValidationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def logs_error_from_code(str code) -> CloudWatch_LogsError:
-    if code == "AccessDeniedException":
-        return CloudWatch_LogsError.AccessDeniedException
-    if code == "ConflictException":
-        return CloudWatch_LogsError.ConflictException
-    if code == "DataAlreadyAcceptedException":
-        return CloudWatch_LogsError.DataAlreadyAcceptedException
-    if code == "InternalServerException":
-        return CloudWatch_LogsError.InternalServerException
-    if code == "InvalidOperationException":
-        return CloudWatch_LogsError.InvalidOperationException
-    if code == "InvalidParameterException":
-        return CloudWatch_LogsError.InvalidParameterException
-    if code == "InvalidSequenceTokenException":
-        return CloudWatch_LogsError.InvalidSequenceTokenException
-    if code == "LimitExceededException":
-        return CloudWatch_LogsError.LimitExceededException
-    if code == "MalformedQueryException":
-        return CloudWatch_LogsError.MalformedQueryException
-    if code == "OperationAbortedException":
-        return CloudWatch_LogsError.OperationAbortedException
-    if code == "ResourceAlreadyExistsException":
-        return CloudWatch_LogsError.ResourceAlreadyExistsException
-    if code == "ResourceNotFoundException":
-        return CloudWatch_LogsError.ResourceNotFoundException
-    if code == "ServiceQuotaExceededException":
-        return CloudWatch_LogsError.ServiceQuotaExceededException
-    if code == "ServiceUnavailableException":
-        return CloudWatch_LogsError.ServiceUnavailableException
-    if code == "ThrottlingException":
-        return CloudWatch_LogsError.ThrottlingException
-    if code == "TooManyTagsException":
-        return CloudWatch_LogsError.TooManyTagsException
-    if code == "UnrecognizedClientException":
-        return CloudWatch_LogsError.UnrecognizedClientException
-    if code == "ValidationException":
-        return CloudWatch_LogsError.ValidationException
-    return CloudWatch_LogsError.Unknown(code=code)
+# Classify an AWS error code into `CloudWatch_LogsErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def logs_error_kind(str code) -> CloudWatch_LogsErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return CloudWatch_LogsErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return CloudWatch_LogsErrorKind.ConflictException
+    if name == "DataAlreadyAcceptedException":
+        return CloudWatch_LogsErrorKind.DataAlreadyAcceptedException
+    if name == "InternalServerException":
+        return CloudWatch_LogsErrorKind.InternalServerException
+    if name == "InvalidOperationException":
+        return CloudWatch_LogsErrorKind.InvalidOperationException
+    if name == "InvalidParameterException":
+        return CloudWatch_LogsErrorKind.InvalidParameterException
+    if name == "InvalidSequenceTokenException":
+        return CloudWatch_LogsErrorKind.InvalidSequenceTokenException
+    if name == "LimitExceededException":
+        return CloudWatch_LogsErrorKind.LimitExceededException
+    if name == "MalformedQueryException":
+        return CloudWatch_LogsErrorKind.MalformedQueryException
+    if name == "OperationAbortedException":
+        return CloudWatch_LogsErrorKind.OperationAbortedException
+    if name == "ResourceAlreadyExistsException":
+        return CloudWatch_LogsErrorKind.ResourceAlreadyExistsException
+    if name == "ResourceNotFoundException":
+        return CloudWatch_LogsErrorKind.ResourceNotFoundException
+    if name == "ServiceQuotaExceededException":
+        return CloudWatch_LogsErrorKind.ServiceQuotaExceededException
+    if name == "ServiceUnavailableException":
+        return CloudWatch_LogsErrorKind.ServiceUnavailableException
+    if name == "ThrottlingException":
+        return CloudWatch_LogsErrorKind.ThrottlingException
+    if name == "TooManyTagsException":
+        return CloudWatch_LogsErrorKind.TooManyTagsException
+    if name == "UnrecognizedClientException":
+        return CloudWatch_LogsErrorKind.UnrecognizedClientException
+    if name == "ValidationException":
+        return CloudWatch_LogsErrorKind.ValidationException
+    return CloudWatch_LogsErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def logs_error_name(CloudWatch_LogsErrorKind k) -> str:
+    match k:
+        case CloudWatch_LogsErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case CloudWatch_LogsErrorKind.ConflictException:
+            return "ConflictException"
+        case CloudWatch_LogsErrorKind.DataAlreadyAcceptedException:
+            return "DataAlreadyAcceptedException"
+        case CloudWatch_LogsErrorKind.InternalServerException:
+            return "InternalServerException"
+        case CloudWatch_LogsErrorKind.InvalidOperationException:
+            return "InvalidOperationException"
+        case CloudWatch_LogsErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case CloudWatch_LogsErrorKind.InvalidSequenceTokenException:
+            return "InvalidSequenceTokenException"
+        case CloudWatch_LogsErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case CloudWatch_LogsErrorKind.MalformedQueryException:
+            return "MalformedQueryException"
+        case CloudWatch_LogsErrorKind.OperationAbortedException:
+            return "OperationAbortedException"
+        case CloudWatch_LogsErrorKind.ResourceAlreadyExistsException:
+            return "ResourceAlreadyExistsException"
+        case CloudWatch_LogsErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case CloudWatch_LogsErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case CloudWatch_LogsErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
+        case CloudWatch_LogsErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case CloudWatch_LogsErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case CloudWatch_LogsErrorKind.UnrecognizedClientException:
+            return "UnrecognizedClientException"
+        case CloudWatch_LogsErrorKind.ValidationException:
+            return "ValidationException"
+        case CloudWatch_LogsErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

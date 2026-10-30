@@ -147,10 +147,22 @@ fn awsjson_contract_shape() {
     // A non-derivable input is documented, not silently emitted wrong.
     assert!(src.contains("no @derive(Json)"));
     assert!(src.contains("@json(open)"));
-    // Error dispatch.
-    assert!(src.contains("enum DynamoDBError:"));
-    assert!(src.contains("def dynamodb_error_from_code(str code) -> DynamoDBError:"));
-    assert!(src.contains("ResourceNotFoundException"));
+    // Typed errors (#361 / D-0006): the per-service enum + classifier + name
+    // dispatcher on top of aws_core.errors — the generator half of the contract.
+    assert!(src.contains("import aws_core.errors"));
+    assert!(src.contains("enum DynamoDBErrorKind:"));
+    assert!(src.contains("    Unknown(str code)"));
+    assert!(src.contains("def dynamodb_error_kind(str code) -> DynamoDBErrorKind:"));
+    // Classifier normalizes the raw code through errors.error_code first.
+    assert!(src.contains("    auto name = errors.error_code(code)"));
+    assert!(src.contains("    if name == \"ResourceNotFoundException\":"));
+    assert!(src.contains("        return DynamoDBErrorKind.ResourceNotFoundException"));
+    assert!(src.contains("    return DynamoDBErrorKind.Unknown(name)"));
+    // Exhaustive module-local name dispatcher, including the Unknown arm.
+    assert!(src.contains("def dynamodb_error_name(DynamoDBErrorKind k) -> str:"));
+    assert!(src.contains("    match k:"));
+    assert!(src.contains("        case DynamoDBErrorKind.Unknown(c):"));
+    assert!(src.contains("            return \"Unknown(\" + c + \")\""));
 }
 
 // --- smithy-rpc-v2-cbor (CloudWatch / Translate) -----------------------------
@@ -180,8 +192,9 @@ fn cbor_contract_shape() {
     // Imports: core + endpoints + cbor (the codec), never awsjson/query/restxml.
     assert!(src.contains("import aws_core.cbor"));
     assert!(!src.contains("import aws_core.awsjson"));
-    // Error dispatch from the body `__type`.
-    assert!(src.contains("def translate_error_from_code(str code) -> TranslateError:"));
+    // Error dispatch from the body `__type` (classifier + name dispatcher).
+    assert!(src.contains("def translate_error_kind(str code) -> TranslateErrorKind:"));
+    assert!(src.contains("def translate_error_name(TranslateErrorKind k) -> str:"));
 }
 
 #[test]
@@ -294,8 +307,8 @@ fn rest_json_contract_shape() {
     assert!(src.contains("# wire string of the InvocationType enum (header binding)"));
 
     // Error dispatch and a yield-based paginator threading the Marker token.
-    assert!(src.contains("enum LambdaError:"));
-    assert!(src.contains("def lambda__error_from_code(str code) -> LambdaError:"));
+    assert!(src.contains("enum LambdaErrorKind:"));
+    assert!(src.contains("def lambda__error_kind(str code) -> LambdaErrorKind:"));
     assert!(src.contains("def paginate_list_functions(self, ListFunctionsRequest input):"));
     assert!(src.contains("auto np = core.next_page_json(page.body, \"NextMarker\")"));
     assert!(src.contains("input.Marker = Optional.Some(np.token)"));
@@ -513,8 +526,8 @@ fn restxml_contract_shape() {
     assert!(src.contains("def cloudfront_xml_bool(bool b) -> str:"));
     assert!(src.contains("cloudfront_xml_bool("));
     // Error dispatch from the rest-xml <Error><Code>.
-    assert!(src.contains("enum CloudFrontError:"));
-    assert!(src.contains("def cloudfront_error_from_code(str code) -> CloudFrontError:"));
+    assert!(src.contains("enum CloudFrontErrorKind:"));
+    assert!(src.contains("def cloudfront_error_kind(str code) -> CloudFrontErrorKind:"));
     // A GET with only a path label sends no XML body (bare binding).
     assert!(src.contains("def get_distribution(self, GetDistributionRequest input) -> str:"));
 }
@@ -589,7 +602,7 @@ fn sns_contract_shape() {
     assert!(src.contains("def publish("));
     assert!(src.contains("def create_topic("));
     assert!(src.contains("p = query.query_map(p, \"Attributes\", \"key\", \"value\","));
-    assert!(src.contains("enum SNSError:") || src.contains("enum SnsError:"));
+    assert!(src.contains("enum SNSErrorKind:") || src.contains("enum SnsErrorKind:"));
 }
 
 #[test]

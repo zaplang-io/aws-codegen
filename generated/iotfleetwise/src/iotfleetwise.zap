@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.0 (targetPrefix IoTAutobahnControlPlane)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import base64
@@ -1716,9 +1718,16 @@ struct VehicleSummary:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by iotfleetwise_error_from_code.
-enum IoTFleetWiseError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum IoTFleetWiseErrorKind:
     AccessDeniedException
     ConflictException
     DecoderManifestValidationException
@@ -1731,29 +1740,63 @@ enum IoTFleetWiseError:
     ValidationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def iotfleetwise_error_from_code(str code) -> IoTFleetWiseError:
-    if code == "AccessDeniedException":
-        return IoTFleetWiseError.AccessDeniedException
-    if code == "ConflictException":
-        return IoTFleetWiseError.ConflictException
-    if code == "DecoderManifestValidationException":
-        return IoTFleetWiseError.DecoderManifestValidationException
-    if code == "InternalServerException":
-        return IoTFleetWiseError.InternalServerException
-    if code == "InvalidNodeException":
-        return IoTFleetWiseError.InvalidNodeException
-    if code == "InvalidSignalsException":
-        return IoTFleetWiseError.InvalidSignalsException
-    if code == "LimitExceededException":
-        return IoTFleetWiseError.LimitExceededException
-    if code == "ResourceNotFoundException":
-        return IoTFleetWiseError.ResourceNotFoundException
-    if code == "ThrottlingException":
-        return IoTFleetWiseError.ThrottlingException
-    if code == "ValidationException":
-        return IoTFleetWiseError.ValidationException
-    return IoTFleetWiseError.Unknown(code=code)
+# Classify an AWS error code into `IoTFleetWiseErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def iotfleetwise_error_kind(str code) -> IoTFleetWiseErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return IoTFleetWiseErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return IoTFleetWiseErrorKind.ConflictException
+    if name == "DecoderManifestValidationException":
+        return IoTFleetWiseErrorKind.DecoderManifestValidationException
+    if name == "InternalServerException":
+        return IoTFleetWiseErrorKind.InternalServerException
+    if name == "InvalidNodeException":
+        return IoTFleetWiseErrorKind.InvalidNodeException
+    if name == "InvalidSignalsException":
+        return IoTFleetWiseErrorKind.InvalidSignalsException
+    if name == "LimitExceededException":
+        return IoTFleetWiseErrorKind.LimitExceededException
+    if name == "ResourceNotFoundException":
+        return IoTFleetWiseErrorKind.ResourceNotFoundException
+    if name == "ThrottlingException":
+        return IoTFleetWiseErrorKind.ThrottlingException
+    if name == "ValidationException":
+        return IoTFleetWiseErrorKind.ValidationException
+    return IoTFleetWiseErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def iotfleetwise_error_name(IoTFleetWiseErrorKind k) -> str:
+    match k:
+        case IoTFleetWiseErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case IoTFleetWiseErrorKind.ConflictException:
+            return "ConflictException"
+        case IoTFleetWiseErrorKind.DecoderManifestValidationException:
+            return "DecoderManifestValidationException"
+        case IoTFleetWiseErrorKind.InternalServerException:
+            return "InternalServerException"
+        case IoTFleetWiseErrorKind.InvalidNodeException:
+            return "InvalidNodeException"
+        case IoTFleetWiseErrorKind.InvalidSignalsException:
+            return "InvalidSignalsException"
+        case IoTFleetWiseErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case IoTFleetWiseErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case IoTFleetWiseErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case IoTFleetWiseErrorKind.ValidationException:
+            return "ValidationException"
+        case IoTFleetWiseErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

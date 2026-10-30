@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix AWSSimbaAPIService_v20180301)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -2585,9 +2587,16 @@ struct WindowsFsrmConfiguration:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by fsx_error_from_code.
-enum FSxError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum FSxErrorKind:
     AccessPointAlreadyOwnedByYou
     ActiveDirectoryError
     BackupBeingCopied
@@ -2630,89 +2639,183 @@ enum FSxError:
     VolumeNotFound
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def fsx_error_from_code(str code) -> FSxError:
-    if code == "AccessPointAlreadyOwnedByYou":
-        return FSxError.AccessPointAlreadyOwnedByYou
-    if code == "ActiveDirectoryError":
-        return FSxError.ActiveDirectoryError
-    if code == "BackupBeingCopied":
-        return FSxError.BackupBeingCopied
-    if code == "BackupInProgress":
-        return FSxError.BackupInProgress
-    if code == "BackupNotFound":
-        return FSxError.BackupNotFound
-    if code == "BackupRestoring":
-        return FSxError.BackupRestoring
-    if code == "BadRequest":
-        return FSxError.BadRequest
-    if code == "DataRepositoryAssociationNotFound":
-        return FSxError.DataRepositoryAssociationNotFound
-    if code == "DataRepositoryTaskEnded":
-        return FSxError.DataRepositoryTaskEnded
-    if code == "DataRepositoryTaskExecuting":
-        return FSxError.DataRepositoryTaskExecuting
-    if code == "DataRepositoryTaskNotFound":
-        return FSxError.DataRepositoryTaskNotFound
-    if code == "FileCacheNotFound":
-        return FSxError.FileCacheNotFound
-    if code == "FileSystemNotFound":
-        return FSxError.FileSystemNotFound
-    if code == "IncompatibleParameterError":
-        return FSxError.IncompatibleParameterError
-    if code == "IncompatibleRegionForMultiAZ":
-        return FSxError.IncompatibleRegionForMultiAZ
-    if code == "InternalServerError":
-        return FSxError.InternalServerError
-    if code == "InvalidAccessPoint":
-        return FSxError.InvalidAccessPoint
-    if code == "InvalidDataRepositoryType":
-        return FSxError.InvalidDataRepositoryType
-    if code == "InvalidDestinationKmsKey":
-        return FSxError.InvalidDestinationKmsKey
-    if code == "InvalidExportPath":
-        return FSxError.InvalidExportPath
-    if code == "InvalidImportPath":
-        return FSxError.InvalidImportPath
-    if code == "InvalidNetworkSettings":
-        return FSxError.InvalidNetworkSettings
-    if code == "InvalidPerUnitStorageThroughput":
-        return FSxError.InvalidPerUnitStorageThroughput
-    if code == "InvalidRegion":
-        return FSxError.InvalidRegion
-    if code == "InvalidRequest":
-        return FSxError.InvalidRequest
-    if code == "InvalidSourceKmsKey":
-        return FSxError.InvalidSourceKmsKey
-    if code == "MissingFileCacheConfiguration":
-        return FSxError.MissingFileCacheConfiguration
-    if code == "MissingFileSystemConfiguration":
-        return FSxError.MissingFileSystemConfiguration
-    if code == "MissingVolumeConfiguration":
-        return FSxError.MissingVolumeConfiguration
-    if code == "NotServiceResourceError":
-        return FSxError.NotServiceResourceError
-    if code == "ResourceDoesNotSupportTagging":
-        return FSxError.ResourceDoesNotSupportTagging
-    if code == "ResourceNotFound":
-        return FSxError.ResourceNotFound
-    if code == "S3AccessPointAttachmentNotFound":
-        return FSxError.S3AccessPointAttachmentNotFound
-    if code == "ServiceLimitExceeded":
-        return FSxError.ServiceLimitExceeded
-    if code == "SnapshotNotFound":
-        return FSxError.SnapshotNotFound
-    if code == "SourceBackupUnavailable":
-        return FSxError.SourceBackupUnavailable
-    if code == "StorageVirtualMachineNotFound":
-        return FSxError.StorageVirtualMachineNotFound
-    if code == "TooManyAccessPoints":
-        return FSxError.TooManyAccessPoints
-    if code == "UnsupportedOperation":
-        return FSxError.UnsupportedOperation
-    if code == "VolumeNotFound":
-        return FSxError.VolumeNotFound
-    return FSxError.Unknown(code=code)
+# Classify an AWS error code into `FSxErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def fsx_error_kind(str code) -> FSxErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessPointAlreadyOwnedByYou":
+        return FSxErrorKind.AccessPointAlreadyOwnedByYou
+    if name == "ActiveDirectoryError":
+        return FSxErrorKind.ActiveDirectoryError
+    if name == "BackupBeingCopied":
+        return FSxErrorKind.BackupBeingCopied
+    if name == "BackupInProgress":
+        return FSxErrorKind.BackupInProgress
+    if name == "BackupNotFound":
+        return FSxErrorKind.BackupNotFound
+    if name == "BackupRestoring":
+        return FSxErrorKind.BackupRestoring
+    if name == "BadRequest":
+        return FSxErrorKind.BadRequest
+    if name == "DataRepositoryAssociationNotFound":
+        return FSxErrorKind.DataRepositoryAssociationNotFound
+    if name == "DataRepositoryTaskEnded":
+        return FSxErrorKind.DataRepositoryTaskEnded
+    if name == "DataRepositoryTaskExecuting":
+        return FSxErrorKind.DataRepositoryTaskExecuting
+    if name == "DataRepositoryTaskNotFound":
+        return FSxErrorKind.DataRepositoryTaskNotFound
+    if name == "FileCacheNotFound":
+        return FSxErrorKind.FileCacheNotFound
+    if name == "FileSystemNotFound":
+        return FSxErrorKind.FileSystemNotFound
+    if name == "IncompatibleParameterError":
+        return FSxErrorKind.IncompatibleParameterError
+    if name == "IncompatibleRegionForMultiAZ":
+        return FSxErrorKind.IncompatibleRegionForMultiAZ
+    if name == "InternalServerError":
+        return FSxErrorKind.InternalServerError
+    if name == "InvalidAccessPoint":
+        return FSxErrorKind.InvalidAccessPoint
+    if name == "InvalidDataRepositoryType":
+        return FSxErrorKind.InvalidDataRepositoryType
+    if name == "InvalidDestinationKmsKey":
+        return FSxErrorKind.InvalidDestinationKmsKey
+    if name == "InvalidExportPath":
+        return FSxErrorKind.InvalidExportPath
+    if name == "InvalidImportPath":
+        return FSxErrorKind.InvalidImportPath
+    if name == "InvalidNetworkSettings":
+        return FSxErrorKind.InvalidNetworkSettings
+    if name == "InvalidPerUnitStorageThroughput":
+        return FSxErrorKind.InvalidPerUnitStorageThroughput
+    if name == "InvalidRegion":
+        return FSxErrorKind.InvalidRegion
+    if name == "InvalidRequest":
+        return FSxErrorKind.InvalidRequest
+    if name == "InvalidSourceKmsKey":
+        return FSxErrorKind.InvalidSourceKmsKey
+    if name == "MissingFileCacheConfiguration":
+        return FSxErrorKind.MissingFileCacheConfiguration
+    if name == "MissingFileSystemConfiguration":
+        return FSxErrorKind.MissingFileSystemConfiguration
+    if name == "MissingVolumeConfiguration":
+        return FSxErrorKind.MissingVolumeConfiguration
+    if name == "NotServiceResourceError":
+        return FSxErrorKind.NotServiceResourceError
+    if name == "ResourceDoesNotSupportTagging":
+        return FSxErrorKind.ResourceDoesNotSupportTagging
+    if name == "ResourceNotFound":
+        return FSxErrorKind.ResourceNotFound
+    if name == "S3AccessPointAttachmentNotFound":
+        return FSxErrorKind.S3AccessPointAttachmentNotFound
+    if name == "ServiceLimitExceeded":
+        return FSxErrorKind.ServiceLimitExceeded
+    if name == "SnapshotNotFound":
+        return FSxErrorKind.SnapshotNotFound
+    if name == "SourceBackupUnavailable":
+        return FSxErrorKind.SourceBackupUnavailable
+    if name == "StorageVirtualMachineNotFound":
+        return FSxErrorKind.StorageVirtualMachineNotFound
+    if name == "TooManyAccessPoints":
+        return FSxErrorKind.TooManyAccessPoints
+    if name == "UnsupportedOperation":
+        return FSxErrorKind.UnsupportedOperation
+    if name == "VolumeNotFound":
+        return FSxErrorKind.VolumeNotFound
+    return FSxErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def fsx_error_name(FSxErrorKind k) -> str:
+    match k:
+        case FSxErrorKind.AccessPointAlreadyOwnedByYou:
+            return "AccessPointAlreadyOwnedByYou"
+        case FSxErrorKind.ActiveDirectoryError:
+            return "ActiveDirectoryError"
+        case FSxErrorKind.BackupBeingCopied:
+            return "BackupBeingCopied"
+        case FSxErrorKind.BackupInProgress:
+            return "BackupInProgress"
+        case FSxErrorKind.BackupNotFound:
+            return "BackupNotFound"
+        case FSxErrorKind.BackupRestoring:
+            return "BackupRestoring"
+        case FSxErrorKind.BadRequest:
+            return "BadRequest"
+        case FSxErrorKind.DataRepositoryAssociationNotFound:
+            return "DataRepositoryAssociationNotFound"
+        case FSxErrorKind.DataRepositoryTaskEnded:
+            return "DataRepositoryTaskEnded"
+        case FSxErrorKind.DataRepositoryTaskExecuting:
+            return "DataRepositoryTaskExecuting"
+        case FSxErrorKind.DataRepositoryTaskNotFound:
+            return "DataRepositoryTaskNotFound"
+        case FSxErrorKind.FileCacheNotFound:
+            return "FileCacheNotFound"
+        case FSxErrorKind.FileSystemNotFound:
+            return "FileSystemNotFound"
+        case FSxErrorKind.IncompatibleParameterError:
+            return "IncompatibleParameterError"
+        case FSxErrorKind.IncompatibleRegionForMultiAZ:
+            return "IncompatibleRegionForMultiAZ"
+        case FSxErrorKind.InternalServerError:
+            return "InternalServerError"
+        case FSxErrorKind.InvalidAccessPoint:
+            return "InvalidAccessPoint"
+        case FSxErrorKind.InvalidDataRepositoryType:
+            return "InvalidDataRepositoryType"
+        case FSxErrorKind.InvalidDestinationKmsKey:
+            return "InvalidDestinationKmsKey"
+        case FSxErrorKind.InvalidExportPath:
+            return "InvalidExportPath"
+        case FSxErrorKind.InvalidImportPath:
+            return "InvalidImportPath"
+        case FSxErrorKind.InvalidNetworkSettings:
+            return "InvalidNetworkSettings"
+        case FSxErrorKind.InvalidPerUnitStorageThroughput:
+            return "InvalidPerUnitStorageThroughput"
+        case FSxErrorKind.InvalidRegion:
+            return "InvalidRegion"
+        case FSxErrorKind.InvalidRequest:
+            return "InvalidRequest"
+        case FSxErrorKind.InvalidSourceKmsKey:
+            return "InvalidSourceKmsKey"
+        case FSxErrorKind.MissingFileCacheConfiguration:
+            return "MissingFileCacheConfiguration"
+        case FSxErrorKind.MissingFileSystemConfiguration:
+            return "MissingFileSystemConfiguration"
+        case FSxErrorKind.MissingVolumeConfiguration:
+            return "MissingVolumeConfiguration"
+        case FSxErrorKind.NotServiceResourceError:
+            return "NotServiceResourceError"
+        case FSxErrorKind.ResourceDoesNotSupportTagging:
+            return "ResourceDoesNotSupportTagging"
+        case FSxErrorKind.ResourceNotFound:
+            return "ResourceNotFound"
+        case FSxErrorKind.S3AccessPointAttachmentNotFound:
+            return "S3AccessPointAttachmentNotFound"
+        case FSxErrorKind.ServiceLimitExceeded:
+            return "ServiceLimitExceeded"
+        case FSxErrorKind.SnapshotNotFound:
+            return "SnapshotNotFound"
+        case FSxErrorKind.SourceBackupUnavailable:
+            return "SourceBackupUnavailable"
+        case FSxErrorKind.StorageVirtualMachineNotFound:
+            return "StorageVirtualMachineNotFound"
+        case FSxErrorKind.TooManyAccessPoints:
+            return "TooManyAccessPoints"
+        case FSxErrorKind.UnsupportedOperation:
+            return "UnsupportedOperation"
+        case FSxErrorKind.VolumeNotFound:
+            return "VolumeNotFound"
+        case FSxErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

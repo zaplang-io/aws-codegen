@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.0 (targetPrefix AWSStepFunctions)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -1340,9 +1342,16 @@ struct ValidationException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by states_error_from_code.
-enum SFNError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum SFNErrorKind:
     ActivityAlreadyExists
     ActivityDoesNotExist
     ActivityLimitExceeded
@@ -1378,75 +1387,155 @@ enum SFNError:
     ValidationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def states_error_from_code(str code) -> SFNError:
-    if code == "ActivityAlreadyExists":
-        return SFNError.ActivityAlreadyExists
-    if code == "ActivityDoesNotExist":
-        return SFNError.ActivityDoesNotExist
-    if code == "ActivityLimitExceeded":
-        return SFNError.ActivityLimitExceeded
-    if code == "ActivityWorkerLimitExceeded":
-        return SFNError.ActivityWorkerLimitExceeded
-    if code == "ConflictException":
-        return SFNError.ConflictException
-    if code == "ExecutionAlreadyExists":
-        return SFNError.ExecutionAlreadyExists
-    if code == "ExecutionDoesNotExist":
-        return SFNError.ExecutionDoesNotExist
-    if code == "ExecutionLimitExceeded":
-        return SFNError.ExecutionLimitExceeded
-    if code == "ExecutionNotRedrivable":
-        return SFNError.ExecutionNotRedrivable
-    if code == "InvalidArn":
-        return SFNError.InvalidArn
-    if code == "InvalidDefinition":
-        return SFNError.InvalidDefinition
-    if code == "InvalidEncryptionConfiguration":
-        return SFNError.InvalidEncryptionConfiguration
-    if code == "InvalidExecutionInput":
-        return SFNError.InvalidExecutionInput
-    if code == "InvalidLoggingConfiguration":
-        return SFNError.InvalidLoggingConfiguration
-    if code == "InvalidName":
-        return SFNError.InvalidName
-    if code == "InvalidOutput":
-        return SFNError.InvalidOutput
-    if code == "InvalidToken":
-        return SFNError.InvalidToken
-    if code == "InvalidTracingConfiguration":
-        return SFNError.InvalidTracingConfiguration
-    if code == "KmsAccessDeniedException":
-        return SFNError.KmsAccessDeniedException
-    if code == "KmsInvalidStateException":
-        return SFNError.KmsInvalidStateException
-    if code == "KmsThrottlingException":
-        return SFNError.KmsThrottlingException
-    if code == "MissingRequiredParameter":
-        return SFNError.MissingRequiredParameter
-    if code == "ResourceNotFound":
-        return SFNError.ResourceNotFound
-    if code == "ServiceQuotaExceededException":
-        return SFNError.ServiceQuotaExceededException
-    if code == "StateMachineAlreadyExists":
-        return SFNError.StateMachineAlreadyExists
-    if code == "StateMachineDeleting":
-        return SFNError.StateMachineDeleting
-    if code == "StateMachineDoesNotExist":
-        return SFNError.StateMachineDoesNotExist
-    if code == "StateMachineLimitExceeded":
-        return SFNError.StateMachineLimitExceeded
-    if code == "StateMachineTypeNotSupported":
-        return SFNError.StateMachineTypeNotSupported
-    if code == "TaskDoesNotExist":
-        return SFNError.TaskDoesNotExist
-    if code == "TaskTimedOut":
-        return SFNError.TaskTimedOut
-    if code == "TooManyTags":
-        return SFNError.TooManyTags
-    if code == "ValidationException":
-        return SFNError.ValidationException
-    return SFNError.Unknown(code=code)
+# Classify an AWS error code into `SFNErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def states_error_kind(str code) -> SFNErrorKind:
+    auto name = errors.error_code(code)
+    if name == "ActivityAlreadyExists":
+        return SFNErrorKind.ActivityAlreadyExists
+    if name == "ActivityDoesNotExist":
+        return SFNErrorKind.ActivityDoesNotExist
+    if name == "ActivityLimitExceeded":
+        return SFNErrorKind.ActivityLimitExceeded
+    if name == "ActivityWorkerLimitExceeded":
+        return SFNErrorKind.ActivityWorkerLimitExceeded
+    if name == "ConflictException":
+        return SFNErrorKind.ConflictException
+    if name == "ExecutionAlreadyExists":
+        return SFNErrorKind.ExecutionAlreadyExists
+    if name == "ExecutionDoesNotExist":
+        return SFNErrorKind.ExecutionDoesNotExist
+    if name == "ExecutionLimitExceeded":
+        return SFNErrorKind.ExecutionLimitExceeded
+    if name == "ExecutionNotRedrivable":
+        return SFNErrorKind.ExecutionNotRedrivable
+    if name == "InvalidArn":
+        return SFNErrorKind.InvalidArn
+    if name == "InvalidDefinition":
+        return SFNErrorKind.InvalidDefinition
+    if name == "InvalidEncryptionConfiguration":
+        return SFNErrorKind.InvalidEncryptionConfiguration
+    if name == "InvalidExecutionInput":
+        return SFNErrorKind.InvalidExecutionInput
+    if name == "InvalidLoggingConfiguration":
+        return SFNErrorKind.InvalidLoggingConfiguration
+    if name == "InvalidName":
+        return SFNErrorKind.InvalidName
+    if name == "InvalidOutput":
+        return SFNErrorKind.InvalidOutput
+    if name == "InvalidToken":
+        return SFNErrorKind.InvalidToken
+    if name == "InvalidTracingConfiguration":
+        return SFNErrorKind.InvalidTracingConfiguration
+    if name == "KmsAccessDeniedException":
+        return SFNErrorKind.KmsAccessDeniedException
+    if name == "KmsInvalidStateException":
+        return SFNErrorKind.KmsInvalidStateException
+    if name == "KmsThrottlingException":
+        return SFNErrorKind.KmsThrottlingException
+    if name == "MissingRequiredParameter":
+        return SFNErrorKind.MissingRequiredParameter
+    if name == "ResourceNotFound":
+        return SFNErrorKind.ResourceNotFound
+    if name == "ServiceQuotaExceededException":
+        return SFNErrorKind.ServiceQuotaExceededException
+    if name == "StateMachineAlreadyExists":
+        return SFNErrorKind.StateMachineAlreadyExists
+    if name == "StateMachineDeleting":
+        return SFNErrorKind.StateMachineDeleting
+    if name == "StateMachineDoesNotExist":
+        return SFNErrorKind.StateMachineDoesNotExist
+    if name == "StateMachineLimitExceeded":
+        return SFNErrorKind.StateMachineLimitExceeded
+    if name == "StateMachineTypeNotSupported":
+        return SFNErrorKind.StateMachineTypeNotSupported
+    if name == "TaskDoesNotExist":
+        return SFNErrorKind.TaskDoesNotExist
+    if name == "TaskTimedOut":
+        return SFNErrorKind.TaskTimedOut
+    if name == "TooManyTags":
+        return SFNErrorKind.TooManyTags
+    if name == "ValidationException":
+        return SFNErrorKind.ValidationException
+    return SFNErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def states_error_name(SFNErrorKind k) -> str:
+    match k:
+        case SFNErrorKind.ActivityAlreadyExists:
+            return "ActivityAlreadyExists"
+        case SFNErrorKind.ActivityDoesNotExist:
+            return "ActivityDoesNotExist"
+        case SFNErrorKind.ActivityLimitExceeded:
+            return "ActivityLimitExceeded"
+        case SFNErrorKind.ActivityWorkerLimitExceeded:
+            return "ActivityWorkerLimitExceeded"
+        case SFNErrorKind.ConflictException:
+            return "ConflictException"
+        case SFNErrorKind.ExecutionAlreadyExists:
+            return "ExecutionAlreadyExists"
+        case SFNErrorKind.ExecutionDoesNotExist:
+            return "ExecutionDoesNotExist"
+        case SFNErrorKind.ExecutionLimitExceeded:
+            return "ExecutionLimitExceeded"
+        case SFNErrorKind.ExecutionNotRedrivable:
+            return "ExecutionNotRedrivable"
+        case SFNErrorKind.InvalidArn:
+            return "InvalidArn"
+        case SFNErrorKind.InvalidDefinition:
+            return "InvalidDefinition"
+        case SFNErrorKind.InvalidEncryptionConfiguration:
+            return "InvalidEncryptionConfiguration"
+        case SFNErrorKind.InvalidExecutionInput:
+            return "InvalidExecutionInput"
+        case SFNErrorKind.InvalidLoggingConfiguration:
+            return "InvalidLoggingConfiguration"
+        case SFNErrorKind.InvalidName:
+            return "InvalidName"
+        case SFNErrorKind.InvalidOutput:
+            return "InvalidOutput"
+        case SFNErrorKind.InvalidToken:
+            return "InvalidToken"
+        case SFNErrorKind.InvalidTracingConfiguration:
+            return "InvalidTracingConfiguration"
+        case SFNErrorKind.KmsAccessDeniedException:
+            return "KmsAccessDeniedException"
+        case SFNErrorKind.KmsInvalidStateException:
+            return "KmsInvalidStateException"
+        case SFNErrorKind.KmsThrottlingException:
+            return "KmsThrottlingException"
+        case SFNErrorKind.MissingRequiredParameter:
+            return "MissingRequiredParameter"
+        case SFNErrorKind.ResourceNotFound:
+            return "ResourceNotFound"
+        case SFNErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case SFNErrorKind.StateMachineAlreadyExists:
+            return "StateMachineAlreadyExists"
+        case SFNErrorKind.StateMachineDeleting:
+            return "StateMachineDeleting"
+        case SFNErrorKind.StateMachineDoesNotExist:
+            return "StateMachineDoesNotExist"
+        case SFNErrorKind.StateMachineLimitExceeded:
+            return "StateMachineLimitExceeded"
+        case SFNErrorKind.StateMachineTypeNotSupported:
+            return "StateMachineTypeNotSupported"
+        case SFNErrorKind.TaskDoesNotExist:
+            return "TaskDoesNotExist"
+        case SFNErrorKind.TaskTimedOut:
+            return "TaskTimedOut"
+        case SFNErrorKind.TooManyTags:
+            return "TooManyTags"
+        case SFNErrorKind.ValidationException:
+            return "ValidationException"
+        case SFNErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

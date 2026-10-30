@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix KinesisAnalytics_20150814)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.awsjson
 
 # The Kinesis_Analytics awsJson protocol: version 1.1, API id "KinesisAnalytics_20150814".
@@ -685,9 +687,16 @@ struct UpdateApplicationResponse:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by kinesisanalytics_error_from_code.
-enum Kinesis_AnalyticsError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Kinesis_AnalyticsErrorKind:
     CodeValidationException
     ConcurrentModificationException
     InvalidApplicationConfigurationException
@@ -702,33 +711,71 @@ enum Kinesis_AnalyticsError:
     UnsupportedOperationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def kinesisanalytics_error_from_code(str code) -> Kinesis_AnalyticsError:
-    if code == "CodeValidationException":
-        return Kinesis_AnalyticsError.CodeValidationException
-    if code == "ConcurrentModificationException":
-        return Kinesis_AnalyticsError.ConcurrentModificationException
-    if code == "InvalidApplicationConfigurationException":
-        return Kinesis_AnalyticsError.InvalidApplicationConfigurationException
-    if code == "InvalidArgumentException":
-        return Kinesis_AnalyticsError.InvalidArgumentException
-    if code == "LimitExceededException":
-        return Kinesis_AnalyticsError.LimitExceededException
-    if code == "ResourceInUseException":
-        return Kinesis_AnalyticsError.ResourceInUseException
-    if code == "ResourceNotFoundException":
-        return Kinesis_AnalyticsError.ResourceNotFoundException
-    if code == "ResourceProvisionedThroughputExceededException":
-        return Kinesis_AnalyticsError.ResourceProvisionedThroughputExceededException
-    if code == "ServiceUnavailableException":
-        return Kinesis_AnalyticsError.ServiceUnavailableException
-    if code == "TooManyTagsException":
-        return Kinesis_AnalyticsError.TooManyTagsException
-    if code == "UnableToDetectSchemaException":
-        return Kinesis_AnalyticsError.UnableToDetectSchemaException
-    if code == "UnsupportedOperationException":
-        return Kinesis_AnalyticsError.UnsupportedOperationException
-    return Kinesis_AnalyticsError.Unknown(code=code)
+# Classify an AWS error code into `Kinesis_AnalyticsErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def kinesisanalytics_error_kind(str code) -> Kinesis_AnalyticsErrorKind:
+    auto name = errors.error_code(code)
+    if name == "CodeValidationException":
+        return Kinesis_AnalyticsErrorKind.CodeValidationException
+    if name == "ConcurrentModificationException":
+        return Kinesis_AnalyticsErrorKind.ConcurrentModificationException
+    if name == "InvalidApplicationConfigurationException":
+        return Kinesis_AnalyticsErrorKind.InvalidApplicationConfigurationException
+    if name == "InvalidArgumentException":
+        return Kinesis_AnalyticsErrorKind.InvalidArgumentException
+    if name == "LimitExceededException":
+        return Kinesis_AnalyticsErrorKind.LimitExceededException
+    if name == "ResourceInUseException":
+        return Kinesis_AnalyticsErrorKind.ResourceInUseException
+    if name == "ResourceNotFoundException":
+        return Kinesis_AnalyticsErrorKind.ResourceNotFoundException
+    if name == "ResourceProvisionedThroughputExceededException":
+        return Kinesis_AnalyticsErrorKind.ResourceProvisionedThroughputExceededException
+    if name == "ServiceUnavailableException":
+        return Kinesis_AnalyticsErrorKind.ServiceUnavailableException
+    if name == "TooManyTagsException":
+        return Kinesis_AnalyticsErrorKind.TooManyTagsException
+    if name == "UnableToDetectSchemaException":
+        return Kinesis_AnalyticsErrorKind.UnableToDetectSchemaException
+    if name == "UnsupportedOperationException":
+        return Kinesis_AnalyticsErrorKind.UnsupportedOperationException
+    return Kinesis_AnalyticsErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def kinesisanalytics_error_name(Kinesis_AnalyticsErrorKind k) -> str:
+    match k:
+        case Kinesis_AnalyticsErrorKind.CodeValidationException:
+            return "CodeValidationException"
+        case Kinesis_AnalyticsErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case Kinesis_AnalyticsErrorKind.InvalidApplicationConfigurationException:
+            return "InvalidApplicationConfigurationException"
+        case Kinesis_AnalyticsErrorKind.InvalidArgumentException:
+            return "InvalidArgumentException"
+        case Kinesis_AnalyticsErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case Kinesis_AnalyticsErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case Kinesis_AnalyticsErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case Kinesis_AnalyticsErrorKind.ResourceProvisionedThroughputExceededException:
+            return "ResourceProvisionedThroughputExceededException"
+        case Kinesis_AnalyticsErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
+        case Kinesis_AnalyticsErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case Kinesis_AnalyticsErrorKind.UnableToDetectSchemaException:
+            return "UnableToDetectSchemaException"
+        case Kinesis_AnalyticsErrorKind.UnsupportedOperationException:
+            return "UnsupportedOperationException"
+        case Kinesis_AnalyticsErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

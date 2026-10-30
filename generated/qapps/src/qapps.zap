@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service qapps)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -1003,9 +1004,16 @@ struct ValidationException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by data_qapps_error_from_code.
-enum QAppsError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum QAppsErrorKind:
     AccessDeniedException
     ConflictException
     ContentTooLargeException
@@ -1017,28 +1025,59 @@ enum QAppsError:
     ValidationException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def data_qapps_error_from_code(str code) -> QAppsError:
-    if code == "AccessDeniedException":
-        return QAppsError.AccessDeniedException
-    if code == "ConflictException":
-        return QAppsError.ConflictException
-    if code == "ContentTooLargeException":
-        return QAppsError.ContentTooLargeException
-    if code == "InternalServerException":
-        return QAppsError.InternalServerException
-    if code == "ResourceNotFoundException":
-        return QAppsError.ResourceNotFoundException
-    if code == "ServiceQuotaExceededException":
-        return QAppsError.ServiceQuotaExceededException
-    if code == "ThrottlingException":
-        return QAppsError.ThrottlingException
-    if code == "UnauthorizedException":
-        return QAppsError.UnauthorizedException
-    if code == "ValidationException":
-        return QAppsError.ValidationException
-    return QAppsError.Unknown(code=code)
+# Classify an AWS error code into `QAppsErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def data_qapps_error_kind(str code) -> QAppsErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return QAppsErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return QAppsErrorKind.ConflictException
+    if name == "ContentTooLargeException":
+        return QAppsErrorKind.ContentTooLargeException
+    if name == "InternalServerException":
+        return QAppsErrorKind.InternalServerException
+    if name == "ResourceNotFoundException":
+        return QAppsErrorKind.ResourceNotFoundException
+    if name == "ServiceQuotaExceededException":
+        return QAppsErrorKind.ServiceQuotaExceededException
+    if name == "ThrottlingException":
+        return QAppsErrorKind.ThrottlingException
+    if name == "UnauthorizedException":
+        return QAppsErrorKind.UnauthorizedException
+    if name == "ValidationException":
+        return QAppsErrorKind.ValidationException
+    return QAppsErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def data_qapps_error_name(QAppsErrorKind k) -> str:
+    match k:
+        case QAppsErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case QAppsErrorKind.ConflictException:
+            return "ConflictException"
+        case QAppsErrorKind.ContentTooLargeException:
+            return "ContentTooLargeException"
+        case QAppsErrorKind.InternalServerException:
+            return "InternalServerException"
+        case QAppsErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case QAppsErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case QAppsErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case QAppsErrorKind.UnauthorizedException:
+            return "UnauthorizedException"
+        case QAppsErrorKind.ValidationException:
+            return "ValidationException"
+        case QAppsErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

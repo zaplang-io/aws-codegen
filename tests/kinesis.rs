@@ -101,8 +101,9 @@ fn kinesis_awsjson_1_1_contract_shape() {
     assert!(src.contains(
         "return awsjson.awsjson_request_now(kinesis_protocol(), self.creds, self.region, \"DescribeStreamSummary\", body)"
     ));
-    assert!(src.contains("enum KinesisError:"));
-    assert!(src.contains("def kinesis_error_from_code(str code) -> KinesisError:"));
+    assert!(src.contains("enum KinesisErrorKind:"));
+    assert!(src.contains("def kinesis_error_kind(str code) -> KinesisErrorKind:"));
+    assert!(src.contains("def kinesis_error_name(KinesisErrorKind k) -> str:"));
     assert!(src.contains("ResourceNotFoundException"));
 }
 

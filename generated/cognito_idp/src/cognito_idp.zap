@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix AWSCognitoIdentityProviderService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -3157,9 +3159,16 @@ struct WebAuthnRelyingPartyMismatchException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by cognito_idp_error_from_code.
-enum Cognito_Identity_ProviderError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Cognito_Identity_ProviderErrorKind:
     AccessDeniedException
     AliasExistsException
     CodeDeliveryFailureException
@@ -3221,127 +3230,259 @@ enum Cognito_Identity_ProviderError:
     WebAuthnRelyingPartyMismatchException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def cognito_idp_error_from_code(str code) -> Cognito_Identity_ProviderError:
-    if code == "AccessDeniedException":
-        return Cognito_Identity_ProviderError.AccessDeniedException
-    if code == "AliasExistsException":
-        return Cognito_Identity_ProviderError.AliasExistsException
-    if code == "CodeDeliveryFailureException":
-        return Cognito_Identity_ProviderError.CodeDeliveryFailureException
-    if code == "CodeMismatchException":
-        return Cognito_Identity_ProviderError.CodeMismatchException
-    if code == "ConcurrentModificationException":
-        return Cognito_Identity_ProviderError.ConcurrentModificationException
-    if code == "DeviceKeyExistsException":
-        return Cognito_Identity_ProviderError.DeviceKeyExistsException
-    if code == "DuplicateProviderException":
-        return Cognito_Identity_ProviderError.DuplicateProviderException
-    if code == "EnableSoftwareTokenMFAException":
-        return Cognito_Identity_ProviderError.EnableSoftwareTokenMFAException
-    if code == "ExpiredCodeException":
-        return Cognito_Identity_ProviderError.ExpiredCodeException
-    if code == "FeatureUnavailableInTierException":
-        return Cognito_Identity_ProviderError.FeatureUnavailableInTierException
-    if code == "ForbiddenException":
-        return Cognito_Identity_ProviderError.ForbiddenException
-    if code == "GroupExistsException":
-        return Cognito_Identity_ProviderError.GroupExistsException
-    if code == "InternalErrorException":
-        return Cognito_Identity_ProviderError.InternalErrorException
-    if code == "InternalServerException":
-        return Cognito_Identity_ProviderError.InternalServerException
-    if code == "InvalidEmailRoleAccessPolicyException":
-        return Cognito_Identity_ProviderError.InvalidEmailRoleAccessPolicyException
-    if code == "InvalidLambdaResponseException":
-        return Cognito_Identity_ProviderError.InvalidLambdaResponseException
-    if code == "InvalidOAuthFlowException":
-        return Cognito_Identity_ProviderError.InvalidOAuthFlowException
-    if code == "InvalidParameterException":
-        return Cognito_Identity_ProviderError.InvalidParameterException
-    if code == "InvalidPasswordException":
-        return Cognito_Identity_ProviderError.InvalidPasswordException
-    if code == "InvalidSmsRoleAccessPolicyException":
-        return Cognito_Identity_ProviderError.InvalidSmsRoleAccessPolicyException
-    if code == "InvalidSmsRoleTrustRelationshipException":
-        return Cognito_Identity_ProviderError.InvalidSmsRoleTrustRelationshipException
-    if code == "InvalidUserPoolConfigurationException":
-        return Cognito_Identity_ProviderError.InvalidUserPoolConfigurationException
-    if code == "LimitExceededException":
-        return Cognito_Identity_ProviderError.LimitExceededException
-    if code == "MFAMethodNotFoundException":
-        return Cognito_Identity_ProviderError.MFAMethodNotFoundException
-    if code == "ManagedLoginBrandingExistsException":
-        return Cognito_Identity_ProviderError.ManagedLoginBrandingExistsException
-    if code == "NotAuthorizedException":
-        return Cognito_Identity_ProviderError.NotAuthorizedException
-    if code == "OperationNotEnabledException":
-        return Cognito_Identity_ProviderError.OperationNotEnabledException
-    if code == "PasswordHistoryPolicyViolationException":
-        return Cognito_Identity_ProviderError.PasswordHistoryPolicyViolationException
-    if code == "PasswordResetRequiredException":
-        return Cognito_Identity_ProviderError.PasswordResetRequiredException
-    if code == "PreconditionNotMetException":
-        return Cognito_Identity_ProviderError.PreconditionNotMetException
-    if code == "RefreshTokenReuseException":
-        return Cognito_Identity_ProviderError.RefreshTokenReuseException
-    if code == "ResourceNotFoundException":
-        return Cognito_Identity_ProviderError.ResourceNotFoundException
-    if code == "ScopeDoesNotExistException":
-        return Cognito_Identity_ProviderError.ScopeDoesNotExistException
-    if code == "ServiceQuotaExceededException":
-        return Cognito_Identity_ProviderError.ServiceQuotaExceededException
-    if code == "SoftwareTokenMFANotFoundException":
-        return Cognito_Identity_ProviderError.SoftwareTokenMFANotFoundException
-    if code == "TermsExistsException":
-        return Cognito_Identity_ProviderError.TermsExistsException
-    if code == "TierChangeNotAllowedException":
-        return Cognito_Identity_ProviderError.TierChangeNotAllowedException
-    if code == "TooManyFailedAttemptsException":
-        return Cognito_Identity_ProviderError.TooManyFailedAttemptsException
-    if code == "TooManyRequestsException":
-        return Cognito_Identity_ProviderError.TooManyRequestsException
-    if code == "UnauthorizedException":
-        return Cognito_Identity_ProviderError.UnauthorizedException
-    if code == "UnexpectedLambdaException":
-        return Cognito_Identity_ProviderError.UnexpectedLambdaException
-    if code == "UnsupportedIdentityProviderException":
-        return Cognito_Identity_ProviderError.UnsupportedIdentityProviderException
-    if code == "UnsupportedOperationException":
-        return Cognito_Identity_ProviderError.UnsupportedOperationException
-    if code == "UnsupportedTokenTypeException":
-        return Cognito_Identity_ProviderError.UnsupportedTokenTypeException
-    if code == "UnsupportedUserStateException":
-        return Cognito_Identity_ProviderError.UnsupportedUserStateException
-    if code == "UserImportInProgressException":
-        return Cognito_Identity_ProviderError.UserImportInProgressException
-    if code == "UserLambdaValidationException":
-        return Cognito_Identity_ProviderError.UserLambdaValidationException
-    if code == "UserNotConfirmedException":
-        return Cognito_Identity_ProviderError.UserNotConfirmedException
-    if code == "UserNotFoundException":
-        return Cognito_Identity_ProviderError.UserNotFoundException
-    if code == "UserPoolAddOnNotEnabledException":
-        return Cognito_Identity_ProviderError.UserPoolAddOnNotEnabledException
-    if code == "UserPoolTaggingException":
-        return Cognito_Identity_ProviderError.UserPoolTaggingException
-    if code == "UsernameExistsException":
-        return Cognito_Identity_ProviderError.UsernameExistsException
-    if code == "WebAuthnChallengeNotFoundException":
-        return Cognito_Identity_ProviderError.WebAuthnChallengeNotFoundException
-    if code == "WebAuthnClientMismatchException":
-        return Cognito_Identity_ProviderError.WebAuthnClientMismatchException
-    if code == "WebAuthnConfigurationMissingException":
-        return Cognito_Identity_ProviderError.WebAuthnConfigurationMissingException
-    if code == "WebAuthnCredentialNotSupportedException":
-        return Cognito_Identity_ProviderError.WebAuthnCredentialNotSupportedException
-    if code == "WebAuthnNotEnabledException":
-        return Cognito_Identity_ProviderError.WebAuthnNotEnabledException
-    if code == "WebAuthnOriginNotAllowedException":
-        return Cognito_Identity_ProviderError.WebAuthnOriginNotAllowedException
-    if code == "WebAuthnRelyingPartyMismatchException":
-        return Cognito_Identity_ProviderError.WebAuthnRelyingPartyMismatchException
-    return Cognito_Identity_ProviderError.Unknown(code=code)
+# Classify an AWS error code into `Cognito_Identity_ProviderErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def cognito_idp_error_kind(str code) -> Cognito_Identity_ProviderErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return Cognito_Identity_ProviderErrorKind.AccessDeniedException
+    if name == "AliasExistsException":
+        return Cognito_Identity_ProviderErrorKind.AliasExistsException
+    if name == "CodeDeliveryFailureException":
+        return Cognito_Identity_ProviderErrorKind.CodeDeliveryFailureException
+    if name == "CodeMismatchException":
+        return Cognito_Identity_ProviderErrorKind.CodeMismatchException
+    if name == "ConcurrentModificationException":
+        return Cognito_Identity_ProviderErrorKind.ConcurrentModificationException
+    if name == "DeviceKeyExistsException":
+        return Cognito_Identity_ProviderErrorKind.DeviceKeyExistsException
+    if name == "DuplicateProviderException":
+        return Cognito_Identity_ProviderErrorKind.DuplicateProviderException
+    if name == "EnableSoftwareTokenMFAException":
+        return Cognito_Identity_ProviderErrorKind.EnableSoftwareTokenMFAException
+    if name == "ExpiredCodeException":
+        return Cognito_Identity_ProviderErrorKind.ExpiredCodeException
+    if name == "FeatureUnavailableInTierException":
+        return Cognito_Identity_ProviderErrorKind.FeatureUnavailableInTierException
+    if name == "ForbiddenException":
+        return Cognito_Identity_ProviderErrorKind.ForbiddenException
+    if name == "GroupExistsException":
+        return Cognito_Identity_ProviderErrorKind.GroupExistsException
+    if name == "InternalErrorException":
+        return Cognito_Identity_ProviderErrorKind.InternalErrorException
+    if name == "InternalServerException":
+        return Cognito_Identity_ProviderErrorKind.InternalServerException
+    if name == "InvalidEmailRoleAccessPolicyException":
+        return Cognito_Identity_ProviderErrorKind.InvalidEmailRoleAccessPolicyException
+    if name == "InvalidLambdaResponseException":
+        return Cognito_Identity_ProviderErrorKind.InvalidLambdaResponseException
+    if name == "InvalidOAuthFlowException":
+        return Cognito_Identity_ProviderErrorKind.InvalidOAuthFlowException
+    if name == "InvalidParameterException":
+        return Cognito_Identity_ProviderErrorKind.InvalidParameterException
+    if name == "InvalidPasswordException":
+        return Cognito_Identity_ProviderErrorKind.InvalidPasswordException
+    if name == "InvalidSmsRoleAccessPolicyException":
+        return Cognito_Identity_ProviderErrorKind.InvalidSmsRoleAccessPolicyException
+    if name == "InvalidSmsRoleTrustRelationshipException":
+        return Cognito_Identity_ProviderErrorKind.InvalidSmsRoleTrustRelationshipException
+    if name == "InvalidUserPoolConfigurationException":
+        return Cognito_Identity_ProviderErrorKind.InvalidUserPoolConfigurationException
+    if name == "LimitExceededException":
+        return Cognito_Identity_ProviderErrorKind.LimitExceededException
+    if name == "MFAMethodNotFoundException":
+        return Cognito_Identity_ProviderErrorKind.MFAMethodNotFoundException
+    if name == "ManagedLoginBrandingExistsException":
+        return Cognito_Identity_ProviderErrorKind.ManagedLoginBrandingExistsException
+    if name == "NotAuthorizedException":
+        return Cognito_Identity_ProviderErrorKind.NotAuthorizedException
+    if name == "OperationNotEnabledException":
+        return Cognito_Identity_ProviderErrorKind.OperationNotEnabledException
+    if name == "PasswordHistoryPolicyViolationException":
+        return Cognito_Identity_ProviderErrorKind.PasswordHistoryPolicyViolationException
+    if name == "PasswordResetRequiredException":
+        return Cognito_Identity_ProviderErrorKind.PasswordResetRequiredException
+    if name == "PreconditionNotMetException":
+        return Cognito_Identity_ProviderErrorKind.PreconditionNotMetException
+    if name == "RefreshTokenReuseException":
+        return Cognito_Identity_ProviderErrorKind.RefreshTokenReuseException
+    if name == "ResourceNotFoundException":
+        return Cognito_Identity_ProviderErrorKind.ResourceNotFoundException
+    if name == "ScopeDoesNotExistException":
+        return Cognito_Identity_ProviderErrorKind.ScopeDoesNotExistException
+    if name == "ServiceQuotaExceededException":
+        return Cognito_Identity_ProviderErrorKind.ServiceQuotaExceededException
+    if name == "SoftwareTokenMFANotFoundException":
+        return Cognito_Identity_ProviderErrorKind.SoftwareTokenMFANotFoundException
+    if name == "TermsExistsException":
+        return Cognito_Identity_ProviderErrorKind.TermsExistsException
+    if name == "TierChangeNotAllowedException":
+        return Cognito_Identity_ProviderErrorKind.TierChangeNotAllowedException
+    if name == "TooManyFailedAttemptsException":
+        return Cognito_Identity_ProviderErrorKind.TooManyFailedAttemptsException
+    if name == "TooManyRequestsException":
+        return Cognito_Identity_ProviderErrorKind.TooManyRequestsException
+    if name == "UnauthorizedException":
+        return Cognito_Identity_ProviderErrorKind.UnauthorizedException
+    if name == "UnexpectedLambdaException":
+        return Cognito_Identity_ProviderErrorKind.UnexpectedLambdaException
+    if name == "UnsupportedIdentityProviderException":
+        return Cognito_Identity_ProviderErrorKind.UnsupportedIdentityProviderException
+    if name == "UnsupportedOperationException":
+        return Cognito_Identity_ProviderErrorKind.UnsupportedOperationException
+    if name == "UnsupportedTokenTypeException":
+        return Cognito_Identity_ProviderErrorKind.UnsupportedTokenTypeException
+    if name == "UnsupportedUserStateException":
+        return Cognito_Identity_ProviderErrorKind.UnsupportedUserStateException
+    if name == "UserImportInProgressException":
+        return Cognito_Identity_ProviderErrorKind.UserImportInProgressException
+    if name == "UserLambdaValidationException":
+        return Cognito_Identity_ProviderErrorKind.UserLambdaValidationException
+    if name == "UserNotConfirmedException":
+        return Cognito_Identity_ProviderErrorKind.UserNotConfirmedException
+    if name == "UserNotFoundException":
+        return Cognito_Identity_ProviderErrorKind.UserNotFoundException
+    if name == "UserPoolAddOnNotEnabledException":
+        return Cognito_Identity_ProviderErrorKind.UserPoolAddOnNotEnabledException
+    if name == "UserPoolTaggingException":
+        return Cognito_Identity_ProviderErrorKind.UserPoolTaggingException
+    if name == "UsernameExistsException":
+        return Cognito_Identity_ProviderErrorKind.UsernameExistsException
+    if name == "WebAuthnChallengeNotFoundException":
+        return Cognito_Identity_ProviderErrorKind.WebAuthnChallengeNotFoundException
+    if name == "WebAuthnClientMismatchException":
+        return Cognito_Identity_ProviderErrorKind.WebAuthnClientMismatchException
+    if name == "WebAuthnConfigurationMissingException":
+        return Cognito_Identity_ProviderErrorKind.WebAuthnConfigurationMissingException
+    if name == "WebAuthnCredentialNotSupportedException":
+        return Cognito_Identity_ProviderErrorKind.WebAuthnCredentialNotSupportedException
+    if name == "WebAuthnNotEnabledException":
+        return Cognito_Identity_ProviderErrorKind.WebAuthnNotEnabledException
+    if name == "WebAuthnOriginNotAllowedException":
+        return Cognito_Identity_ProviderErrorKind.WebAuthnOriginNotAllowedException
+    if name == "WebAuthnRelyingPartyMismatchException":
+        return Cognito_Identity_ProviderErrorKind.WebAuthnRelyingPartyMismatchException
+    return Cognito_Identity_ProviderErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def cognito_idp_error_name(Cognito_Identity_ProviderErrorKind k) -> str:
+    match k:
+        case Cognito_Identity_ProviderErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case Cognito_Identity_ProviderErrorKind.AliasExistsException:
+            return "AliasExistsException"
+        case Cognito_Identity_ProviderErrorKind.CodeDeliveryFailureException:
+            return "CodeDeliveryFailureException"
+        case Cognito_Identity_ProviderErrorKind.CodeMismatchException:
+            return "CodeMismatchException"
+        case Cognito_Identity_ProviderErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case Cognito_Identity_ProviderErrorKind.DeviceKeyExistsException:
+            return "DeviceKeyExistsException"
+        case Cognito_Identity_ProviderErrorKind.DuplicateProviderException:
+            return "DuplicateProviderException"
+        case Cognito_Identity_ProviderErrorKind.EnableSoftwareTokenMFAException:
+            return "EnableSoftwareTokenMFAException"
+        case Cognito_Identity_ProviderErrorKind.ExpiredCodeException:
+            return "ExpiredCodeException"
+        case Cognito_Identity_ProviderErrorKind.FeatureUnavailableInTierException:
+            return "FeatureUnavailableInTierException"
+        case Cognito_Identity_ProviderErrorKind.ForbiddenException:
+            return "ForbiddenException"
+        case Cognito_Identity_ProviderErrorKind.GroupExistsException:
+            return "GroupExistsException"
+        case Cognito_Identity_ProviderErrorKind.InternalErrorException:
+            return "InternalErrorException"
+        case Cognito_Identity_ProviderErrorKind.InternalServerException:
+            return "InternalServerException"
+        case Cognito_Identity_ProviderErrorKind.InvalidEmailRoleAccessPolicyException:
+            return "InvalidEmailRoleAccessPolicyException"
+        case Cognito_Identity_ProviderErrorKind.InvalidLambdaResponseException:
+            return "InvalidLambdaResponseException"
+        case Cognito_Identity_ProviderErrorKind.InvalidOAuthFlowException:
+            return "InvalidOAuthFlowException"
+        case Cognito_Identity_ProviderErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case Cognito_Identity_ProviderErrorKind.InvalidPasswordException:
+            return "InvalidPasswordException"
+        case Cognito_Identity_ProviderErrorKind.InvalidSmsRoleAccessPolicyException:
+            return "InvalidSmsRoleAccessPolicyException"
+        case Cognito_Identity_ProviderErrorKind.InvalidSmsRoleTrustRelationshipException:
+            return "InvalidSmsRoleTrustRelationshipException"
+        case Cognito_Identity_ProviderErrorKind.InvalidUserPoolConfigurationException:
+            return "InvalidUserPoolConfigurationException"
+        case Cognito_Identity_ProviderErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case Cognito_Identity_ProviderErrorKind.MFAMethodNotFoundException:
+            return "MFAMethodNotFoundException"
+        case Cognito_Identity_ProviderErrorKind.ManagedLoginBrandingExistsException:
+            return "ManagedLoginBrandingExistsException"
+        case Cognito_Identity_ProviderErrorKind.NotAuthorizedException:
+            return "NotAuthorizedException"
+        case Cognito_Identity_ProviderErrorKind.OperationNotEnabledException:
+            return "OperationNotEnabledException"
+        case Cognito_Identity_ProviderErrorKind.PasswordHistoryPolicyViolationException:
+            return "PasswordHistoryPolicyViolationException"
+        case Cognito_Identity_ProviderErrorKind.PasswordResetRequiredException:
+            return "PasswordResetRequiredException"
+        case Cognito_Identity_ProviderErrorKind.PreconditionNotMetException:
+            return "PreconditionNotMetException"
+        case Cognito_Identity_ProviderErrorKind.RefreshTokenReuseException:
+            return "RefreshTokenReuseException"
+        case Cognito_Identity_ProviderErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case Cognito_Identity_ProviderErrorKind.ScopeDoesNotExistException:
+            return "ScopeDoesNotExistException"
+        case Cognito_Identity_ProviderErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case Cognito_Identity_ProviderErrorKind.SoftwareTokenMFANotFoundException:
+            return "SoftwareTokenMFANotFoundException"
+        case Cognito_Identity_ProviderErrorKind.TermsExistsException:
+            return "TermsExistsException"
+        case Cognito_Identity_ProviderErrorKind.TierChangeNotAllowedException:
+            return "TierChangeNotAllowedException"
+        case Cognito_Identity_ProviderErrorKind.TooManyFailedAttemptsException:
+            return "TooManyFailedAttemptsException"
+        case Cognito_Identity_ProviderErrorKind.TooManyRequestsException:
+            return "TooManyRequestsException"
+        case Cognito_Identity_ProviderErrorKind.UnauthorizedException:
+            return "UnauthorizedException"
+        case Cognito_Identity_ProviderErrorKind.UnexpectedLambdaException:
+            return "UnexpectedLambdaException"
+        case Cognito_Identity_ProviderErrorKind.UnsupportedIdentityProviderException:
+            return "UnsupportedIdentityProviderException"
+        case Cognito_Identity_ProviderErrorKind.UnsupportedOperationException:
+            return "UnsupportedOperationException"
+        case Cognito_Identity_ProviderErrorKind.UnsupportedTokenTypeException:
+            return "UnsupportedTokenTypeException"
+        case Cognito_Identity_ProviderErrorKind.UnsupportedUserStateException:
+            return "UnsupportedUserStateException"
+        case Cognito_Identity_ProviderErrorKind.UserImportInProgressException:
+            return "UserImportInProgressException"
+        case Cognito_Identity_ProviderErrorKind.UserLambdaValidationException:
+            return "UserLambdaValidationException"
+        case Cognito_Identity_ProviderErrorKind.UserNotConfirmedException:
+            return "UserNotConfirmedException"
+        case Cognito_Identity_ProviderErrorKind.UserNotFoundException:
+            return "UserNotFoundException"
+        case Cognito_Identity_ProviderErrorKind.UserPoolAddOnNotEnabledException:
+            return "UserPoolAddOnNotEnabledException"
+        case Cognito_Identity_ProviderErrorKind.UserPoolTaggingException:
+            return "UserPoolTaggingException"
+        case Cognito_Identity_ProviderErrorKind.UsernameExistsException:
+            return "UsernameExistsException"
+        case Cognito_Identity_ProviderErrorKind.WebAuthnChallengeNotFoundException:
+            return "WebAuthnChallengeNotFoundException"
+        case Cognito_Identity_ProviderErrorKind.WebAuthnClientMismatchException:
+            return "WebAuthnClientMismatchException"
+        case Cognito_Identity_ProviderErrorKind.WebAuthnConfigurationMissingException:
+            return "WebAuthnConfigurationMissingException"
+        case Cognito_Identity_ProviderErrorKind.WebAuthnCredentialNotSupportedException:
+            return "WebAuthnCredentialNotSupportedException"
+        case Cognito_Identity_ProviderErrorKind.WebAuthnNotEnabledException:
+            return "WebAuthnNotEnabledException"
+        case Cognito_Identity_ProviderErrorKind.WebAuthnOriginNotAllowedException:
+            return "WebAuthnOriginNotAllowedException"
+        case Cognito_Identity_ProviderErrorKind.WebAuthnRelyingPartyMismatchException:
+            return "WebAuthnRelyingPartyMismatchException"
+        case Cognito_Identity_ProviderErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

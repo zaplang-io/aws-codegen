@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix RekognitionService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -2635,9 +2637,16 @@ struct VideoTooLargeException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by rekognition_error_from_code.
-enum RekognitionError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum RekognitionErrorKind:
     AccessDeniedException
     ConflictException
     HumanLoopQuotaExceededException
@@ -2663,55 +2672,115 @@ enum RekognitionError:
     VideoTooLargeException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def rekognition_error_from_code(str code) -> RekognitionError:
-    if code == "AccessDeniedException":
-        return RekognitionError.AccessDeniedException
-    if code == "ConflictException":
-        return RekognitionError.ConflictException
-    if code == "HumanLoopQuotaExceededException":
-        return RekognitionError.HumanLoopQuotaExceededException
-    if code == "IdempotentParameterMismatchException":
-        return RekognitionError.IdempotentParameterMismatchException
-    if code == "ImageTooLargeException":
-        return RekognitionError.ImageTooLargeException
-    if code == "InternalServerError":
-        return RekognitionError.InternalServerError
-    if code == "InvalidImageFormatException":
-        return RekognitionError.InvalidImageFormatException
-    if code == "InvalidManifestException":
-        return RekognitionError.InvalidManifestException
-    if code == "InvalidPaginationTokenException":
-        return RekognitionError.InvalidPaginationTokenException
-    if code == "InvalidParameterException":
-        return RekognitionError.InvalidParameterException
-    if code == "InvalidPolicyRevisionIdException":
-        return RekognitionError.InvalidPolicyRevisionIdException
-    if code == "InvalidS3ObjectException":
-        return RekognitionError.InvalidS3ObjectException
-    if code == "LimitExceededException":
-        return RekognitionError.LimitExceededException
-    if code == "MalformedPolicyDocumentException":
-        return RekognitionError.MalformedPolicyDocumentException
-    if code == "ProvisionedThroughputExceededException":
-        return RekognitionError.ProvisionedThroughputExceededException
-    if code == "ResourceAlreadyExistsException":
-        return RekognitionError.ResourceAlreadyExistsException
-    if code == "ResourceInUseException":
-        return RekognitionError.ResourceInUseException
-    if code == "ResourceNotFoundException":
-        return RekognitionError.ResourceNotFoundException
-    if code == "ResourceNotReadyException":
-        return RekognitionError.ResourceNotReadyException
-    if code == "ServiceQuotaExceededException":
-        return RekognitionError.ServiceQuotaExceededException
-    if code == "SessionNotFoundException":
-        return RekognitionError.SessionNotFoundException
-    if code == "ThrottlingException":
-        return RekognitionError.ThrottlingException
-    if code == "VideoTooLargeException":
-        return RekognitionError.VideoTooLargeException
-    return RekognitionError.Unknown(code=code)
+# Classify an AWS error code into `RekognitionErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def rekognition_error_kind(str code) -> RekognitionErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return RekognitionErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return RekognitionErrorKind.ConflictException
+    if name == "HumanLoopQuotaExceededException":
+        return RekognitionErrorKind.HumanLoopQuotaExceededException
+    if name == "IdempotentParameterMismatchException":
+        return RekognitionErrorKind.IdempotentParameterMismatchException
+    if name == "ImageTooLargeException":
+        return RekognitionErrorKind.ImageTooLargeException
+    if name == "InternalServerError":
+        return RekognitionErrorKind.InternalServerError
+    if name == "InvalidImageFormatException":
+        return RekognitionErrorKind.InvalidImageFormatException
+    if name == "InvalidManifestException":
+        return RekognitionErrorKind.InvalidManifestException
+    if name == "InvalidPaginationTokenException":
+        return RekognitionErrorKind.InvalidPaginationTokenException
+    if name == "InvalidParameterException":
+        return RekognitionErrorKind.InvalidParameterException
+    if name == "InvalidPolicyRevisionIdException":
+        return RekognitionErrorKind.InvalidPolicyRevisionIdException
+    if name == "InvalidS3ObjectException":
+        return RekognitionErrorKind.InvalidS3ObjectException
+    if name == "LimitExceededException":
+        return RekognitionErrorKind.LimitExceededException
+    if name == "MalformedPolicyDocumentException":
+        return RekognitionErrorKind.MalformedPolicyDocumentException
+    if name == "ProvisionedThroughputExceededException":
+        return RekognitionErrorKind.ProvisionedThroughputExceededException
+    if name == "ResourceAlreadyExistsException":
+        return RekognitionErrorKind.ResourceAlreadyExistsException
+    if name == "ResourceInUseException":
+        return RekognitionErrorKind.ResourceInUseException
+    if name == "ResourceNotFoundException":
+        return RekognitionErrorKind.ResourceNotFoundException
+    if name == "ResourceNotReadyException":
+        return RekognitionErrorKind.ResourceNotReadyException
+    if name == "ServiceQuotaExceededException":
+        return RekognitionErrorKind.ServiceQuotaExceededException
+    if name == "SessionNotFoundException":
+        return RekognitionErrorKind.SessionNotFoundException
+    if name == "ThrottlingException":
+        return RekognitionErrorKind.ThrottlingException
+    if name == "VideoTooLargeException":
+        return RekognitionErrorKind.VideoTooLargeException
+    return RekognitionErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def rekognition_error_name(RekognitionErrorKind k) -> str:
+    match k:
+        case RekognitionErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case RekognitionErrorKind.ConflictException:
+            return "ConflictException"
+        case RekognitionErrorKind.HumanLoopQuotaExceededException:
+            return "HumanLoopQuotaExceededException"
+        case RekognitionErrorKind.IdempotentParameterMismatchException:
+            return "IdempotentParameterMismatchException"
+        case RekognitionErrorKind.ImageTooLargeException:
+            return "ImageTooLargeException"
+        case RekognitionErrorKind.InternalServerError:
+            return "InternalServerError"
+        case RekognitionErrorKind.InvalidImageFormatException:
+            return "InvalidImageFormatException"
+        case RekognitionErrorKind.InvalidManifestException:
+            return "InvalidManifestException"
+        case RekognitionErrorKind.InvalidPaginationTokenException:
+            return "InvalidPaginationTokenException"
+        case RekognitionErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case RekognitionErrorKind.InvalidPolicyRevisionIdException:
+            return "InvalidPolicyRevisionIdException"
+        case RekognitionErrorKind.InvalidS3ObjectException:
+            return "InvalidS3ObjectException"
+        case RekognitionErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case RekognitionErrorKind.MalformedPolicyDocumentException:
+            return "MalformedPolicyDocumentException"
+        case RekognitionErrorKind.ProvisionedThroughputExceededException:
+            return "ProvisionedThroughputExceededException"
+        case RekognitionErrorKind.ResourceAlreadyExistsException:
+            return "ResourceAlreadyExistsException"
+        case RekognitionErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case RekognitionErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case RekognitionErrorKind.ResourceNotReadyException:
+            return "ResourceNotReadyException"
+        case RekognitionErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case RekognitionErrorKind.SessionNotFoundException:
+            return "SessionNotFoundException"
+        case RekognitionErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case RekognitionErrorKind.VideoTooLargeException:
+            return "VideoTooLargeException"
+        case RekognitionErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

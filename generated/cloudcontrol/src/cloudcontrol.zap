@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.0 (targetPrefix CloudApiService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -300,9 +302,16 @@ struct UpdateResourceOutput:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by cloudcontrolapi_error_from_code.
-enum CloudControlError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum CloudControlErrorKind:
     AlreadyExistsException
     ClientTokenConflictException
     ConcurrentModificationException
@@ -326,51 +335,107 @@ enum CloudControlError:
     UnsupportedActionException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def cloudcontrolapi_error_from_code(str code) -> CloudControlError:
-    if code == "AlreadyExistsException":
-        return CloudControlError.AlreadyExistsException
-    if code == "ClientTokenConflictException":
-        return CloudControlError.ClientTokenConflictException
-    if code == "ConcurrentModificationException":
-        return CloudControlError.ConcurrentModificationException
-    if code == "ConcurrentOperationException":
-        return CloudControlError.ConcurrentOperationException
-    if code == "GeneralServiceException":
-        return CloudControlError.GeneralServiceException
-    if code == "HandlerFailureException":
-        return CloudControlError.HandlerFailureException
-    if code == "HandlerInternalFailureException":
-        return CloudControlError.HandlerInternalFailureException
-    if code == "InvalidCredentialsException":
-        return CloudControlError.InvalidCredentialsException
-    if code == "InvalidRequestException":
-        return CloudControlError.InvalidRequestException
-    if code == "NetworkFailureException":
-        return CloudControlError.NetworkFailureException
-    if code == "NotStabilizedException":
-        return CloudControlError.NotStabilizedException
-    if code == "NotUpdatableException":
-        return CloudControlError.NotUpdatableException
-    if code == "PrivateTypeException":
-        return CloudControlError.PrivateTypeException
-    if code == "RequestTokenNotFoundException":
-        return CloudControlError.RequestTokenNotFoundException
-    if code == "ResourceConflictException":
-        return CloudControlError.ResourceConflictException
-    if code == "ResourceNotFoundException":
-        return CloudControlError.ResourceNotFoundException
-    if code == "ServiceInternalErrorException":
-        return CloudControlError.ServiceInternalErrorException
-    if code == "ServiceLimitExceededException":
-        return CloudControlError.ServiceLimitExceededException
-    if code == "ThrottlingException":
-        return CloudControlError.ThrottlingException
-    if code == "TypeNotFoundException":
-        return CloudControlError.TypeNotFoundException
-    if code == "UnsupportedActionException":
-        return CloudControlError.UnsupportedActionException
-    return CloudControlError.Unknown(code=code)
+# Classify an AWS error code into `CloudControlErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def cloudcontrolapi_error_kind(str code) -> CloudControlErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AlreadyExistsException":
+        return CloudControlErrorKind.AlreadyExistsException
+    if name == "ClientTokenConflictException":
+        return CloudControlErrorKind.ClientTokenConflictException
+    if name == "ConcurrentModificationException":
+        return CloudControlErrorKind.ConcurrentModificationException
+    if name == "ConcurrentOperationException":
+        return CloudControlErrorKind.ConcurrentOperationException
+    if name == "GeneralServiceException":
+        return CloudControlErrorKind.GeneralServiceException
+    if name == "HandlerFailureException":
+        return CloudControlErrorKind.HandlerFailureException
+    if name == "HandlerInternalFailureException":
+        return CloudControlErrorKind.HandlerInternalFailureException
+    if name == "InvalidCredentialsException":
+        return CloudControlErrorKind.InvalidCredentialsException
+    if name == "InvalidRequestException":
+        return CloudControlErrorKind.InvalidRequestException
+    if name == "NetworkFailureException":
+        return CloudControlErrorKind.NetworkFailureException
+    if name == "NotStabilizedException":
+        return CloudControlErrorKind.NotStabilizedException
+    if name == "NotUpdatableException":
+        return CloudControlErrorKind.NotUpdatableException
+    if name == "PrivateTypeException":
+        return CloudControlErrorKind.PrivateTypeException
+    if name == "RequestTokenNotFoundException":
+        return CloudControlErrorKind.RequestTokenNotFoundException
+    if name == "ResourceConflictException":
+        return CloudControlErrorKind.ResourceConflictException
+    if name == "ResourceNotFoundException":
+        return CloudControlErrorKind.ResourceNotFoundException
+    if name == "ServiceInternalErrorException":
+        return CloudControlErrorKind.ServiceInternalErrorException
+    if name == "ServiceLimitExceededException":
+        return CloudControlErrorKind.ServiceLimitExceededException
+    if name == "ThrottlingException":
+        return CloudControlErrorKind.ThrottlingException
+    if name == "TypeNotFoundException":
+        return CloudControlErrorKind.TypeNotFoundException
+    if name == "UnsupportedActionException":
+        return CloudControlErrorKind.UnsupportedActionException
+    return CloudControlErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def cloudcontrolapi_error_name(CloudControlErrorKind k) -> str:
+    match k:
+        case CloudControlErrorKind.AlreadyExistsException:
+            return "AlreadyExistsException"
+        case CloudControlErrorKind.ClientTokenConflictException:
+            return "ClientTokenConflictException"
+        case CloudControlErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case CloudControlErrorKind.ConcurrentOperationException:
+            return "ConcurrentOperationException"
+        case CloudControlErrorKind.GeneralServiceException:
+            return "GeneralServiceException"
+        case CloudControlErrorKind.HandlerFailureException:
+            return "HandlerFailureException"
+        case CloudControlErrorKind.HandlerInternalFailureException:
+            return "HandlerInternalFailureException"
+        case CloudControlErrorKind.InvalidCredentialsException:
+            return "InvalidCredentialsException"
+        case CloudControlErrorKind.InvalidRequestException:
+            return "InvalidRequestException"
+        case CloudControlErrorKind.NetworkFailureException:
+            return "NetworkFailureException"
+        case CloudControlErrorKind.NotStabilizedException:
+            return "NotStabilizedException"
+        case CloudControlErrorKind.NotUpdatableException:
+            return "NotUpdatableException"
+        case CloudControlErrorKind.PrivateTypeException:
+            return "PrivateTypeException"
+        case CloudControlErrorKind.RequestTokenNotFoundException:
+            return "RequestTokenNotFoundException"
+        case CloudControlErrorKind.ResourceConflictException:
+            return "ResourceConflictException"
+        case CloudControlErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case CloudControlErrorKind.ServiceInternalErrorException:
+            return "ServiceInternalErrorException"
+        case CloudControlErrorKind.ServiceLimitExceededException:
+            return "ServiceLimitExceededException"
+        case CloudControlErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case CloudControlErrorKind.TypeNotFoundException:
+            return "TypeNotFoundException"
+        case CloudControlErrorKind.UnsupportedActionException:
+            return "UnsupportedActionException"
+        case CloudControlErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

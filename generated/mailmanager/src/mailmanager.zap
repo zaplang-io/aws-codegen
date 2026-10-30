@@ -6,8 +6,8 @@
 # Protocol: smithy-rpc-v2-cbor (SigV4 service ses, service shape MailManagerSvc)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + cbor) via #283 module
-# imports — see
+# Imports the aws_core package (core + errors + endpoints + cbor) via #283
+# module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request BYTES: the whole input is one canonical CBOR data item
 # POSTed to /service/{Svc}/operation/{Op}. The CBOR wire form is binary, so a
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.cbor
 import datetime
@@ -1370,9 +1371,16 @@ struct ValidationException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# smithy-rpc-v2-cbor body `__type` (cbor.cbor_error_type) code by mail_manager_error_from_code.
-enum MailManagerError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the smithy-rpc-v2-cbor body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum MailManagerErrorKind:
     AccessDeniedException
     ConflictException
     ResourceNotFoundException
@@ -1381,24 +1389,47 @@ enum MailManagerError:
     ValidationException
     Unknown(str code)
 
-# Map a smithy-rpc-v2-cbor error code to a variant. The code is the body's
-# `__type` (cbor.cbor_error_type / cbor.cbor_error.code); it is namespaced like
-# awsJson (e.g. "com.amazonaws.<svc>#<Name>"), so strip to the bare shape name
-# (the text after the last '#') before dispatching.
-def mail_manager_error_from_code(str code) -> MailManagerError:
-    if code == "AccessDeniedException":
-        return MailManagerError.AccessDeniedException
-    if code == "ConflictException":
-        return MailManagerError.ConflictException
-    if code == "ResourceNotFoundException":
-        return MailManagerError.ResourceNotFoundException
-    if code == "ServiceQuotaExceededException":
-        return MailManagerError.ServiceQuotaExceededException
-    if code == "ThrottlingException":
-        return MailManagerError.ThrottlingException
-    if code == "ValidationException":
-        return MailManagerError.ValidationException
-    return MailManagerError.Unknown(code=code)
+# Classify an AWS error code into `MailManagerErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def mail_manager_error_kind(str code) -> MailManagerErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return MailManagerErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return MailManagerErrorKind.ConflictException
+    if name == "ResourceNotFoundException":
+        return MailManagerErrorKind.ResourceNotFoundException
+    if name == "ServiceQuotaExceededException":
+        return MailManagerErrorKind.ServiceQuotaExceededException
+    if name == "ThrottlingException":
+        return MailManagerErrorKind.ThrottlingException
+    if name == "ValidationException":
+        return MailManagerErrorKind.ValidationException
+    return MailManagerErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def mail_manager_error_name(MailManagerErrorKind k) -> str:
+    match k:
+        case MailManagerErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case MailManagerErrorKind.ConflictException:
+            return "ConflictException"
+        case MailManagerErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case MailManagerErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case MailManagerErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case MailManagerErrorKind.ValidationException:
+            return "ValidationException"
+        case MailManagerErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

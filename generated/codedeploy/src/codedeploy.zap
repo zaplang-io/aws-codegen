@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix CodeDeploy_20141006)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -1946,9 +1948,16 @@ struct ZonalConfig:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by codedeploy_error_from_code.
-enum CodeDeployError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum CodeDeployErrorKind:
     AlarmsLimitExceededException
     ApplicationAlreadyExistsException
     ApplicationDoesNotExistException
@@ -2062,231 +2071,467 @@ enum CodeDeployError:
     UnsupportedActionForDeploymentTypeException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def codedeploy_error_from_code(str code) -> CodeDeployError:
-    if code == "AlarmsLimitExceededException":
-        return CodeDeployError.AlarmsLimitExceededException
-    if code == "ApplicationAlreadyExistsException":
-        return CodeDeployError.ApplicationAlreadyExistsException
-    if code == "ApplicationDoesNotExistException":
-        return CodeDeployError.ApplicationDoesNotExistException
-    if code == "ApplicationLimitExceededException":
-        return CodeDeployError.ApplicationLimitExceededException
-    if code == "ApplicationNameRequiredException":
-        return CodeDeployError.ApplicationNameRequiredException
-    if code == "ArnNotSupportedException":
-        return CodeDeployError.ArnNotSupportedException
-    if code == "BatchLimitExceededException":
-        return CodeDeployError.BatchLimitExceededException
-    if code == "BucketNameFilterRequiredException":
-        return CodeDeployError.BucketNameFilterRequiredException
-    if code == "DeploymentAlreadyCompletedException":
-        return CodeDeployError.DeploymentAlreadyCompletedException
-    if code == "DeploymentConfigAlreadyExistsException":
-        return CodeDeployError.DeploymentConfigAlreadyExistsException
-    if code == "DeploymentConfigDoesNotExistException":
-        return CodeDeployError.DeploymentConfigDoesNotExistException
-    if code == "DeploymentConfigInUseException":
-        return CodeDeployError.DeploymentConfigInUseException
-    if code == "DeploymentConfigLimitExceededException":
-        return CodeDeployError.DeploymentConfigLimitExceededException
-    if code == "DeploymentConfigNameRequiredException":
-        return CodeDeployError.DeploymentConfigNameRequiredException
-    if code == "DeploymentDoesNotExistException":
-        return CodeDeployError.DeploymentDoesNotExistException
-    if code == "DeploymentGroupAlreadyExistsException":
-        return CodeDeployError.DeploymentGroupAlreadyExistsException
-    if code == "DeploymentGroupDoesNotExistException":
-        return CodeDeployError.DeploymentGroupDoesNotExistException
-    if code == "DeploymentGroupLimitExceededException":
-        return CodeDeployError.DeploymentGroupLimitExceededException
-    if code == "DeploymentGroupNameRequiredException":
-        return CodeDeployError.DeploymentGroupNameRequiredException
-    if code == "DeploymentIdRequiredException":
-        return CodeDeployError.DeploymentIdRequiredException
-    if code == "DeploymentIsNotInReadyStateException":
-        return CodeDeployError.DeploymentIsNotInReadyStateException
-    if code == "DeploymentLimitExceededException":
-        return CodeDeployError.DeploymentLimitExceededException
-    if code == "DeploymentNotStartedException":
-        return CodeDeployError.DeploymentNotStartedException
-    if code == "DeploymentTargetDoesNotExistException":
-        return CodeDeployError.DeploymentTargetDoesNotExistException
-    if code == "DeploymentTargetIdRequiredException":
-        return CodeDeployError.DeploymentTargetIdRequiredException
-    if code == "DeploymentTargetListSizeExceededException":
-        return CodeDeployError.DeploymentTargetListSizeExceededException
-    if code == "DescriptionTooLongException":
-        return CodeDeployError.DescriptionTooLongException
-    if code == "ECSServiceMappingLimitExceededException":
-        return CodeDeployError.ECSServiceMappingLimitExceededException
-    if code == "GitHubAccountTokenDoesNotExistException":
-        return CodeDeployError.GitHubAccountTokenDoesNotExistException
-    if code == "GitHubAccountTokenNameRequiredException":
-        return CodeDeployError.GitHubAccountTokenNameRequiredException
-    if code == "IamArnRequiredException":
-        return CodeDeployError.IamArnRequiredException
-    if code == "IamSessionArnAlreadyRegisteredException":
-        return CodeDeployError.IamSessionArnAlreadyRegisteredException
-    if code == "IamUserArnAlreadyRegisteredException":
-        return CodeDeployError.IamUserArnAlreadyRegisteredException
-    if code == "IamUserArnRequiredException":
-        return CodeDeployError.IamUserArnRequiredException
-    if code == "InstanceDoesNotExistException":
-        return CodeDeployError.InstanceDoesNotExistException
-    if code == "InstanceIdRequiredException":
-        return CodeDeployError.InstanceIdRequiredException
-    if code == "InstanceLimitExceededException":
-        return CodeDeployError.InstanceLimitExceededException
-    if code == "InstanceNameAlreadyRegisteredException":
-        return CodeDeployError.InstanceNameAlreadyRegisteredException
-    if code == "InstanceNameRequiredException":
-        return CodeDeployError.InstanceNameRequiredException
-    if code == "InstanceNotRegisteredException":
-        return CodeDeployError.InstanceNotRegisteredException
-    if code == "InvalidAlarmConfigException":
-        return CodeDeployError.InvalidAlarmConfigException
-    if code == "InvalidApplicationNameException":
-        return CodeDeployError.InvalidApplicationNameException
-    if code == "InvalidArnException":
-        return CodeDeployError.InvalidArnException
-    if code == "InvalidAutoRollbackConfigException":
-        return CodeDeployError.InvalidAutoRollbackConfigException
-    if code == "InvalidAutoScalingGroupException":
-        return CodeDeployError.InvalidAutoScalingGroupException
-    if code == "InvalidAutoScalingGroupProcessToSuspendException":
-        return CodeDeployError.InvalidAutoScalingGroupProcessToSuspendException
-    if code == "InvalidBlueGreenDeploymentConfigurationException":
-        return CodeDeployError.InvalidBlueGreenDeploymentConfigurationException
-    if code == "InvalidBucketNameFilterException":
-        return CodeDeployError.InvalidBucketNameFilterException
-    if code == "InvalidComputePlatformException":
-        return CodeDeployError.InvalidComputePlatformException
-    if code == "InvalidDeployedStateFilterException":
-        return CodeDeployError.InvalidDeployedStateFilterException
-    if code == "InvalidDeploymentConfigNameException":
-        return CodeDeployError.InvalidDeploymentConfigNameException
-    if code == "InvalidDeploymentGroupNameException":
-        return CodeDeployError.InvalidDeploymentGroupNameException
-    if code == "InvalidDeploymentIdException":
-        return CodeDeployError.InvalidDeploymentIdException
-    if code == "InvalidDeploymentInstanceTypeException":
-        return CodeDeployError.InvalidDeploymentInstanceTypeException
-    if code == "InvalidDeploymentStatusException":
-        return CodeDeployError.InvalidDeploymentStatusException
-    if code == "InvalidDeploymentStyleException":
-        return CodeDeployError.InvalidDeploymentStyleException
-    if code == "InvalidDeploymentTargetIdException":
-        return CodeDeployError.InvalidDeploymentTargetIdException
-    if code == "InvalidDeploymentWaitTypeException":
-        return CodeDeployError.InvalidDeploymentWaitTypeException
-    if code == "InvalidEC2TagCombinationException":
-        return CodeDeployError.InvalidEC2TagCombinationException
-    if code == "InvalidEC2TagException":
-        return CodeDeployError.InvalidEC2TagException
-    if code == "InvalidECSServiceException":
-        return CodeDeployError.InvalidECSServiceException
-    if code == "InvalidExternalIdException":
-        return CodeDeployError.InvalidExternalIdException
-    if code == "InvalidFileExistsBehaviorException":
-        return CodeDeployError.InvalidFileExistsBehaviorException
-    if code == "InvalidGitHubAccountTokenException":
-        return CodeDeployError.InvalidGitHubAccountTokenException
-    if code == "InvalidGitHubAccountTokenNameException":
-        return CodeDeployError.InvalidGitHubAccountTokenNameException
-    if code == "InvalidIamSessionArnException":
-        return CodeDeployError.InvalidIamSessionArnException
-    if code == "InvalidIamUserArnException":
-        return CodeDeployError.InvalidIamUserArnException
-    if code == "InvalidIgnoreApplicationStopFailuresValueException":
-        return CodeDeployError.InvalidIgnoreApplicationStopFailuresValueException
-    if code == "InvalidInputException":
-        return CodeDeployError.InvalidInputException
-    if code == "InvalidInstanceNameException":
-        return CodeDeployError.InvalidInstanceNameException
-    if code == "InvalidInstanceStatusException":
-        return CodeDeployError.InvalidInstanceStatusException
-    if code == "InvalidInstanceTypeException":
-        return CodeDeployError.InvalidInstanceTypeException
-    if code == "InvalidKeyPrefixFilterException":
-        return CodeDeployError.InvalidKeyPrefixFilterException
-    if code == "InvalidLifecycleEventHookExecutionIdException":
-        return CodeDeployError.InvalidLifecycleEventHookExecutionIdException
-    if code == "InvalidLifecycleEventHookExecutionStatusException":
-        return CodeDeployError.InvalidLifecycleEventHookExecutionStatusException
-    if code == "InvalidLoadBalancerInfoException":
-        return CodeDeployError.InvalidLoadBalancerInfoException
-    if code == "InvalidMinimumHealthyHostValueException":
-        return CodeDeployError.InvalidMinimumHealthyHostValueException
-    if code == "InvalidNextTokenException":
-        return CodeDeployError.InvalidNextTokenException
-    if code == "InvalidOnPremisesTagCombinationException":
-        return CodeDeployError.InvalidOnPremisesTagCombinationException
-    if code == "InvalidOperationException":
-        return CodeDeployError.InvalidOperationException
-    if code == "InvalidRegistrationStatusException":
-        return CodeDeployError.InvalidRegistrationStatusException
-    if code == "InvalidRevisionException":
-        return CodeDeployError.InvalidRevisionException
-    if code == "InvalidRoleException":
-        return CodeDeployError.InvalidRoleException
-    if code == "InvalidSortByException":
-        return CodeDeployError.InvalidSortByException
-    if code == "InvalidSortOrderException":
-        return CodeDeployError.InvalidSortOrderException
-    if code == "InvalidTagException":
-        return CodeDeployError.InvalidTagException
-    if code == "InvalidTagFilterException":
-        return CodeDeployError.InvalidTagFilterException
-    if code == "InvalidTagsToAddException":
-        return CodeDeployError.InvalidTagsToAddException
-    if code == "InvalidTargetFilterNameException":
-        return CodeDeployError.InvalidTargetFilterNameException
-    if code == "InvalidTargetGroupPairException":
-        return CodeDeployError.InvalidTargetGroupPairException
-    if code == "InvalidTargetInstancesException":
-        return CodeDeployError.InvalidTargetInstancesException
-    if code == "InvalidTimeRangeException":
-        return CodeDeployError.InvalidTimeRangeException
-    if code == "InvalidTrafficRoutingConfigurationException":
-        return CodeDeployError.InvalidTrafficRoutingConfigurationException
-    if code == "InvalidTriggerConfigException":
-        return CodeDeployError.InvalidTriggerConfigException
-    if code == "InvalidUpdateOutdatedInstancesOnlyValueException":
-        return CodeDeployError.InvalidUpdateOutdatedInstancesOnlyValueException
-    if code == "InvalidZonalDeploymentConfigurationException":
-        return CodeDeployError.InvalidZonalDeploymentConfigurationException
-    if code == "LifecycleEventAlreadyCompletedException":
-        return CodeDeployError.LifecycleEventAlreadyCompletedException
-    if code == "LifecycleHookLimitExceededException":
-        return CodeDeployError.LifecycleHookLimitExceededException
-    if code == "MultipleIamArnsProvidedException":
-        return CodeDeployError.MultipleIamArnsProvidedException
-    if code == "OperationNotSupportedException":
-        return CodeDeployError.OperationNotSupportedException
-    if code == "ResourceArnRequiredException":
-        return CodeDeployError.ResourceArnRequiredException
-    if code == "ResourceValidationException":
-        return CodeDeployError.ResourceValidationException
-    if code == "RevisionDoesNotExistException":
-        return CodeDeployError.RevisionDoesNotExistException
-    if code == "RevisionRequiredException":
-        return CodeDeployError.RevisionRequiredException
-    if code == "RoleRequiredException":
-        return CodeDeployError.RoleRequiredException
-    if code == "TagLimitExceededException":
-        return CodeDeployError.TagLimitExceededException
-    if code == "TagRequiredException":
-        return CodeDeployError.TagRequiredException
-    if code == "TagSetListLimitExceededException":
-        return CodeDeployError.TagSetListLimitExceededException
-    if code == "ThrottlingException":
-        return CodeDeployError.ThrottlingException
-    if code == "TriggerTargetsLimitExceededException":
-        return CodeDeployError.TriggerTargetsLimitExceededException
-    if code == "UnsupportedActionForDeploymentTypeException":
-        return CodeDeployError.UnsupportedActionForDeploymentTypeException
-    return CodeDeployError.Unknown(code=code)
+# Classify an AWS error code into `CodeDeployErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def codedeploy_error_kind(str code) -> CodeDeployErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AlarmsLimitExceededException":
+        return CodeDeployErrorKind.AlarmsLimitExceededException
+    if name == "ApplicationAlreadyExistsException":
+        return CodeDeployErrorKind.ApplicationAlreadyExistsException
+    if name == "ApplicationDoesNotExistException":
+        return CodeDeployErrorKind.ApplicationDoesNotExistException
+    if name == "ApplicationLimitExceededException":
+        return CodeDeployErrorKind.ApplicationLimitExceededException
+    if name == "ApplicationNameRequiredException":
+        return CodeDeployErrorKind.ApplicationNameRequiredException
+    if name == "ArnNotSupportedException":
+        return CodeDeployErrorKind.ArnNotSupportedException
+    if name == "BatchLimitExceededException":
+        return CodeDeployErrorKind.BatchLimitExceededException
+    if name == "BucketNameFilterRequiredException":
+        return CodeDeployErrorKind.BucketNameFilterRequiredException
+    if name == "DeploymentAlreadyCompletedException":
+        return CodeDeployErrorKind.DeploymentAlreadyCompletedException
+    if name == "DeploymentConfigAlreadyExistsException":
+        return CodeDeployErrorKind.DeploymentConfigAlreadyExistsException
+    if name == "DeploymentConfigDoesNotExistException":
+        return CodeDeployErrorKind.DeploymentConfigDoesNotExistException
+    if name == "DeploymentConfigInUseException":
+        return CodeDeployErrorKind.DeploymentConfigInUseException
+    if name == "DeploymentConfigLimitExceededException":
+        return CodeDeployErrorKind.DeploymentConfigLimitExceededException
+    if name == "DeploymentConfigNameRequiredException":
+        return CodeDeployErrorKind.DeploymentConfigNameRequiredException
+    if name == "DeploymentDoesNotExistException":
+        return CodeDeployErrorKind.DeploymentDoesNotExistException
+    if name == "DeploymentGroupAlreadyExistsException":
+        return CodeDeployErrorKind.DeploymentGroupAlreadyExistsException
+    if name == "DeploymentGroupDoesNotExistException":
+        return CodeDeployErrorKind.DeploymentGroupDoesNotExistException
+    if name == "DeploymentGroupLimitExceededException":
+        return CodeDeployErrorKind.DeploymentGroupLimitExceededException
+    if name == "DeploymentGroupNameRequiredException":
+        return CodeDeployErrorKind.DeploymentGroupNameRequiredException
+    if name == "DeploymentIdRequiredException":
+        return CodeDeployErrorKind.DeploymentIdRequiredException
+    if name == "DeploymentIsNotInReadyStateException":
+        return CodeDeployErrorKind.DeploymentIsNotInReadyStateException
+    if name == "DeploymentLimitExceededException":
+        return CodeDeployErrorKind.DeploymentLimitExceededException
+    if name == "DeploymentNotStartedException":
+        return CodeDeployErrorKind.DeploymentNotStartedException
+    if name == "DeploymentTargetDoesNotExistException":
+        return CodeDeployErrorKind.DeploymentTargetDoesNotExistException
+    if name == "DeploymentTargetIdRequiredException":
+        return CodeDeployErrorKind.DeploymentTargetIdRequiredException
+    if name == "DeploymentTargetListSizeExceededException":
+        return CodeDeployErrorKind.DeploymentTargetListSizeExceededException
+    if name == "DescriptionTooLongException":
+        return CodeDeployErrorKind.DescriptionTooLongException
+    if name == "ECSServiceMappingLimitExceededException":
+        return CodeDeployErrorKind.ECSServiceMappingLimitExceededException
+    if name == "GitHubAccountTokenDoesNotExistException":
+        return CodeDeployErrorKind.GitHubAccountTokenDoesNotExistException
+    if name == "GitHubAccountTokenNameRequiredException":
+        return CodeDeployErrorKind.GitHubAccountTokenNameRequiredException
+    if name == "IamArnRequiredException":
+        return CodeDeployErrorKind.IamArnRequiredException
+    if name == "IamSessionArnAlreadyRegisteredException":
+        return CodeDeployErrorKind.IamSessionArnAlreadyRegisteredException
+    if name == "IamUserArnAlreadyRegisteredException":
+        return CodeDeployErrorKind.IamUserArnAlreadyRegisteredException
+    if name == "IamUserArnRequiredException":
+        return CodeDeployErrorKind.IamUserArnRequiredException
+    if name == "InstanceDoesNotExistException":
+        return CodeDeployErrorKind.InstanceDoesNotExistException
+    if name == "InstanceIdRequiredException":
+        return CodeDeployErrorKind.InstanceIdRequiredException
+    if name == "InstanceLimitExceededException":
+        return CodeDeployErrorKind.InstanceLimitExceededException
+    if name == "InstanceNameAlreadyRegisteredException":
+        return CodeDeployErrorKind.InstanceNameAlreadyRegisteredException
+    if name == "InstanceNameRequiredException":
+        return CodeDeployErrorKind.InstanceNameRequiredException
+    if name == "InstanceNotRegisteredException":
+        return CodeDeployErrorKind.InstanceNotRegisteredException
+    if name == "InvalidAlarmConfigException":
+        return CodeDeployErrorKind.InvalidAlarmConfigException
+    if name == "InvalidApplicationNameException":
+        return CodeDeployErrorKind.InvalidApplicationNameException
+    if name == "InvalidArnException":
+        return CodeDeployErrorKind.InvalidArnException
+    if name == "InvalidAutoRollbackConfigException":
+        return CodeDeployErrorKind.InvalidAutoRollbackConfigException
+    if name == "InvalidAutoScalingGroupException":
+        return CodeDeployErrorKind.InvalidAutoScalingGroupException
+    if name == "InvalidAutoScalingGroupProcessToSuspendException":
+        return CodeDeployErrorKind.InvalidAutoScalingGroupProcessToSuspendException
+    if name == "InvalidBlueGreenDeploymentConfigurationException":
+        return CodeDeployErrorKind.InvalidBlueGreenDeploymentConfigurationException
+    if name == "InvalidBucketNameFilterException":
+        return CodeDeployErrorKind.InvalidBucketNameFilterException
+    if name == "InvalidComputePlatformException":
+        return CodeDeployErrorKind.InvalidComputePlatformException
+    if name == "InvalidDeployedStateFilterException":
+        return CodeDeployErrorKind.InvalidDeployedStateFilterException
+    if name == "InvalidDeploymentConfigNameException":
+        return CodeDeployErrorKind.InvalidDeploymentConfigNameException
+    if name == "InvalidDeploymentGroupNameException":
+        return CodeDeployErrorKind.InvalidDeploymentGroupNameException
+    if name == "InvalidDeploymentIdException":
+        return CodeDeployErrorKind.InvalidDeploymentIdException
+    if name == "InvalidDeploymentInstanceTypeException":
+        return CodeDeployErrorKind.InvalidDeploymentInstanceTypeException
+    if name == "InvalidDeploymentStatusException":
+        return CodeDeployErrorKind.InvalidDeploymentStatusException
+    if name == "InvalidDeploymentStyleException":
+        return CodeDeployErrorKind.InvalidDeploymentStyleException
+    if name == "InvalidDeploymentTargetIdException":
+        return CodeDeployErrorKind.InvalidDeploymentTargetIdException
+    if name == "InvalidDeploymentWaitTypeException":
+        return CodeDeployErrorKind.InvalidDeploymentWaitTypeException
+    if name == "InvalidEC2TagCombinationException":
+        return CodeDeployErrorKind.InvalidEC2TagCombinationException
+    if name == "InvalidEC2TagException":
+        return CodeDeployErrorKind.InvalidEC2TagException
+    if name == "InvalidECSServiceException":
+        return CodeDeployErrorKind.InvalidECSServiceException
+    if name == "InvalidExternalIdException":
+        return CodeDeployErrorKind.InvalidExternalIdException
+    if name == "InvalidFileExistsBehaviorException":
+        return CodeDeployErrorKind.InvalidFileExistsBehaviorException
+    if name == "InvalidGitHubAccountTokenException":
+        return CodeDeployErrorKind.InvalidGitHubAccountTokenException
+    if name == "InvalidGitHubAccountTokenNameException":
+        return CodeDeployErrorKind.InvalidGitHubAccountTokenNameException
+    if name == "InvalidIamSessionArnException":
+        return CodeDeployErrorKind.InvalidIamSessionArnException
+    if name == "InvalidIamUserArnException":
+        return CodeDeployErrorKind.InvalidIamUserArnException
+    if name == "InvalidIgnoreApplicationStopFailuresValueException":
+        return CodeDeployErrorKind.InvalidIgnoreApplicationStopFailuresValueException
+    if name == "InvalidInputException":
+        return CodeDeployErrorKind.InvalidInputException
+    if name == "InvalidInstanceNameException":
+        return CodeDeployErrorKind.InvalidInstanceNameException
+    if name == "InvalidInstanceStatusException":
+        return CodeDeployErrorKind.InvalidInstanceStatusException
+    if name == "InvalidInstanceTypeException":
+        return CodeDeployErrorKind.InvalidInstanceTypeException
+    if name == "InvalidKeyPrefixFilterException":
+        return CodeDeployErrorKind.InvalidKeyPrefixFilterException
+    if name == "InvalidLifecycleEventHookExecutionIdException":
+        return CodeDeployErrorKind.InvalidLifecycleEventHookExecutionIdException
+    if name == "InvalidLifecycleEventHookExecutionStatusException":
+        return CodeDeployErrorKind.InvalidLifecycleEventHookExecutionStatusException
+    if name == "InvalidLoadBalancerInfoException":
+        return CodeDeployErrorKind.InvalidLoadBalancerInfoException
+    if name == "InvalidMinimumHealthyHostValueException":
+        return CodeDeployErrorKind.InvalidMinimumHealthyHostValueException
+    if name == "InvalidNextTokenException":
+        return CodeDeployErrorKind.InvalidNextTokenException
+    if name == "InvalidOnPremisesTagCombinationException":
+        return CodeDeployErrorKind.InvalidOnPremisesTagCombinationException
+    if name == "InvalidOperationException":
+        return CodeDeployErrorKind.InvalidOperationException
+    if name == "InvalidRegistrationStatusException":
+        return CodeDeployErrorKind.InvalidRegistrationStatusException
+    if name == "InvalidRevisionException":
+        return CodeDeployErrorKind.InvalidRevisionException
+    if name == "InvalidRoleException":
+        return CodeDeployErrorKind.InvalidRoleException
+    if name == "InvalidSortByException":
+        return CodeDeployErrorKind.InvalidSortByException
+    if name == "InvalidSortOrderException":
+        return CodeDeployErrorKind.InvalidSortOrderException
+    if name == "InvalidTagException":
+        return CodeDeployErrorKind.InvalidTagException
+    if name == "InvalidTagFilterException":
+        return CodeDeployErrorKind.InvalidTagFilterException
+    if name == "InvalidTagsToAddException":
+        return CodeDeployErrorKind.InvalidTagsToAddException
+    if name == "InvalidTargetFilterNameException":
+        return CodeDeployErrorKind.InvalidTargetFilterNameException
+    if name == "InvalidTargetGroupPairException":
+        return CodeDeployErrorKind.InvalidTargetGroupPairException
+    if name == "InvalidTargetInstancesException":
+        return CodeDeployErrorKind.InvalidTargetInstancesException
+    if name == "InvalidTimeRangeException":
+        return CodeDeployErrorKind.InvalidTimeRangeException
+    if name == "InvalidTrafficRoutingConfigurationException":
+        return CodeDeployErrorKind.InvalidTrafficRoutingConfigurationException
+    if name == "InvalidTriggerConfigException":
+        return CodeDeployErrorKind.InvalidTriggerConfigException
+    if name == "InvalidUpdateOutdatedInstancesOnlyValueException":
+        return CodeDeployErrorKind.InvalidUpdateOutdatedInstancesOnlyValueException
+    if name == "InvalidZonalDeploymentConfigurationException":
+        return CodeDeployErrorKind.InvalidZonalDeploymentConfigurationException
+    if name == "LifecycleEventAlreadyCompletedException":
+        return CodeDeployErrorKind.LifecycleEventAlreadyCompletedException
+    if name == "LifecycleHookLimitExceededException":
+        return CodeDeployErrorKind.LifecycleHookLimitExceededException
+    if name == "MultipleIamArnsProvidedException":
+        return CodeDeployErrorKind.MultipleIamArnsProvidedException
+    if name == "OperationNotSupportedException":
+        return CodeDeployErrorKind.OperationNotSupportedException
+    if name == "ResourceArnRequiredException":
+        return CodeDeployErrorKind.ResourceArnRequiredException
+    if name == "ResourceValidationException":
+        return CodeDeployErrorKind.ResourceValidationException
+    if name == "RevisionDoesNotExistException":
+        return CodeDeployErrorKind.RevisionDoesNotExistException
+    if name == "RevisionRequiredException":
+        return CodeDeployErrorKind.RevisionRequiredException
+    if name == "RoleRequiredException":
+        return CodeDeployErrorKind.RoleRequiredException
+    if name == "TagLimitExceededException":
+        return CodeDeployErrorKind.TagLimitExceededException
+    if name == "TagRequiredException":
+        return CodeDeployErrorKind.TagRequiredException
+    if name == "TagSetListLimitExceededException":
+        return CodeDeployErrorKind.TagSetListLimitExceededException
+    if name == "ThrottlingException":
+        return CodeDeployErrorKind.ThrottlingException
+    if name == "TriggerTargetsLimitExceededException":
+        return CodeDeployErrorKind.TriggerTargetsLimitExceededException
+    if name == "UnsupportedActionForDeploymentTypeException":
+        return CodeDeployErrorKind.UnsupportedActionForDeploymentTypeException
+    return CodeDeployErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def codedeploy_error_name(CodeDeployErrorKind k) -> str:
+    match k:
+        case CodeDeployErrorKind.AlarmsLimitExceededException:
+            return "AlarmsLimitExceededException"
+        case CodeDeployErrorKind.ApplicationAlreadyExistsException:
+            return "ApplicationAlreadyExistsException"
+        case CodeDeployErrorKind.ApplicationDoesNotExistException:
+            return "ApplicationDoesNotExistException"
+        case CodeDeployErrorKind.ApplicationLimitExceededException:
+            return "ApplicationLimitExceededException"
+        case CodeDeployErrorKind.ApplicationNameRequiredException:
+            return "ApplicationNameRequiredException"
+        case CodeDeployErrorKind.ArnNotSupportedException:
+            return "ArnNotSupportedException"
+        case CodeDeployErrorKind.BatchLimitExceededException:
+            return "BatchLimitExceededException"
+        case CodeDeployErrorKind.BucketNameFilterRequiredException:
+            return "BucketNameFilterRequiredException"
+        case CodeDeployErrorKind.DeploymentAlreadyCompletedException:
+            return "DeploymentAlreadyCompletedException"
+        case CodeDeployErrorKind.DeploymentConfigAlreadyExistsException:
+            return "DeploymentConfigAlreadyExistsException"
+        case CodeDeployErrorKind.DeploymentConfigDoesNotExistException:
+            return "DeploymentConfigDoesNotExistException"
+        case CodeDeployErrorKind.DeploymentConfigInUseException:
+            return "DeploymentConfigInUseException"
+        case CodeDeployErrorKind.DeploymentConfigLimitExceededException:
+            return "DeploymentConfigLimitExceededException"
+        case CodeDeployErrorKind.DeploymentConfigNameRequiredException:
+            return "DeploymentConfigNameRequiredException"
+        case CodeDeployErrorKind.DeploymentDoesNotExistException:
+            return "DeploymentDoesNotExistException"
+        case CodeDeployErrorKind.DeploymentGroupAlreadyExistsException:
+            return "DeploymentGroupAlreadyExistsException"
+        case CodeDeployErrorKind.DeploymentGroupDoesNotExistException:
+            return "DeploymentGroupDoesNotExistException"
+        case CodeDeployErrorKind.DeploymentGroupLimitExceededException:
+            return "DeploymentGroupLimitExceededException"
+        case CodeDeployErrorKind.DeploymentGroupNameRequiredException:
+            return "DeploymentGroupNameRequiredException"
+        case CodeDeployErrorKind.DeploymentIdRequiredException:
+            return "DeploymentIdRequiredException"
+        case CodeDeployErrorKind.DeploymentIsNotInReadyStateException:
+            return "DeploymentIsNotInReadyStateException"
+        case CodeDeployErrorKind.DeploymentLimitExceededException:
+            return "DeploymentLimitExceededException"
+        case CodeDeployErrorKind.DeploymentNotStartedException:
+            return "DeploymentNotStartedException"
+        case CodeDeployErrorKind.DeploymentTargetDoesNotExistException:
+            return "DeploymentTargetDoesNotExistException"
+        case CodeDeployErrorKind.DeploymentTargetIdRequiredException:
+            return "DeploymentTargetIdRequiredException"
+        case CodeDeployErrorKind.DeploymentTargetListSizeExceededException:
+            return "DeploymentTargetListSizeExceededException"
+        case CodeDeployErrorKind.DescriptionTooLongException:
+            return "DescriptionTooLongException"
+        case CodeDeployErrorKind.ECSServiceMappingLimitExceededException:
+            return "ECSServiceMappingLimitExceededException"
+        case CodeDeployErrorKind.GitHubAccountTokenDoesNotExistException:
+            return "GitHubAccountTokenDoesNotExistException"
+        case CodeDeployErrorKind.GitHubAccountTokenNameRequiredException:
+            return "GitHubAccountTokenNameRequiredException"
+        case CodeDeployErrorKind.IamArnRequiredException:
+            return "IamArnRequiredException"
+        case CodeDeployErrorKind.IamSessionArnAlreadyRegisteredException:
+            return "IamSessionArnAlreadyRegisteredException"
+        case CodeDeployErrorKind.IamUserArnAlreadyRegisteredException:
+            return "IamUserArnAlreadyRegisteredException"
+        case CodeDeployErrorKind.IamUserArnRequiredException:
+            return "IamUserArnRequiredException"
+        case CodeDeployErrorKind.InstanceDoesNotExistException:
+            return "InstanceDoesNotExistException"
+        case CodeDeployErrorKind.InstanceIdRequiredException:
+            return "InstanceIdRequiredException"
+        case CodeDeployErrorKind.InstanceLimitExceededException:
+            return "InstanceLimitExceededException"
+        case CodeDeployErrorKind.InstanceNameAlreadyRegisteredException:
+            return "InstanceNameAlreadyRegisteredException"
+        case CodeDeployErrorKind.InstanceNameRequiredException:
+            return "InstanceNameRequiredException"
+        case CodeDeployErrorKind.InstanceNotRegisteredException:
+            return "InstanceNotRegisteredException"
+        case CodeDeployErrorKind.InvalidAlarmConfigException:
+            return "InvalidAlarmConfigException"
+        case CodeDeployErrorKind.InvalidApplicationNameException:
+            return "InvalidApplicationNameException"
+        case CodeDeployErrorKind.InvalidArnException:
+            return "InvalidArnException"
+        case CodeDeployErrorKind.InvalidAutoRollbackConfigException:
+            return "InvalidAutoRollbackConfigException"
+        case CodeDeployErrorKind.InvalidAutoScalingGroupException:
+            return "InvalidAutoScalingGroupException"
+        case CodeDeployErrorKind.InvalidAutoScalingGroupProcessToSuspendException:
+            return "InvalidAutoScalingGroupProcessToSuspendException"
+        case CodeDeployErrorKind.InvalidBlueGreenDeploymentConfigurationException:
+            return "InvalidBlueGreenDeploymentConfigurationException"
+        case CodeDeployErrorKind.InvalidBucketNameFilterException:
+            return "InvalidBucketNameFilterException"
+        case CodeDeployErrorKind.InvalidComputePlatformException:
+            return "InvalidComputePlatformException"
+        case CodeDeployErrorKind.InvalidDeployedStateFilterException:
+            return "InvalidDeployedStateFilterException"
+        case CodeDeployErrorKind.InvalidDeploymentConfigNameException:
+            return "InvalidDeploymentConfigNameException"
+        case CodeDeployErrorKind.InvalidDeploymentGroupNameException:
+            return "InvalidDeploymentGroupNameException"
+        case CodeDeployErrorKind.InvalidDeploymentIdException:
+            return "InvalidDeploymentIdException"
+        case CodeDeployErrorKind.InvalidDeploymentInstanceTypeException:
+            return "InvalidDeploymentInstanceTypeException"
+        case CodeDeployErrorKind.InvalidDeploymentStatusException:
+            return "InvalidDeploymentStatusException"
+        case CodeDeployErrorKind.InvalidDeploymentStyleException:
+            return "InvalidDeploymentStyleException"
+        case CodeDeployErrorKind.InvalidDeploymentTargetIdException:
+            return "InvalidDeploymentTargetIdException"
+        case CodeDeployErrorKind.InvalidDeploymentWaitTypeException:
+            return "InvalidDeploymentWaitTypeException"
+        case CodeDeployErrorKind.InvalidEC2TagCombinationException:
+            return "InvalidEC2TagCombinationException"
+        case CodeDeployErrorKind.InvalidEC2TagException:
+            return "InvalidEC2TagException"
+        case CodeDeployErrorKind.InvalidECSServiceException:
+            return "InvalidECSServiceException"
+        case CodeDeployErrorKind.InvalidExternalIdException:
+            return "InvalidExternalIdException"
+        case CodeDeployErrorKind.InvalidFileExistsBehaviorException:
+            return "InvalidFileExistsBehaviorException"
+        case CodeDeployErrorKind.InvalidGitHubAccountTokenException:
+            return "InvalidGitHubAccountTokenException"
+        case CodeDeployErrorKind.InvalidGitHubAccountTokenNameException:
+            return "InvalidGitHubAccountTokenNameException"
+        case CodeDeployErrorKind.InvalidIamSessionArnException:
+            return "InvalidIamSessionArnException"
+        case CodeDeployErrorKind.InvalidIamUserArnException:
+            return "InvalidIamUserArnException"
+        case CodeDeployErrorKind.InvalidIgnoreApplicationStopFailuresValueException:
+            return "InvalidIgnoreApplicationStopFailuresValueException"
+        case CodeDeployErrorKind.InvalidInputException:
+            return "InvalidInputException"
+        case CodeDeployErrorKind.InvalidInstanceNameException:
+            return "InvalidInstanceNameException"
+        case CodeDeployErrorKind.InvalidInstanceStatusException:
+            return "InvalidInstanceStatusException"
+        case CodeDeployErrorKind.InvalidInstanceTypeException:
+            return "InvalidInstanceTypeException"
+        case CodeDeployErrorKind.InvalidKeyPrefixFilterException:
+            return "InvalidKeyPrefixFilterException"
+        case CodeDeployErrorKind.InvalidLifecycleEventHookExecutionIdException:
+            return "InvalidLifecycleEventHookExecutionIdException"
+        case CodeDeployErrorKind.InvalidLifecycleEventHookExecutionStatusException:
+            return "InvalidLifecycleEventHookExecutionStatusException"
+        case CodeDeployErrorKind.InvalidLoadBalancerInfoException:
+            return "InvalidLoadBalancerInfoException"
+        case CodeDeployErrorKind.InvalidMinimumHealthyHostValueException:
+            return "InvalidMinimumHealthyHostValueException"
+        case CodeDeployErrorKind.InvalidNextTokenException:
+            return "InvalidNextTokenException"
+        case CodeDeployErrorKind.InvalidOnPremisesTagCombinationException:
+            return "InvalidOnPremisesTagCombinationException"
+        case CodeDeployErrorKind.InvalidOperationException:
+            return "InvalidOperationException"
+        case CodeDeployErrorKind.InvalidRegistrationStatusException:
+            return "InvalidRegistrationStatusException"
+        case CodeDeployErrorKind.InvalidRevisionException:
+            return "InvalidRevisionException"
+        case CodeDeployErrorKind.InvalidRoleException:
+            return "InvalidRoleException"
+        case CodeDeployErrorKind.InvalidSortByException:
+            return "InvalidSortByException"
+        case CodeDeployErrorKind.InvalidSortOrderException:
+            return "InvalidSortOrderException"
+        case CodeDeployErrorKind.InvalidTagException:
+            return "InvalidTagException"
+        case CodeDeployErrorKind.InvalidTagFilterException:
+            return "InvalidTagFilterException"
+        case CodeDeployErrorKind.InvalidTagsToAddException:
+            return "InvalidTagsToAddException"
+        case CodeDeployErrorKind.InvalidTargetFilterNameException:
+            return "InvalidTargetFilterNameException"
+        case CodeDeployErrorKind.InvalidTargetGroupPairException:
+            return "InvalidTargetGroupPairException"
+        case CodeDeployErrorKind.InvalidTargetInstancesException:
+            return "InvalidTargetInstancesException"
+        case CodeDeployErrorKind.InvalidTimeRangeException:
+            return "InvalidTimeRangeException"
+        case CodeDeployErrorKind.InvalidTrafficRoutingConfigurationException:
+            return "InvalidTrafficRoutingConfigurationException"
+        case CodeDeployErrorKind.InvalidTriggerConfigException:
+            return "InvalidTriggerConfigException"
+        case CodeDeployErrorKind.InvalidUpdateOutdatedInstancesOnlyValueException:
+            return "InvalidUpdateOutdatedInstancesOnlyValueException"
+        case CodeDeployErrorKind.InvalidZonalDeploymentConfigurationException:
+            return "InvalidZonalDeploymentConfigurationException"
+        case CodeDeployErrorKind.LifecycleEventAlreadyCompletedException:
+            return "LifecycleEventAlreadyCompletedException"
+        case CodeDeployErrorKind.LifecycleHookLimitExceededException:
+            return "LifecycleHookLimitExceededException"
+        case CodeDeployErrorKind.MultipleIamArnsProvidedException:
+            return "MultipleIamArnsProvidedException"
+        case CodeDeployErrorKind.OperationNotSupportedException:
+            return "OperationNotSupportedException"
+        case CodeDeployErrorKind.ResourceArnRequiredException:
+            return "ResourceArnRequiredException"
+        case CodeDeployErrorKind.ResourceValidationException:
+            return "ResourceValidationException"
+        case CodeDeployErrorKind.RevisionDoesNotExistException:
+            return "RevisionDoesNotExistException"
+        case CodeDeployErrorKind.RevisionRequiredException:
+            return "RevisionRequiredException"
+        case CodeDeployErrorKind.RoleRequiredException:
+            return "RoleRequiredException"
+        case CodeDeployErrorKind.TagLimitExceededException:
+            return "TagLimitExceededException"
+        case CodeDeployErrorKind.TagRequiredException:
+            return "TagRequiredException"
+        case CodeDeployErrorKind.TagSetListLimitExceededException:
+            return "TagSetListLimitExceededException"
+        case CodeDeployErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case CodeDeployErrorKind.TriggerTargetsLimitExceededException:
+            return "TriggerTargetsLimitExceededException"
+        case CodeDeployErrorKind.UnsupportedActionForDeploymentTypeException:
+            return "UnsupportedActionForDeploymentTypeException"
+        case CodeDeployErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

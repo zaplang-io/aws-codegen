@@ -6,7 +6,8 @@
 # Protocol: query (SigV4 service rds, Version 2014-10-31)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + query) via #283 module imports — see
+# Imports the aws_core package (core + errors + query) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: the whole input is a flat form-urlencoded POST body
 # (Action + Version + the members), the AWS query wire format.
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.query
 
 # The DocDB query protocol: SigV4 service "rds" (also the endpoint prefix
@@ -1169,9 +1171,16 @@ struct VpcSecurityGroupMembership:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# query `<ErrorResponse><Error><Code>` element code by rds_error_from_code.
-enum DocDBError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the query `<ErrorResponse><Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum DocDBErrorKind:
     AuthorizationNotFoundFault
     CertificateNotFoundFault
     DBClusterAlreadyExistsFault
@@ -1232,126 +1241,255 @@ enum DocDBError:
     SubscriptionNotFoundFault
     Unknown(str code)
 
-# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's
-# error helpers) to a variant.
-def rds_error_from_code(str code) -> DocDBError:
-    if code == "AuthorizationNotFoundFault":
-        return DocDBError.AuthorizationNotFoundFault
-    if code == "CertificateNotFoundFault":
-        return DocDBError.CertificateNotFoundFault
-    if code == "DBClusterAlreadyExistsFault":
-        return DocDBError.DBClusterAlreadyExistsFault
-    if code == "DBClusterNotFoundFault":
-        return DocDBError.DBClusterNotFoundFault
-    if code == "DBClusterParameterGroupNotFoundFault":
-        return DocDBError.DBClusterParameterGroupNotFoundFault
-    if code == "DBClusterQuotaExceededFault":
-        return DocDBError.DBClusterQuotaExceededFault
-    if code == "DBClusterSnapshotAlreadyExistsFault":
-        return DocDBError.DBClusterSnapshotAlreadyExistsFault
-    if code == "DBClusterSnapshotNotFoundFault":
-        return DocDBError.DBClusterSnapshotNotFoundFault
-    if code == "DBInstanceAlreadyExistsFault":
-        return DocDBError.DBInstanceAlreadyExistsFault
-    if code == "DBInstanceNotFoundFault":
-        return DocDBError.DBInstanceNotFoundFault
-    if code == "DBParameterGroupAlreadyExistsFault":
-        return DocDBError.DBParameterGroupAlreadyExistsFault
-    if code == "DBParameterGroupNotFoundFault":
-        return DocDBError.DBParameterGroupNotFoundFault
-    if code == "DBParameterGroupQuotaExceededFault":
-        return DocDBError.DBParameterGroupQuotaExceededFault
-    if code == "DBSecurityGroupNotFoundFault":
-        return DocDBError.DBSecurityGroupNotFoundFault
-    if code == "DBSnapshotAlreadyExistsFault":
-        return DocDBError.DBSnapshotAlreadyExistsFault
-    if code == "DBSnapshotNotFoundFault":
-        return DocDBError.DBSnapshotNotFoundFault
-    if code == "DBSubnetGroupAlreadyExistsFault":
-        return DocDBError.DBSubnetGroupAlreadyExistsFault
-    if code == "DBSubnetGroupDoesNotCoverEnoughAZs":
-        return DocDBError.DBSubnetGroupDoesNotCoverEnoughAZs
-    if code == "DBSubnetGroupNotFoundFault":
-        return DocDBError.DBSubnetGroupNotFoundFault
-    if code == "DBSubnetGroupQuotaExceededFault":
-        return DocDBError.DBSubnetGroupQuotaExceededFault
-    if code == "DBSubnetQuotaExceededFault":
-        return DocDBError.DBSubnetQuotaExceededFault
-    if code == "DBUpgradeDependencyFailureFault":
-        return DocDBError.DBUpgradeDependencyFailureFault
-    if code == "EventSubscriptionQuotaExceededFault":
-        return DocDBError.EventSubscriptionQuotaExceededFault
-    if code == "GlobalClusterAlreadyExistsFault":
-        return DocDBError.GlobalClusterAlreadyExistsFault
-    if code == "GlobalClusterNotFoundFault":
-        return DocDBError.GlobalClusterNotFoundFault
-    if code == "GlobalClusterQuotaExceededFault":
-        return DocDBError.GlobalClusterQuotaExceededFault
-    if code == "InstanceQuotaExceededFault":
-        return DocDBError.InstanceQuotaExceededFault
-    if code == "InsufficientDBClusterCapacityFault":
-        return DocDBError.InsufficientDBClusterCapacityFault
-    if code == "InsufficientDBInstanceCapacityFault":
-        return DocDBError.InsufficientDBInstanceCapacityFault
-    if code == "InsufficientStorageClusterCapacityFault":
-        return DocDBError.InsufficientStorageClusterCapacityFault
-    if code == "InvalidDBClusterSnapshotStateFault":
-        return DocDBError.InvalidDBClusterSnapshotStateFault
-    if code == "InvalidDBClusterStateFault":
-        return DocDBError.InvalidDBClusterStateFault
-    if code == "InvalidDBInstanceStateFault":
-        return DocDBError.InvalidDBInstanceStateFault
-    if code == "InvalidDBParameterGroupStateFault":
-        return DocDBError.InvalidDBParameterGroupStateFault
-    if code == "InvalidDBSecurityGroupStateFault":
-        return DocDBError.InvalidDBSecurityGroupStateFault
-    if code == "InvalidDBSnapshotStateFault":
-        return DocDBError.InvalidDBSnapshotStateFault
-    if code == "InvalidDBSubnetGroupStateFault":
-        return DocDBError.InvalidDBSubnetGroupStateFault
-    if code == "InvalidDBSubnetStateFault":
-        return DocDBError.InvalidDBSubnetStateFault
-    if code == "InvalidEventSubscriptionStateFault":
-        return DocDBError.InvalidEventSubscriptionStateFault
-    if code == "InvalidGlobalClusterStateFault":
-        return DocDBError.InvalidGlobalClusterStateFault
-    if code == "InvalidRestoreFault":
-        return DocDBError.InvalidRestoreFault
-    if code == "InvalidSubnet":
-        return DocDBError.InvalidSubnet
-    if code == "InvalidVPCNetworkStateFault":
-        return DocDBError.InvalidVPCNetworkStateFault
-    if code == "KMSKeyNotAccessibleFault":
-        return DocDBError.KMSKeyNotAccessibleFault
-    if code == "NetworkTypeNotSupported":
-        return DocDBError.NetworkTypeNotSupported
-    if code == "ResourceNotFoundFault":
-        return DocDBError.ResourceNotFoundFault
-    if code == "SNSInvalidTopicFault":
-        return DocDBError.SNSInvalidTopicFault
-    if code == "SNSNoAuthorizationFault":
-        return DocDBError.SNSNoAuthorizationFault
-    if code == "SNSTopicArnNotFoundFault":
-        return DocDBError.SNSTopicArnNotFoundFault
-    if code == "SharedSnapshotQuotaExceededFault":
-        return DocDBError.SharedSnapshotQuotaExceededFault
-    if code == "SnapshotQuotaExceededFault":
-        return DocDBError.SnapshotQuotaExceededFault
-    if code == "SourceNotFoundFault":
-        return DocDBError.SourceNotFoundFault
-    if code == "StorageQuotaExceededFault":
-        return DocDBError.StorageQuotaExceededFault
-    if code == "StorageTypeNotSupportedFault":
-        return DocDBError.StorageTypeNotSupportedFault
-    if code == "SubnetAlreadyInUse":
-        return DocDBError.SubnetAlreadyInUse
-    if code == "SubscriptionAlreadyExistFault":
-        return DocDBError.SubscriptionAlreadyExistFault
-    if code == "SubscriptionCategoryNotFoundFault":
-        return DocDBError.SubscriptionCategoryNotFoundFault
-    if code == "SubscriptionNotFoundFault":
-        return DocDBError.SubscriptionNotFoundFault
-    return DocDBError.Unknown(code=code)
+# Classify an AWS error code into `DocDBErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def rds_error_kind(str code) -> DocDBErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AuthorizationNotFoundFault":
+        return DocDBErrorKind.AuthorizationNotFoundFault
+    if name == "CertificateNotFoundFault":
+        return DocDBErrorKind.CertificateNotFoundFault
+    if name == "DBClusterAlreadyExistsFault":
+        return DocDBErrorKind.DBClusterAlreadyExistsFault
+    if name == "DBClusterNotFoundFault":
+        return DocDBErrorKind.DBClusterNotFoundFault
+    if name == "DBClusterParameterGroupNotFoundFault":
+        return DocDBErrorKind.DBClusterParameterGroupNotFoundFault
+    if name == "DBClusterQuotaExceededFault":
+        return DocDBErrorKind.DBClusterQuotaExceededFault
+    if name == "DBClusterSnapshotAlreadyExistsFault":
+        return DocDBErrorKind.DBClusterSnapshotAlreadyExistsFault
+    if name == "DBClusterSnapshotNotFoundFault":
+        return DocDBErrorKind.DBClusterSnapshotNotFoundFault
+    if name == "DBInstanceAlreadyExistsFault":
+        return DocDBErrorKind.DBInstanceAlreadyExistsFault
+    if name == "DBInstanceNotFoundFault":
+        return DocDBErrorKind.DBInstanceNotFoundFault
+    if name == "DBParameterGroupAlreadyExistsFault":
+        return DocDBErrorKind.DBParameterGroupAlreadyExistsFault
+    if name == "DBParameterGroupNotFoundFault":
+        return DocDBErrorKind.DBParameterGroupNotFoundFault
+    if name == "DBParameterGroupQuotaExceededFault":
+        return DocDBErrorKind.DBParameterGroupQuotaExceededFault
+    if name == "DBSecurityGroupNotFoundFault":
+        return DocDBErrorKind.DBSecurityGroupNotFoundFault
+    if name == "DBSnapshotAlreadyExistsFault":
+        return DocDBErrorKind.DBSnapshotAlreadyExistsFault
+    if name == "DBSnapshotNotFoundFault":
+        return DocDBErrorKind.DBSnapshotNotFoundFault
+    if name == "DBSubnetGroupAlreadyExistsFault":
+        return DocDBErrorKind.DBSubnetGroupAlreadyExistsFault
+    if name == "DBSubnetGroupDoesNotCoverEnoughAZs":
+        return DocDBErrorKind.DBSubnetGroupDoesNotCoverEnoughAZs
+    if name == "DBSubnetGroupNotFoundFault":
+        return DocDBErrorKind.DBSubnetGroupNotFoundFault
+    if name == "DBSubnetGroupQuotaExceededFault":
+        return DocDBErrorKind.DBSubnetGroupQuotaExceededFault
+    if name == "DBSubnetQuotaExceededFault":
+        return DocDBErrorKind.DBSubnetQuotaExceededFault
+    if name == "DBUpgradeDependencyFailureFault":
+        return DocDBErrorKind.DBUpgradeDependencyFailureFault
+    if name == "EventSubscriptionQuotaExceededFault":
+        return DocDBErrorKind.EventSubscriptionQuotaExceededFault
+    if name == "GlobalClusterAlreadyExistsFault":
+        return DocDBErrorKind.GlobalClusterAlreadyExistsFault
+    if name == "GlobalClusterNotFoundFault":
+        return DocDBErrorKind.GlobalClusterNotFoundFault
+    if name == "GlobalClusterQuotaExceededFault":
+        return DocDBErrorKind.GlobalClusterQuotaExceededFault
+    if name == "InstanceQuotaExceededFault":
+        return DocDBErrorKind.InstanceQuotaExceededFault
+    if name == "InsufficientDBClusterCapacityFault":
+        return DocDBErrorKind.InsufficientDBClusterCapacityFault
+    if name == "InsufficientDBInstanceCapacityFault":
+        return DocDBErrorKind.InsufficientDBInstanceCapacityFault
+    if name == "InsufficientStorageClusterCapacityFault":
+        return DocDBErrorKind.InsufficientStorageClusterCapacityFault
+    if name == "InvalidDBClusterSnapshotStateFault":
+        return DocDBErrorKind.InvalidDBClusterSnapshotStateFault
+    if name == "InvalidDBClusterStateFault":
+        return DocDBErrorKind.InvalidDBClusterStateFault
+    if name == "InvalidDBInstanceStateFault":
+        return DocDBErrorKind.InvalidDBInstanceStateFault
+    if name == "InvalidDBParameterGroupStateFault":
+        return DocDBErrorKind.InvalidDBParameterGroupStateFault
+    if name == "InvalidDBSecurityGroupStateFault":
+        return DocDBErrorKind.InvalidDBSecurityGroupStateFault
+    if name == "InvalidDBSnapshotStateFault":
+        return DocDBErrorKind.InvalidDBSnapshotStateFault
+    if name == "InvalidDBSubnetGroupStateFault":
+        return DocDBErrorKind.InvalidDBSubnetGroupStateFault
+    if name == "InvalidDBSubnetStateFault":
+        return DocDBErrorKind.InvalidDBSubnetStateFault
+    if name == "InvalidEventSubscriptionStateFault":
+        return DocDBErrorKind.InvalidEventSubscriptionStateFault
+    if name == "InvalidGlobalClusterStateFault":
+        return DocDBErrorKind.InvalidGlobalClusterStateFault
+    if name == "InvalidRestoreFault":
+        return DocDBErrorKind.InvalidRestoreFault
+    if name == "InvalidSubnet":
+        return DocDBErrorKind.InvalidSubnet
+    if name == "InvalidVPCNetworkStateFault":
+        return DocDBErrorKind.InvalidVPCNetworkStateFault
+    if name == "KMSKeyNotAccessibleFault":
+        return DocDBErrorKind.KMSKeyNotAccessibleFault
+    if name == "NetworkTypeNotSupported":
+        return DocDBErrorKind.NetworkTypeNotSupported
+    if name == "ResourceNotFoundFault":
+        return DocDBErrorKind.ResourceNotFoundFault
+    if name == "SNSInvalidTopicFault":
+        return DocDBErrorKind.SNSInvalidTopicFault
+    if name == "SNSNoAuthorizationFault":
+        return DocDBErrorKind.SNSNoAuthorizationFault
+    if name == "SNSTopicArnNotFoundFault":
+        return DocDBErrorKind.SNSTopicArnNotFoundFault
+    if name == "SharedSnapshotQuotaExceededFault":
+        return DocDBErrorKind.SharedSnapshotQuotaExceededFault
+    if name == "SnapshotQuotaExceededFault":
+        return DocDBErrorKind.SnapshotQuotaExceededFault
+    if name == "SourceNotFoundFault":
+        return DocDBErrorKind.SourceNotFoundFault
+    if name == "StorageQuotaExceededFault":
+        return DocDBErrorKind.StorageQuotaExceededFault
+    if name == "StorageTypeNotSupportedFault":
+        return DocDBErrorKind.StorageTypeNotSupportedFault
+    if name == "SubnetAlreadyInUse":
+        return DocDBErrorKind.SubnetAlreadyInUse
+    if name == "SubscriptionAlreadyExistFault":
+        return DocDBErrorKind.SubscriptionAlreadyExistFault
+    if name == "SubscriptionCategoryNotFoundFault":
+        return DocDBErrorKind.SubscriptionCategoryNotFoundFault
+    if name == "SubscriptionNotFoundFault":
+        return DocDBErrorKind.SubscriptionNotFoundFault
+    return DocDBErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def rds_error_name(DocDBErrorKind k) -> str:
+    match k:
+        case DocDBErrorKind.AuthorizationNotFoundFault:
+            return "AuthorizationNotFoundFault"
+        case DocDBErrorKind.CertificateNotFoundFault:
+            return "CertificateNotFoundFault"
+        case DocDBErrorKind.DBClusterAlreadyExistsFault:
+            return "DBClusterAlreadyExistsFault"
+        case DocDBErrorKind.DBClusterNotFoundFault:
+            return "DBClusterNotFoundFault"
+        case DocDBErrorKind.DBClusterParameterGroupNotFoundFault:
+            return "DBClusterParameterGroupNotFoundFault"
+        case DocDBErrorKind.DBClusterQuotaExceededFault:
+            return "DBClusterQuotaExceededFault"
+        case DocDBErrorKind.DBClusterSnapshotAlreadyExistsFault:
+            return "DBClusterSnapshotAlreadyExistsFault"
+        case DocDBErrorKind.DBClusterSnapshotNotFoundFault:
+            return "DBClusterSnapshotNotFoundFault"
+        case DocDBErrorKind.DBInstanceAlreadyExistsFault:
+            return "DBInstanceAlreadyExistsFault"
+        case DocDBErrorKind.DBInstanceNotFoundFault:
+            return "DBInstanceNotFoundFault"
+        case DocDBErrorKind.DBParameterGroupAlreadyExistsFault:
+            return "DBParameterGroupAlreadyExistsFault"
+        case DocDBErrorKind.DBParameterGroupNotFoundFault:
+            return "DBParameterGroupNotFoundFault"
+        case DocDBErrorKind.DBParameterGroupQuotaExceededFault:
+            return "DBParameterGroupQuotaExceededFault"
+        case DocDBErrorKind.DBSecurityGroupNotFoundFault:
+            return "DBSecurityGroupNotFoundFault"
+        case DocDBErrorKind.DBSnapshotAlreadyExistsFault:
+            return "DBSnapshotAlreadyExistsFault"
+        case DocDBErrorKind.DBSnapshotNotFoundFault:
+            return "DBSnapshotNotFoundFault"
+        case DocDBErrorKind.DBSubnetGroupAlreadyExistsFault:
+            return "DBSubnetGroupAlreadyExistsFault"
+        case DocDBErrorKind.DBSubnetGroupDoesNotCoverEnoughAZs:
+            return "DBSubnetGroupDoesNotCoverEnoughAZs"
+        case DocDBErrorKind.DBSubnetGroupNotFoundFault:
+            return "DBSubnetGroupNotFoundFault"
+        case DocDBErrorKind.DBSubnetGroupQuotaExceededFault:
+            return "DBSubnetGroupQuotaExceededFault"
+        case DocDBErrorKind.DBSubnetQuotaExceededFault:
+            return "DBSubnetQuotaExceededFault"
+        case DocDBErrorKind.DBUpgradeDependencyFailureFault:
+            return "DBUpgradeDependencyFailureFault"
+        case DocDBErrorKind.EventSubscriptionQuotaExceededFault:
+            return "EventSubscriptionQuotaExceededFault"
+        case DocDBErrorKind.GlobalClusterAlreadyExistsFault:
+            return "GlobalClusterAlreadyExistsFault"
+        case DocDBErrorKind.GlobalClusterNotFoundFault:
+            return "GlobalClusterNotFoundFault"
+        case DocDBErrorKind.GlobalClusterQuotaExceededFault:
+            return "GlobalClusterQuotaExceededFault"
+        case DocDBErrorKind.InstanceQuotaExceededFault:
+            return "InstanceQuotaExceededFault"
+        case DocDBErrorKind.InsufficientDBClusterCapacityFault:
+            return "InsufficientDBClusterCapacityFault"
+        case DocDBErrorKind.InsufficientDBInstanceCapacityFault:
+            return "InsufficientDBInstanceCapacityFault"
+        case DocDBErrorKind.InsufficientStorageClusterCapacityFault:
+            return "InsufficientStorageClusterCapacityFault"
+        case DocDBErrorKind.InvalidDBClusterSnapshotStateFault:
+            return "InvalidDBClusterSnapshotStateFault"
+        case DocDBErrorKind.InvalidDBClusterStateFault:
+            return "InvalidDBClusterStateFault"
+        case DocDBErrorKind.InvalidDBInstanceStateFault:
+            return "InvalidDBInstanceStateFault"
+        case DocDBErrorKind.InvalidDBParameterGroupStateFault:
+            return "InvalidDBParameterGroupStateFault"
+        case DocDBErrorKind.InvalidDBSecurityGroupStateFault:
+            return "InvalidDBSecurityGroupStateFault"
+        case DocDBErrorKind.InvalidDBSnapshotStateFault:
+            return "InvalidDBSnapshotStateFault"
+        case DocDBErrorKind.InvalidDBSubnetGroupStateFault:
+            return "InvalidDBSubnetGroupStateFault"
+        case DocDBErrorKind.InvalidDBSubnetStateFault:
+            return "InvalidDBSubnetStateFault"
+        case DocDBErrorKind.InvalidEventSubscriptionStateFault:
+            return "InvalidEventSubscriptionStateFault"
+        case DocDBErrorKind.InvalidGlobalClusterStateFault:
+            return "InvalidGlobalClusterStateFault"
+        case DocDBErrorKind.InvalidRestoreFault:
+            return "InvalidRestoreFault"
+        case DocDBErrorKind.InvalidSubnet:
+            return "InvalidSubnet"
+        case DocDBErrorKind.InvalidVPCNetworkStateFault:
+            return "InvalidVPCNetworkStateFault"
+        case DocDBErrorKind.KMSKeyNotAccessibleFault:
+            return "KMSKeyNotAccessibleFault"
+        case DocDBErrorKind.NetworkTypeNotSupported:
+            return "NetworkTypeNotSupported"
+        case DocDBErrorKind.ResourceNotFoundFault:
+            return "ResourceNotFoundFault"
+        case DocDBErrorKind.SNSInvalidTopicFault:
+            return "SNSInvalidTopicFault"
+        case DocDBErrorKind.SNSNoAuthorizationFault:
+            return "SNSNoAuthorizationFault"
+        case DocDBErrorKind.SNSTopicArnNotFoundFault:
+            return "SNSTopicArnNotFoundFault"
+        case DocDBErrorKind.SharedSnapshotQuotaExceededFault:
+            return "SharedSnapshotQuotaExceededFault"
+        case DocDBErrorKind.SnapshotQuotaExceededFault:
+            return "SnapshotQuotaExceededFault"
+        case DocDBErrorKind.SourceNotFoundFault:
+            return "SourceNotFoundFault"
+        case DocDBErrorKind.StorageQuotaExceededFault:
+            return "StorageQuotaExceededFault"
+        case DocDBErrorKind.StorageTypeNotSupportedFault:
+            return "StorageTypeNotSupportedFault"
+        case DocDBErrorKind.SubnetAlreadyInUse:
+            return "SubnetAlreadyInUse"
+        case DocDBErrorKind.SubscriptionAlreadyExistFault:
+            return "SubscriptionAlreadyExistFault"
+        case DocDBErrorKind.SubscriptionCategoryNotFoundFault:
+            return "SubscriptionCategoryNotFoundFault"
+        case DocDBErrorKind.SubscriptionNotFoundFault:
+            return "SubscriptionNotFoundFault"
+        case DocDBErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

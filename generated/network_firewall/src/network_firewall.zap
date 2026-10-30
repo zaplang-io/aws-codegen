@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.0 (targetPrefix NetworkFirewall_20201112)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -2529,9 +2531,16 @@ struct VpcEndpointAssociationStatus:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by network_firewall_error_from_code.
-enum Network_FirewallError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Network_FirewallErrorKind:
     InsufficientCapacityException
     InternalServerError
     InvalidOperationException
@@ -2546,33 +2555,71 @@ enum Network_FirewallError:
     UnsupportedOperationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def network_firewall_error_from_code(str code) -> Network_FirewallError:
-    if code == "InsufficientCapacityException":
-        return Network_FirewallError.InsufficientCapacityException
-    if code == "InternalServerError":
-        return Network_FirewallError.InternalServerError
-    if code == "InvalidOperationException":
-        return Network_FirewallError.InvalidOperationException
-    if code == "InvalidRequestException":
-        return Network_FirewallError.InvalidRequestException
-    if code == "InvalidResourcePolicyException":
-        return Network_FirewallError.InvalidResourcePolicyException
-    if code == "InvalidTokenException":
-        return Network_FirewallError.InvalidTokenException
-    if code == "LimitExceededException":
-        return Network_FirewallError.LimitExceededException
-    if code == "LogDestinationPermissionException":
-        return Network_FirewallError.LogDestinationPermissionException
-    if code == "ResourceNotFoundException":
-        return Network_FirewallError.ResourceNotFoundException
-    if code == "ResourceOwnerCheckException":
-        return Network_FirewallError.ResourceOwnerCheckException
-    if code == "ThrottlingException":
-        return Network_FirewallError.ThrottlingException
-    if code == "UnsupportedOperationException":
-        return Network_FirewallError.UnsupportedOperationException
-    return Network_FirewallError.Unknown(code=code)
+# Classify an AWS error code into `Network_FirewallErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def network_firewall_error_kind(str code) -> Network_FirewallErrorKind:
+    auto name = errors.error_code(code)
+    if name == "InsufficientCapacityException":
+        return Network_FirewallErrorKind.InsufficientCapacityException
+    if name == "InternalServerError":
+        return Network_FirewallErrorKind.InternalServerError
+    if name == "InvalidOperationException":
+        return Network_FirewallErrorKind.InvalidOperationException
+    if name == "InvalidRequestException":
+        return Network_FirewallErrorKind.InvalidRequestException
+    if name == "InvalidResourcePolicyException":
+        return Network_FirewallErrorKind.InvalidResourcePolicyException
+    if name == "InvalidTokenException":
+        return Network_FirewallErrorKind.InvalidTokenException
+    if name == "LimitExceededException":
+        return Network_FirewallErrorKind.LimitExceededException
+    if name == "LogDestinationPermissionException":
+        return Network_FirewallErrorKind.LogDestinationPermissionException
+    if name == "ResourceNotFoundException":
+        return Network_FirewallErrorKind.ResourceNotFoundException
+    if name == "ResourceOwnerCheckException":
+        return Network_FirewallErrorKind.ResourceOwnerCheckException
+    if name == "ThrottlingException":
+        return Network_FirewallErrorKind.ThrottlingException
+    if name == "UnsupportedOperationException":
+        return Network_FirewallErrorKind.UnsupportedOperationException
+    return Network_FirewallErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def network_firewall_error_name(Network_FirewallErrorKind k) -> str:
+    match k:
+        case Network_FirewallErrorKind.InsufficientCapacityException:
+            return "InsufficientCapacityException"
+        case Network_FirewallErrorKind.InternalServerError:
+            return "InternalServerError"
+        case Network_FirewallErrorKind.InvalidOperationException:
+            return "InvalidOperationException"
+        case Network_FirewallErrorKind.InvalidRequestException:
+            return "InvalidRequestException"
+        case Network_FirewallErrorKind.InvalidResourcePolicyException:
+            return "InvalidResourcePolicyException"
+        case Network_FirewallErrorKind.InvalidTokenException:
+            return "InvalidTokenException"
+        case Network_FirewallErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case Network_FirewallErrorKind.LogDestinationPermissionException:
+            return "LogDestinationPermissionException"
+        case Network_FirewallErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case Network_FirewallErrorKind.ResourceOwnerCheckException:
+            return "ResourceOwnerCheckException"
+        case Network_FirewallErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case Network_FirewallErrorKind.UnsupportedOperationException:
+            return "UnsupportedOperationException"
+        case Network_FirewallErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

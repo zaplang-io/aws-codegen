@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix StarlingDoveService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import datetime
@@ -3257,9 +3259,16 @@ struct ValidationException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by config_error_from_code.
-enum Config_ServiceError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Config_ServiceErrorKind:
     ConflictException
     ConformancePackTemplateValidationException
     IdempotentParameterMismatch
@@ -3319,123 +3328,251 @@ enum Config_ServiceError:
     ValidationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def config_error_from_code(str code) -> Config_ServiceError:
-    if code == "ConflictException":
-        return Config_ServiceError.ConflictException
-    if code == "ConformancePackTemplateValidationException":
-        return Config_ServiceError.ConformancePackTemplateValidationException
-    if code == "IdempotentParameterMismatch":
-        return Config_ServiceError.IdempotentParameterMismatch
-    if code == "InsufficientDeliveryPolicyException":
-        return Config_ServiceError.InsufficientDeliveryPolicyException
-    if code == "InsufficientPermissionsException":
-        return Config_ServiceError.InsufficientPermissionsException
-    if code == "InvalidConfigurationRecorderNameException":
-        return Config_ServiceError.InvalidConfigurationRecorderNameException
-    if code == "InvalidDeliveryChannelNameException":
-        return Config_ServiceError.InvalidDeliveryChannelNameException
-    if code == "InvalidExpressionException":
-        return Config_ServiceError.InvalidExpressionException
-    if code == "InvalidLimitException":
-        return Config_ServiceError.InvalidLimitException
-    if code == "InvalidNextTokenException":
-        return Config_ServiceError.InvalidNextTokenException
-    if code == "InvalidParameterValueException":
-        return Config_ServiceError.InvalidParameterValueException
-    if code == "InvalidRecordingGroupException":
-        return Config_ServiceError.InvalidRecordingGroupException
-    if code == "InvalidResultTokenException":
-        return Config_ServiceError.InvalidResultTokenException
-    if code == "InvalidRoleException":
-        return Config_ServiceError.InvalidRoleException
-    if code == "InvalidS3KeyPrefixException":
-        return Config_ServiceError.InvalidS3KeyPrefixException
-    if code == "InvalidS3KmsKeyArnException":
-        return Config_ServiceError.InvalidS3KmsKeyArnException
-    if code == "InvalidSNSTopicARNException":
-        return Config_ServiceError.InvalidSNSTopicARNException
-    if code == "InvalidTimeRangeException":
-        return Config_ServiceError.InvalidTimeRangeException
-    if code == "LastDeliveryChannelDeleteFailedException":
-        return Config_ServiceError.LastDeliveryChannelDeleteFailedException
-    if code == "LimitExceededException":
-        return Config_ServiceError.LimitExceededException
-    if code == "MaxActiveResourcesExceededException":
-        return Config_ServiceError.MaxActiveResourcesExceededException
-    if code == "MaxNumberOfConfigRulesExceededException":
-        return Config_ServiceError.MaxNumberOfConfigRulesExceededException
-    if code == "MaxNumberOfConfigurationRecordersExceededException":
-        return Config_ServiceError.MaxNumberOfConfigurationRecordersExceededException
-    if code == "MaxNumberOfConformancePacksExceededException":
-        return Config_ServiceError.MaxNumberOfConformancePacksExceededException
-    if code == "MaxNumberOfConnectorsExceededException":
-        return Config_ServiceError.MaxNumberOfConnectorsExceededException
-    if code == "MaxNumberOfDeliveryChannelsExceededException":
-        return Config_ServiceError.MaxNumberOfDeliveryChannelsExceededException
-    if code == "MaxNumberOfOrganizationConfigRulesExceededException":
-        return Config_ServiceError.MaxNumberOfOrganizationConfigRulesExceededException
-    if code == "MaxNumberOfOrganizationConformancePacksExceededException":
-        return Config_ServiceError.MaxNumberOfOrganizationConformancePacksExceededException
-    if code == "MaxNumberOfRetentionConfigurationsExceededException":
-        return Config_ServiceError.MaxNumberOfRetentionConfigurationsExceededException
-    if code == "NoAvailableConfigurationRecorderException":
-        return Config_ServiceError.NoAvailableConfigurationRecorderException
-    if code == "NoAvailableDeliveryChannelException":
-        return Config_ServiceError.NoAvailableDeliveryChannelException
-    if code == "NoAvailableOrganizationException":
-        return Config_ServiceError.NoAvailableOrganizationException
-    if code == "NoRunningConfigurationRecorderException":
-        return Config_ServiceError.NoRunningConfigurationRecorderException
-    if code == "NoSuchBucketException":
-        return Config_ServiceError.NoSuchBucketException
-    if code == "NoSuchConfigRuleException":
-        return Config_ServiceError.NoSuchConfigRuleException
-    if code == "NoSuchConfigRuleInConformancePackException":
-        return Config_ServiceError.NoSuchConfigRuleInConformancePackException
-    if code == "NoSuchConfigurationAggregatorException":
-        return Config_ServiceError.NoSuchConfigurationAggregatorException
-    if code == "NoSuchConfigurationRecorderException":
-        return Config_ServiceError.NoSuchConfigurationRecorderException
-    if code == "NoSuchConformancePackException":
-        return Config_ServiceError.NoSuchConformancePackException
-    if code == "NoSuchDeliveryChannelException":
-        return Config_ServiceError.NoSuchDeliveryChannelException
-    if code == "NoSuchOrganizationConfigRuleException":
-        return Config_ServiceError.NoSuchOrganizationConfigRuleException
-    if code == "NoSuchOrganizationConformancePackException":
-        return Config_ServiceError.NoSuchOrganizationConformancePackException
-    if code == "NoSuchRemediationConfigurationException":
-        return Config_ServiceError.NoSuchRemediationConfigurationException
-    if code == "NoSuchRemediationExceptionException":
-        return Config_ServiceError.NoSuchRemediationExceptionException
-    if code == "NoSuchRetentionConfigurationException":
-        return Config_ServiceError.NoSuchRetentionConfigurationException
-    if code == "OrganizationAccessDeniedException":
-        return Config_ServiceError.OrganizationAccessDeniedException
-    if code == "OrganizationAllFeaturesNotEnabledException":
-        return Config_ServiceError.OrganizationAllFeaturesNotEnabledException
-    if code == "OrganizationConformancePackTemplateValidationException":
-        return Config_ServiceError.OrganizationConformancePackTemplateValidationException
-    if code == "OversizedConfigurationItemException":
-        return Config_ServiceError.OversizedConfigurationItemException
-    if code == "RemediationInProgressException":
-        return Config_ServiceError.RemediationInProgressException
-    if code == "ResourceConcurrentModificationException":
-        return Config_ServiceError.ResourceConcurrentModificationException
-    if code == "ResourceInUseException":
-        return Config_ServiceError.ResourceInUseException
-    if code == "ResourceNotDiscoveredException":
-        return Config_ServiceError.ResourceNotDiscoveredException
-    if code == "ResourceNotFoundException":
-        return Config_ServiceError.ResourceNotFoundException
-    if code == "TooManyTagsException":
-        return Config_ServiceError.TooManyTagsException
-    if code == "UnmodifiableEntityException":
-        return Config_ServiceError.UnmodifiableEntityException
-    if code == "ValidationException":
-        return Config_ServiceError.ValidationException
-    return Config_ServiceError.Unknown(code=code)
+# Classify an AWS error code into `Config_ServiceErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def config_error_kind(str code) -> Config_ServiceErrorKind:
+    auto name = errors.error_code(code)
+    if name == "ConflictException":
+        return Config_ServiceErrorKind.ConflictException
+    if name == "ConformancePackTemplateValidationException":
+        return Config_ServiceErrorKind.ConformancePackTemplateValidationException
+    if name == "IdempotentParameterMismatch":
+        return Config_ServiceErrorKind.IdempotentParameterMismatch
+    if name == "InsufficientDeliveryPolicyException":
+        return Config_ServiceErrorKind.InsufficientDeliveryPolicyException
+    if name == "InsufficientPermissionsException":
+        return Config_ServiceErrorKind.InsufficientPermissionsException
+    if name == "InvalidConfigurationRecorderNameException":
+        return Config_ServiceErrorKind.InvalidConfigurationRecorderNameException
+    if name == "InvalidDeliveryChannelNameException":
+        return Config_ServiceErrorKind.InvalidDeliveryChannelNameException
+    if name == "InvalidExpressionException":
+        return Config_ServiceErrorKind.InvalidExpressionException
+    if name == "InvalidLimitException":
+        return Config_ServiceErrorKind.InvalidLimitException
+    if name == "InvalidNextTokenException":
+        return Config_ServiceErrorKind.InvalidNextTokenException
+    if name == "InvalidParameterValueException":
+        return Config_ServiceErrorKind.InvalidParameterValueException
+    if name == "InvalidRecordingGroupException":
+        return Config_ServiceErrorKind.InvalidRecordingGroupException
+    if name == "InvalidResultTokenException":
+        return Config_ServiceErrorKind.InvalidResultTokenException
+    if name == "InvalidRoleException":
+        return Config_ServiceErrorKind.InvalidRoleException
+    if name == "InvalidS3KeyPrefixException":
+        return Config_ServiceErrorKind.InvalidS3KeyPrefixException
+    if name == "InvalidS3KmsKeyArnException":
+        return Config_ServiceErrorKind.InvalidS3KmsKeyArnException
+    if name == "InvalidSNSTopicARNException":
+        return Config_ServiceErrorKind.InvalidSNSTopicARNException
+    if name == "InvalidTimeRangeException":
+        return Config_ServiceErrorKind.InvalidTimeRangeException
+    if name == "LastDeliveryChannelDeleteFailedException":
+        return Config_ServiceErrorKind.LastDeliveryChannelDeleteFailedException
+    if name == "LimitExceededException":
+        return Config_ServiceErrorKind.LimitExceededException
+    if name == "MaxActiveResourcesExceededException":
+        return Config_ServiceErrorKind.MaxActiveResourcesExceededException
+    if name == "MaxNumberOfConfigRulesExceededException":
+        return Config_ServiceErrorKind.MaxNumberOfConfigRulesExceededException
+    if name == "MaxNumberOfConfigurationRecordersExceededException":
+        return Config_ServiceErrorKind.MaxNumberOfConfigurationRecordersExceededException
+    if name == "MaxNumberOfConformancePacksExceededException":
+        return Config_ServiceErrorKind.MaxNumberOfConformancePacksExceededException
+    if name == "MaxNumberOfConnectorsExceededException":
+        return Config_ServiceErrorKind.MaxNumberOfConnectorsExceededException
+    if name == "MaxNumberOfDeliveryChannelsExceededException":
+        return Config_ServiceErrorKind.MaxNumberOfDeliveryChannelsExceededException
+    if name == "MaxNumberOfOrganizationConfigRulesExceededException":
+        return Config_ServiceErrorKind.MaxNumberOfOrganizationConfigRulesExceededException
+    if name == "MaxNumberOfOrganizationConformancePacksExceededException":
+        return Config_ServiceErrorKind.MaxNumberOfOrganizationConformancePacksExceededException
+    if name == "MaxNumberOfRetentionConfigurationsExceededException":
+        return Config_ServiceErrorKind.MaxNumberOfRetentionConfigurationsExceededException
+    if name == "NoAvailableConfigurationRecorderException":
+        return Config_ServiceErrorKind.NoAvailableConfigurationRecorderException
+    if name == "NoAvailableDeliveryChannelException":
+        return Config_ServiceErrorKind.NoAvailableDeliveryChannelException
+    if name == "NoAvailableOrganizationException":
+        return Config_ServiceErrorKind.NoAvailableOrganizationException
+    if name == "NoRunningConfigurationRecorderException":
+        return Config_ServiceErrorKind.NoRunningConfigurationRecorderException
+    if name == "NoSuchBucketException":
+        return Config_ServiceErrorKind.NoSuchBucketException
+    if name == "NoSuchConfigRuleException":
+        return Config_ServiceErrorKind.NoSuchConfigRuleException
+    if name == "NoSuchConfigRuleInConformancePackException":
+        return Config_ServiceErrorKind.NoSuchConfigRuleInConformancePackException
+    if name == "NoSuchConfigurationAggregatorException":
+        return Config_ServiceErrorKind.NoSuchConfigurationAggregatorException
+    if name == "NoSuchConfigurationRecorderException":
+        return Config_ServiceErrorKind.NoSuchConfigurationRecorderException
+    if name == "NoSuchConformancePackException":
+        return Config_ServiceErrorKind.NoSuchConformancePackException
+    if name == "NoSuchDeliveryChannelException":
+        return Config_ServiceErrorKind.NoSuchDeliveryChannelException
+    if name == "NoSuchOrganizationConfigRuleException":
+        return Config_ServiceErrorKind.NoSuchOrganizationConfigRuleException
+    if name == "NoSuchOrganizationConformancePackException":
+        return Config_ServiceErrorKind.NoSuchOrganizationConformancePackException
+    if name == "NoSuchRemediationConfigurationException":
+        return Config_ServiceErrorKind.NoSuchRemediationConfigurationException
+    if name == "NoSuchRemediationExceptionException":
+        return Config_ServiceErrorKind.NoSuchRemediationExceptionException
+    if name == "NoSuchRetentionConfigurationException":
+        return Config_ServiceErrorKind.NoSuchRetentionConfigurationException
+    if name == "OrganizationAccessDeniedException":
+        return Config_ServiceErrorKind.OrganizationAccessDeniedException
+    if name == "OrganizationAllFeaturesNotEnabledException":
+        return Config_ServiceErrorKind.OrganizationAllFeaturesNotEnabledException
+    if name == "OrganizationConformancePackTemplateValidationException":
+        return Config_ServiceErrorKind.OrganizationConformancePackTemplateValidationException
+    if name == "OversizedConfigurationItemException":
+        return Config_ServiceErrorKind.OversizedConfigurationItemException
+    if name == "RemediationInProgressException":
+        return Config_ServiceErrorKind.RemediationInProgressException
+    if name == "ResourceConcurrentModificationException":
+        return Config_ServiceErrorKind.ResourceConcurrentModificationException
+    if name == "ResourceInUseException":
+        return Config_ServiceErrorKind.ResourceInUseException
+    if name == "ResourceNotDiscoveredException":
+        return Config_ServiceErrorKind.ResourceNotDiscoveredException
+    if name == "ResourceNotFoundException":
+        return Config_ServiceErrorKind.ResourceNotFoundException
+    if name == "TooManyTagsException":
+        return Config_ServiceErrorKind.TooManyTagsException
+    if name == "UnmodifiableEntityException":
+        return Config_ServiceErrorKind.UnmodifiableEntityException
+    if name == "ValidationException":
+        return Config_ServiceErrorKind.ValidationException
+    return Config_ServiceErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def config_error_name(Config_ServiceErrorKind k) -> str:
+    match k:
+        case Config_ServiceErrorKind.ConflictException:
+            return "ConflictException"
+        case Config_ServiceErrorKind.ConformancePackTemplateValidationException:
+            return "ConformancePackTemplateValidationException"
+        case Config_ServiceErrorKind.IdempotentParameterMismatch:
+            return "IdempotentParameterMismatch"
+        case Config_ServiceErrorKind.InsufficientDeliveryPolicyException:
+            return "InsufficientDeliveryPolicyException"
+        case Config_ServiceErrorKind.InsufficientPermissionsException:
+            return "InsufficientPermissionsException"
+        case Config_ServiceErrorKind.InvalidConfigurationRecorderNameException:
+            return "InvalidConfigurationRecorderNameException"
+        case Config_ServiceErrorKind.InvalidDeliveryChannelNameException:
+            return "InvalidDeliveryChannelNameException"
+        case Config_ServiceErrorKind.InvalidExpressionException:
+            return "InvalidExpressionException"
+        case Config_ServiceErrorKind.InvalidLimitException:
+            return "InvalidLimitException"
+        case Config_ServiceErrorKind.InvalidNextTokenException:
+            return "InvalidNextTokenException"
+        case Config_ServiceErrorKind.InvalidParameterValueException:
+            return "InvalidParameterValueException"
+        case Config_ServiceErrorKind.InvalidRecordingGroupException:
+            return "InvalidRecordingGroupException"
+        case Config_ServiceErrorKind.InvalidResultTokenException:
+            return "InvalidResultTokenException"
+        case Config_ServiceErrorKind.InvalidRoleException:
+            return "InvalidRoleException"
+        case Config_ServiceErrorKind.InvalidS3KeyPrefixException:
+            return "InvalidS3KeyPrefixException"
+        case Config_ServiceErrorKind.InvalidS3KmsKeyArnException:
+            return "InvalidS3KmsKeyArnException"
+        case Config_ServiceErrorKind.InvalidSNSTopicARNException:
+            return "InvalidSNSTopicARNException"
+        case Config_ServiceErrorKind.InvalidTimeRangeException:
+            return "InvalidTimeRangeException"
+        case Config_ServiceErrorKind.LastDeliveryChannelDeleteFailedException:
+            return "LastDeliveryChannelDeleteFailedException"
+        case Config_ServiceErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case Config_ServiceErrorKind.MaxActiveResourcesExceededException:
+            return "MaxActiveResourcesExceededException"
+        case Config_ServiceErrorKind.MaxNumberOfConfigRulesExceededException:
+            return "MaxNumberOfConfigRulesExceededException"
+        case Config_ServiceErrorKind.MaxNumberOfConfigurationRecordersExceededException:
+            return "MaxNumberOfConfigurationRecordersExceededException"
+        case Config_ServiceErrorKind.MaxNumberOfConformancePacksExceededException:
+            return "MaxNumberOfConformancePacksExceededException"
+        case Config_ServiceErrorKind.MaxNumberOfConnectorsExceededException:
+            return "MaxNumberOfConnectorsExceededException"
+        case Config_ServiceErrorKind.MaxNumberOfDeliveryChannelsExceededException:
+            return "MaxNumberOfDeliveryChannelsExceededException"
+        case Config_ServiceErrorKind.MaxNumberOfOrganizationConfigRulesExceededException:
+            return "MaxNumberOfOrganizationConfigRulesExceededException"
+        case Config_ServiceErrorKind.MaxNumberOfOrganizationConformancePacksExceededException:
+            return "MaxNumberOfOrganizationConformancePacksExceededException"
+        case Config_ServiceErrorKind.MaxNumberOfRetentionConfigurationsExceededException:
+            return "MaxNumberOfRetentionConfigurationsExceededException"
+        case Config_ServiceErrorKind.NoAvailableConfigurationRecorderException:
+            return "NoAvailableConfigurationRecorderException"
+        case Config_ServiceErrorKind.NoAvailableDeliveryChannelException:
+            return "NoAvailableDeliveryChannelException"
+        case Config_ServiceErrorKind.NoAvailableOrganizationException:
+            return "NoAvailableOrganizationException"
+        case Config_ServiceErrorKind.NoRunningConfigurationRecorderException:
+            return "NoRunningConfigurationRecorderException"
+        case Config_ServiceErrorKind.NoSuchBucketException:
+            return "NoSuchBucketException"
+        case Config_ServiceErrorKind.NoSuchConfigRuleException:
+            return "NoSuchConfigRuleException"
+        case Config_ServiceErrorKind.NoSuchConfigRuleInConformancePackException:
+            return "NoSuchConfigRuleInConformancePackException"
+        case Config_ServiceErrorKind.NoSuchConfigurationAggregatorException:
+            return "NoSuchConfigurationAggregatorException"
+        case Config_ServiceErrorKind.NoSuchConfigurationRecorderException:
+            return "NoSuchConfigurationRecorderException"
+        case Config_ServiceErrorKind.NoSuchConformancePackException:
+            return "NoSuchConformancePackException"
+        case Config_ServiceErrorKind.NoSuchDeliveryChannelException:
+            return "NoSuchDeliveryChannelException"
+        case Config_ServiceErrorKind.NoSuchOrganizationConfigRuleException:
+            return "NoSuchOrganizationConfigRuleException"
+        case Config_ServiceErrorKind.NoSuchOrganizationConformancePackException:
+            return "NoSuchOrganizationConformancePackException"
+        case Config_ServiceErrorKind.NoSuchRemediationConfigurationException:
+            return "NoSuchRemediationConfigurationException"
+        case Config_ServiceErrorKind.NoSuchRemediationExceptionException:
+            return "NoSuchRemediationExceptionException"
+        case Config_ServiceErrorKind.NoSuchRetentionConfigurationException:
+            return "NoSuchRetentionConfigurationException"
+        case Config_ServiceErrorKind.OrganizationAccessDeniedException:
+            return "OrganizationAccessDeniedException"
+        case Config_ServiceErrorKind.OrganizationAllFeaturesNotEnabledException:
+            return "OrganizationAllFeaturesNotEnabledException"
+        case Config_ServiceErrorKind.OrganizationConformancePackTemplateValidationException:
+            return "OrganizationConformancePackTemplateValidationException"
+        case Config_ServiceErrorKind.OversizedConfigurationItemException:
+            return "OversizedConfigurationItemException"
+        case Config_ServiceErrorKind.RemediationInProgressException:
+            return "RemediationInProgressException"
+        case Config_ServiceErrorKind.ResourceConcurrentModificationException:
+            return "ResourceConcurrentModificationException"
+        case Config_ServiceErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case Config_ServiceErrorKind.ResourceNotDiscoveredException:
+            return "ResourceNotDiscoveredException"
+        case Config_ServiceErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case Config_ServiceErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case Config_ServiceErrorKind.UnmodifiableEntityException:
+            return "UnmodifiableEntityException"
+        case Config_ServiceErrorKind.ValidationException:
+            return "ValidationException"
+        case Config_ServiceErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

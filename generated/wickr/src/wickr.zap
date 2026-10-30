@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service wickr)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -1068,9 +1069,16 @@ struct WickrAwsNetworks:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by admin_wickr_error_from_code.
-enum WickrError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum WickrErrorKind:
     BadRequestError
     ForbiddenError
     InternalServerError
@@ -1080,24 +1088,51 @@ enum WickrError:
     ValidationError
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def admin_wickr_error_from_code(str code) -> WickrError:
-    if code == "BadRequestError":
-        return WickrError.BadRequestError
-    if code == "ForbiddenError":
-        return WickrError.ForbiddenError
-    if code == "InternalServerError":
-        return WickrError.InternalServerError
-    if code == "RateLimitError":
-        return WickrError.RateLimitError
-    if code == "ResourceNotFoundError":
-        return WickrError.ResourceNotFoundError
-    if code == "UnauthorizedError":
-        return WickrError.UnauthorizedError
-    if code == "ValidationError":
-        return WickrError.ValidationError
-    return WickrError.Unknown(code=code)
+# Classify an AWS error code into `WickrErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def admin_wickr_error_kind(str code) -> WickrErrorKind:
+    auto name = errors.error_code(code)
+    if name == "BadRequestError":
+        return WickrErrorKind.BadRequestError
+    if name == "ForbiddenError":
+        return WickrErrorKind.ForbiddenError
+    if name == "InternalServerError":
+        return WickrErrorKind.InternalServerError
+    if name == "RateLimitError":
+        return WickrErrorKind.RateLimitError
+    if name == "ResourceNotFoundError":
+        return WickrErrorKind.ResourceNotFoundError
+    if name == "UnauthorizedError":
+        return WickrErrorKind.UnauthorizedError
+    if name == "ValidationError":
+        return WickrErrorKind.ValidationError
+    return WickrErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def admin_wickr_error_name(WickrErrorKind k) -> str:
+    match k:
+        case WickrErrorKind.BadRequestError:
+            return "BadRequestError"
+        case WickrErrorKind.ForbiddenError:
+            return "ForbiddenError"
+        case WickrErrorKind.InternalServerError:
+            return "InternalServerError"
+        case WickrErrorKind.RateLimitError:
+            return "RateLimitError"
+        case WickrErrorKind.ResourceNotFoundError:
+            return "ResourceNotFoundError"
+        case WickrErrorKind.UnauthorizedError:
+            return "UnauthorizedError"
+        case WickrErrorKind.ValidationError:
+            return "ValidationError"
+        case WickrErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

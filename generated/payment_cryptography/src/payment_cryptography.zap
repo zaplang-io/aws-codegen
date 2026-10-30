@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.0 (targetPrefix PaymentCryptographyControlPlane)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -896,9 +898,16 @@ struct WrappedKey:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by controlplane_payment_cryptography_error_from_code.
-enum Payment_CryptographyError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Payment_CryptographyErrorKind:
     AccessDeniedException
     ConflictException
     InternalServerException
@@ -910,27 +919,59 @@ enum Payment_CryptographyError:
     ValidationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def controlplane_payment_cryptography_error_from_code(str code) -> Payment_CryptographyError:
-    if code == "AccessDeniedException":
-        return Payment_CryptographyError.AccessDeniedException
-    if code == "ConflictException":
-        return Payment_CryptographyError.ConflictException
-    if code == "InternalServerException":
-        return Payment_CryptographyError.InternalServerException
-    if code == "PublicPolicyException":
-        return Payment_CryptographyError.PublicPolicyException
-    if code == "ResourceNotFoundException":
-        return Payment_CryptographyError.ResourceNotFoundException
-    if code == "ServiceQuotaExceededException":
-        return Payment_CryptographyError.ServiceQuotaExceededException
-    if code == "ServiceUnavailableException":
-        return Payment_CryptographyError.ServiceUnavailableException
-    if code == "ThrottlingException":
-        return Payment_CryptographyError.ThrottlingException
-    if code == "ValidationException":
-        return Payment_CryptographyError.ValidationException
-    return Payment_CryptographyError.Unknown(code=code)
+# Classify an AWS error code into `Payment_CryptographyErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def controlplane_payment_cryptography_error_kind(str code) -> Payment_CryptographyErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return Payment_CryptographyErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return Payment_CryptographyErrorKind.ConflictException
+    if name == "InternalServerException":
+        return Payment_CryptographyErrorKind.InternalServerException
+    if name == "PublicPolicyException":
+        return Payment_CryptographyErrorKind.PublicPolicyException
+    if name == "ResourceNotFoundException":
+        return Payment_CryptographyErrorKind.ResourceNotFoundException
+    if name == "ServiceQuotaExceededException":
+        return Payment_CryptographyErrorKind.ServiceQuotaExceededException
+    if name == "ServiceUnavailableException":
+        return Payment_CryptographyErrorKind.ServiceUnavailableException
+    if name == "ThrottlingException":
+        return Payment_CryptographyErrorKind.ThrottlingException
+    if name == "ValidationException":
+        return Payment_CryptographyErrorKind.ValidationException
+    return Payment_CryptographyErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def controlplane_payment_cryptography_error_name(Payment_CryptographyErrorKind k) -> str:
+    match k:
+        case Payment_CryptographyErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case Payment_CryptographyErrorKind.ConflictException:
+            return "ConflictException"
+        case Payment_CryptographyErrorKind.InternalServerException:
+            return "InternalServerException"
+        case Payment_CryptographyErrorKind.PublicPolicyException:
+            return "PublicPolicyException"
+        case Payment_CryptographyErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case Payment_CryptographyErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case Payment_CryptographyErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
+        case Payment_CryptographyErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case Payment_CryptographyErrorKind.ValidationException:
+            return "ValidationException"
+        case Payment_CryptographyErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

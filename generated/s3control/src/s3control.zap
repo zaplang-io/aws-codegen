@@ -6,8 +6,8 @@
 # Protocol: rest-xml (SigV4 service s3)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restxml) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restxml) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and an
 # httpPayload structure is serialized as the XML document body.
@@ -27,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restxml
@@ -2011,9 +2012,16 @@ struct VpcConfiguration:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# rest-xml `<Error><Code>` element code by s3_control_error_from_code.
-enum S3_ControlError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the rest-xml `<Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum S3_ControlErrorKind:
     BadRequestException
     BucketAlreadyExists
     BucketAlreadyOwnedByYou
@@ -2028,34 +2036,71 @@ enum S3_ControlError:
     TooManyTagsException
     Unknown(str code)
 
-# Map a rest-xml error code (the <Error><Code> text from rest_xml_error_code)
-# to a variant.
-def s3_control_error_from_code(str code) -> S3_ControlError:
-    if code == "BadRequestException":
-        return S3_ControlError.BadRequestException
-    if code == "BucketAlreadyExists":
-        return S3_ControlError.BucketAlreadyExists
-    if code == "BucketAlreadyOwnedByYou":
-        return S3_ControlError.BucketAlreadyOwnedByYou
-    if code == "IdempotencyException":
-        return S3_ControlError.IdempotencyException
-    if code == "InternalServiceException":
-        return S3_ControlError.InternalServiceException
-    if code == "InvalidNextTokenException":
-        return S3_ControlError.InvalidNextTokenException
-    if code == "InvalidRequestException":
-        return S3_ControlError.InvalidRequestException
-    if code == "JobStatusException":
-        return S3_ControlError.JobStatusException
-    if code == "NoSuchPublicAccessBlockConfiguration":
-        return S3_ControlError.NoSuchPublicAccessBlockConfiguration
-    if code == "NotFoundException":
-        return S3_ControlError.NotFoundException
-    if code == "TooManyRequestsException":
-        return S3_ControlError.TooManyRequestsException
-    if code == "TooManyTagsException":
-        return S3_ControlError.TooManyTagsException
-    return S3_ControlError.Unknown(code=code)
+# Classify an AWS error code into `S3_ControlErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def s3_control_error_kind(str code) -> S3_ControlErrorKind:
+    auto name = errors.error_code(code)
+    if name == "BadRequestException":
+        return S3_ControlErrorKind.BadRequestException
+    if name == "BucketAlreadyExists":
+        return S3_ControlErrorKind.BucketAlreadyExists
+    if name == "BucketAlreadyOwnedByYou":
+        return S3_ControlErrorKind.BucketAlreadyOwnedByYou
+    if name == "IdempotencyException":
+        return S3_ControlErrorKind.IdempotencyException
+    if name == "InternalServiceException":
+        return S3_ControlErrorKind.InternalServiceException
+    if name == "InvalidNextTokenException":
+        return S3_ControlErrorKind.InvalidNextTokenException
+    if name == "InvalidRequestException":
+        return S3_ControlErrorKind.InvalidRequestException
+    if name == "JobStatusException":
+        return S3_ControlErrorKind.JobStatusException
+    if name == "NoSuchPublicAccessBlockConfiguration":
+        return S3_ControlErrorKind.NoSuchPublicAccessBlockConfiguration
+    if name == "NotFoundException":
+        return S3_ControlErrorKind.NotFoundException
+    if name == "TooManyRequestsException":
+        return S3_ControlErrorKind.TooManyRequestsException
+    if name == "TooManyTagsException":
+        return S3_ControlErrorKind.TooManyTagsException
+    return S3_ControlErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def s3_control_error_name(S3_ControlErrorKind k) -> str:
+    match k:
+        case S3_ControlErrorKind.BadRequestException:
+            return "BadRequestException"
+        case S3_ControlErrorKind.BucketAlreadyExists:
+            return "BucketAlreadyExists"
+        case S3_ControlErrorKind.BucketAlreadyOwnedByYou:
+            return "BucketAlreadyOwnedByYou"
+        case S3_ControlErrorKind.IdempotencyException:
+            return "IdempotencyException"
+        case S3_ControlErrorKind.InternalServiceException:
+            return "InternalServiceException"
+        case S3_ControlErrorKind.InvalidNextTokenException:
+            return "InvalidNextTokenException"
+        case S3_ControlErrorKind.InvalidRequestException:
+            return "InvalidRequestException"
+        case S3_ControlErrorKind.JobStatusException:
+            return "JobStatusException"
+        case S3_ControlErrorKind.NoSuchPublicAccessBlockConfiguration:
+            return "NoSuchPublicAccessBlockConfiguration"
+        case S3_ControlErrorKind.NotFoundException:
+            return "NotFoundException"
+        case S3_ControlErrorKind.TooManyRequestsException:
+            return "TooManyRequestsException"
+        case S3_ControlErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case S3_ControlErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

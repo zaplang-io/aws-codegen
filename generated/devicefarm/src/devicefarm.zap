@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix DeviceFarm_20150623)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -1902,9 +1904,16 @@ struct VpcConfig:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by devicefarm_error_from_code.
-enum Device_FarmError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Device_FarmErrorKind:
     ArgumentException
     CannotDeleteException
     IdempotencyException
@@ -1919,33 +1928,71 @@ enum Device_FarmError:
     TooManyTagsException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def devicefarm_error_from_code(str code) -> Device_FarmError:
-    if code == "ArgumentException":
-        return Device_FarmError.ArgumentException
-    if code == "CannotDeleteException":
-        return Device_FarmError.CannotDeleteException
-    if code == "IdempotencyException":
-        return Device_FarmError.IdempotencyException
-    if code == "InternalServiceException":
-        return Device_FarmError.InternalServiceException
-    if code == "InvalidOperationException":
-        return Device_FarmError.InvalidOperationException
-    if code == "LimitExceededException":
-        return Device_FarmError.LimitExceededException
-    if code == "NotEligibleException":
-        return Device_FarmError.NotEligibleException
-    if code == "NotFoundException":
-        return Device_FarmError.NotFoundException
-    if code == "ServiceAccountException":
-        return Device_FarmError.ServiceAccountException
-    if code == "TagOperationException":
-        return Device_FarmError.TagOperationException
-    if code == "TagPolicyException":
-        return Device_FarmError.TagPolicyException
-    if code == "TooManyTagsException":
-        return Device_FarmError.TooManyTagsException
-    return Device_FarmError.Unknown(code=code)
+# Classify an AWS error code into `Device_FarmErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def devicefarm_error_kind(str code) -> Device_FarmErrorKind:
+    auto name = errors.error_code(code)
+    if name == "ArgumentException":
+        return Device_FarmErrorKind.ArgumentException
+    if name == "CannotDeleteException":
+        return Device_FarmErrorKind.CannotDeleteException
+    if name == "IdempotencyException":
+        return Device_FarmErrorKind.IdempotencyException
+    if name == "InternalServiceException":
+        return Device_FarmErrorKind.InternalServiceException
+    if name == "InvalidOperationException":
+        return Device_FarmErrorKind.InvalidOperationException
+    if name == "LimitExceededException":
+        return Device_FarmErrorKind.LimitExceededException
+    if name == "NotEligibleException":
+        return Device_FarmErrorKind.NotEligibleException
+    if name == "NotFoundException":
+        return Device_FarmErrorKind.NotFoundException
+    if name == "ServiceAccountException":
+        return Device_FarmErrorKind.ServiceAccountException
+    if name == "TagOperationException":
+        return Device_FarmErrorKind.TagOperationException
+    if name == "TagPolicyException":
+        return Device_FarmErrorKind.TagPolicyException
+    if name == "TooManyTagsException":
+        return Device_FarmErrorKind.TooManyTagsException
+    return Device_FarmErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def devicefarm_error_name(Device_FarmErrorKind k) -> str:
+    match k:
+        case Device_FarmErrorKind.ArgumentException:
+            return "ArgumentException"
+        case Device_FarmErrorKind.CannotDeleteException:
+            return "CannotDeleteException"
+        case Device_FarmErrorKind.IdempotencyException:
+            return "IdempotencyException"
+        case Device_FarmErrorKind.InternalServiceException:
+            return "InternalServiceException"
+        case Device_FarmErrorKind.InvalidOperationException:
+            return "InvalidOperationException"
+        case Device_FarmErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case Device_FarmErrorKind.NotEligibleException:
+            return "NotEligibleException"
+        case Device_FarmErrorKind.NotFoundException:
+            return "NotFoundException"
+        case Device_FarmErrorKind.ServiceAccountException:
+            return "ServiceAccountException"
+        case Device_FarmErrorKind.TagOperationException:
+            return "TagOperationException"
+        case Device_FarmErrorKind.TagPolicyException:
+            return "TagPolicyException"
+        case Device_FarmErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case Device_FarmErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

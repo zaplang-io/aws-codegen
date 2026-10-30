@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix AmazonMemoryDB)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -1385,9 +1387,16 @@ struct UserQuotaExceededFault:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by memory_db_error_from_code.
-enum MemoryDBError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum MemoryDBErrorKind:
     ACLAlreadyExistsFault
     ACLNotFoundFault
     ACLQuotaExceededFault
@@ -1447,123 +1456,251 @@ enum MemoryDBError:
     UserQuotaExceededFault
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def memory_db_error_from_code(str code) -> MemoryDBError:
-    if code == "ACLAlreadyExistsFault":
-        return MemoryDBError.ACLAlreadyExistsFault
-    if code == "ACLNotFoundFault":
-        return MemoryDBError.ACLNotFoundFault
-    if code == "ACLQuotaExceededFault":
-        return MemoryDBError.ACLQuotaExceededFault
-    if code == "APICallRateForCustomerExceededFault":
-        return MemoryDBError.APICallRateForCustomerExceededFault
-    if code == "ClusterAlreadyExistsFault":
-        return MemoryDBError.ClusterAlreadyExistsFault
-    if code == "ClusterNotFoundFault":
-        return MemoryDBError.ClusterNotFoundFault
-    if code == "ClusterQuotaForCustomerExceededFault":
-        return MemoryDBError.ClusterQuotaForCustomerExceededFault
-    if code == "DefaultUserRequired":
-        return MemoryDBError.DefaultUserRequired
-    if code == "DuplicateUserNameFault":
-        return MemoryDBError.DuplicateUserNameFault
-    if code == "InsufficientClusterCapacityFault":
-        return MemoryDBError.InsufficientClusterCapacityFault
-    if code == "InvalidACLStateFault":
-        return MemoryDBError.InvalidACLStateFault
-    if code == "InvalidARNFault":
-        return MemoryDBError.InvalidARNFault
-    if code == "InvalidClusterStateFault":
-        return MemoryDBError.InvalidClusterStateFault
-    if code == "InvalidCredentialsException":
-        return MemoryDBError.InvalidCredentialsException
-    if code == "InvalidKMSKeyFault":
-        return MemoryDBError.InvalidKMSKeyFault
-    if code == "InvalidMultiRegionClusterStateFault":
-        return MemoryDBError.InvalidMultiRegionClusterStateFault
-    if code == "InvalidNodeStateFault":
-        return MemoryDBError.InvalidNodeStateFault
-    if code == "InvalidParameterCombinationException":
-        return MemoryDBError.InvalidParameterCombinationException
-    if code == "InvalidParameterGroupStateFault":
-        return MemoryDBError.InvalidParameterGroupStateFault
-    if code == "InvalidParameterValueException":
-        return MemoryDBError.InvalidParameterValueException
-    if code == "InvalidSnapshotStateFault":
-        return MemoryDBError.InvalidSnapshotStateFault
-    if code == "InvalidSubnet":
-        return MemoryDBError.InvalidSubnet
-    if code == "InvalidUserStateFault":
-        return MemoryDBError.InvalidUserStateFault
-    if code == "InvalidVPCNetworkStateFault":
-        return MemoryDBError.InvalidVPCNetworkStateFault
-    if code == "MultiRegionClusterAlreadyExistsFault":
-        return MemoryDBError.MultiRegionClusterAlreadyExistsFault
-    if code == "MultiRegionClusterNotFoundFault":
-        return MemoryDBError.MultiRegionClusterNotFoundFault
-    if code == "MultiRegionParameterGroupNotFoundFault":
-        return MemoryDBError.MultiRegionParameterGroupNotFoundFault
-    if code == "NoOperationFault":
-        return MemoryDBError.NoOperationFault
-    if code == "NodeQuotaForClusterExceededFault":
-        return MemoryDBError.NodeQuotaForClusterExceededFault
-    if code == "NodeQuotaForCustomerExceededFault":
-        return MemoryDBError.NodeQuotaForCustomerExceededFault
-    if code == "ParameterGroupAlreadyExistsFault":
-        return MemoryDBError.ParameterGroupAlreadyExistsFault
-    if code == "ParameterGroupNotFoundFault":
-        return MemoryDBError.ParameterGroupNotFoundFault
-    if code == "ParameterGroupQuotaExceededFault":
-        return MemoryDBError.ParameterGroupQuotaExceededFault
-    if code == "ReservedNodeAlreadyExistsFault":
-        return MemoryDBError.ReservedNodeAlreadyExistsFault
-    if code == "ReservedNodeNotFoundFault":
-        return MemoryDBError.ReservedNodeNotFoundFault
-    if code == "ReservedNodeQuotaExceededFault":
-        return MemoryDBError.ReservedNodeQuotaExceededFault
-    if code == "ReservedNodesOfferingNotFoundFault":
-        return MemoryDBError.ReservedNodesOfferingNotFoundFault
-    if code == "ServiceLinkedRoleNotFoundFault":
-        return MemoryDBError.ServiceLinkedRoleNotFoundFault
-    if code == "ServiceUpdateNotFoundFault":
-        return MemoryDBError.ServiceUpdateNotFoundFault
-    if code == "ShardNotFoundFault":
-        return MemoryDBError.ShardNotFoundFault
-    if code == "ShardsPerClusterQuotaExceededFault":
-        return MemoryDBError.ShardsPerClusterQuotaExceededFault
-    if code == "SnapshotAlreadyExistsFault":
-        return MemoryDBError.SnapshotAlreadyExistsFault
-    if code == "SnapshotNotFoundFault":
-        return MemoryDBError.SnapshotNotFoundFault
-    if code == "SnapshotQuotaExceededFault":
-        return MemoryDBError.SnapshotQuotaExceededFault
-    if code == "SubnetGroupAlreadyExistsFault":
-        return MemoryDBError.SubnetGroupAlreadyExistsFault
-    if code == "SubnetGroupInUseFault":
-        return MemoryDBError.SubnetGroupInUseFault
-    if code == "SubnetGroupNotFoundFault":
-        return MemoryDBError.SubnetGroupNotFoundFault
-    if code == "SubnetGroupQuotaExceededFault":
-        return MemoryDBError.SubnetGroupQuotaExceededFault
-    if code == "SubnetInUse":
-        return MemoryDBError.SubnetInUse
-    if code == "SubnetNotAllowedFault":
-        return MemoryDBError.SubnetNotAllowedFault
-    if code == "SubnetQuotaExceededFault":
-        return MemoryDBError.SubnetQuotaExceededFault
-    if code == "TagNotFoundFault":
-        return MemoryDBError.TagNotFoundFault
-    if code == "TagQuotaPerResourceExceeded":
-        return MemoryDBError.TagQuotaPerResourceExceeded
-    if code == "TestFailoverNotAvailableFault":
-        return MemoryDBError.TestFailoverNotAvailableFault
-    if code == "UserAlreadyExistsFault":
-        return MemoryDBError.UserAlreadyExistsFault
-    if code == "UserNotFoundFault":
-        return MemoryDBError.UserNotFoundFault
-    if code == "UserQuotaExceededFault":
-        return MemoryDBError.UserQuotaExceededFault
-    return MemoryDBError.Unknown(code=code)
+# Classify an AWS error code into `MemoryDBErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def memory_db_error_kind(str code) -> MemoryDBErrorKind:
+    auto name = errors.error_code(code)
+    if name == "ACLAlreadyExistsFault":
+        return MemoryDBErrorKind.ACLAlreadyExistsFault
+    if name == "ACLNotFoundFault":
+        return MemoryDBErrorKind.ACLNotFoundFault
+    if name == "ACLQuotaExceededFault":
+        return MemoryDBErrorKind.ACLQuotaExceededFault
+    if name == "APICallRateForCustomerExceededFault":
+        return MemoryDBErrorKind.APICallRateForCustomerExceededFault
+    if name == "ClusterAlreadyExistsFault":
+        return MemoryDBErrorKind.ClusterAlreadyExistsFault
+    if name == "ClusterNotFoundFault":
+        return MemoryDBErrorKind.ClusterNotFoundFault
+    if name == "ClusterQuotaForCustomerExceededFault":
+        return MemoryDBErrorKind.ClusterQuotaForCustomerExceededFault
+    if name == "DefaultUserRequired":
+        return MemoryDBErrorKind.DefaultUserRequired
+    if name == "DuplicateUserNameFault":
+        return MemoryDBErrorKind.DuplicateUserNameFault
+    if name == "InsufficientClusterCapacityFault":
+        return MemoryDBErrorKind.InsufficientClusterCapacityFault
+    if name == "InvalidACLStateFault":
+        return MemoryDBErrorKind.InvalidACLStateFault
+    if name == "InvalidARNFault":
+        return MemoryDBErrorKind.InvalidARNFault
+    if name == "InvalidClusterStateFault":
+        return MemoryDBErrorKind.InvalidClusterStateFault
+    if name == "InvalidCredentialsException":
+        return MemoryDBErrorKind.InvalidCredentialsException
+    if name == "InvalidKMSKeyFault":
+        return MemoryDBErrorKind.InvalidKMSKeyFault
+    if name == "InvalidMultiRegionClusterStateFault":
+        return MemoryDBErrorKind.InvalidMultiRegionClusterStateFault
+    if name == "InvalidNodeStateFault":
+        return MemoryDBErrorKind.InvalidNodeStateFault
+    if name == "InvalidParameterCombinationException":
+        return MemoryDBErrorKind.InvalidParameterCombinationException
+    if name == "InvalidParameterGroupStateFault":
+        return MemoryDBErrorKind.InvalidParameterGroupStateFault
+    if name == "InvalidParameterValueException":
+        return MemoryDBErrorKind.InvalidParameterValueException
+    if name == "InvalidSnapshotStateFault":
+        return MemoryDBErrorKind.InvalidSnapshotStateFault
+    if name == "InvalidSubnet":
+        return MemoryDBErrorKind.InvalidSubnet
+    if name == "InvalidUserStateFault":
+        return MemoryDBErrorKind.InvalidUserStateFault
+    if name == "InvalidVPCNetworkStateFault":
+        return MemoryDBErrorKind.InvalidVPCNetworkStateFault
+    if name == "MultiRegionClusterAlreadyExistsFault":
+        return MemoryDBErrorKind.MultiRegionClusterAlreadyExistsFault
+    if name == "MultiRegionClusterNotFoundFault":
+        return MemoryDBErrorKind.MultiRegionClusterNotFoundFault
+    if name == "MultiRegionParameterGroupNotFoundFault":
+        return MemoryDBErrorKind.MultiRegionParameterGroupNotFoundFault
+    if name == "NoOperationFault":
+        return MemoryDBErrorKind.NoOperationFault
+    if name == "NodeQuotaForClusterExceededFault":
+        return MemoryDBErrorKind.NodeQuotaForClusterExceededFault
+    if name == "NodeQuotaForCustomerExceededFault":
+        return MemoryDBErrorKind.NodeQuotaForCustomerExceededFault
+    if name == "ParameterGroupAlreadyExistsFault":
+        return MemoryDBErrorKind.ParameterGroupAlreadyExistsFault
+    if name == "ParameterGroupNotFoundFault":
+        return MemoryDBErrorKind.ParameterGroupNotFoundFault
+    if name == "ParameterGroupQuotaExceededFault":
+        return MemoryDBErrorKind.ParameterGroupQuotaExceededFault
+    if name == "ReservedNodeAlreadyExistsFault":
+        return MemoryDBErrorKind.ReservedNodeAlreadyExistsFault
+    if name == "ReservedNodeNotFoundFault":
+        return MemoryDBErrorKind.ReservedNodeNotFoundFault
+    if name == "ReservedNodeQuotaExceededFault":
+        return MemoryDBErrorKind.ReservedNodeQuotaExceededFault
+    if name == "ReservedNodesOfferingNotFoundFault":
+        return MemoryDBErrorKind.ReservedNodesOfferingNotFoundFault
+    if name == "ServiceLinkedRoleNotFoundFault":
+        return MemoryDBErrorKind.ServiceLinkedRoleNotFoundFault
+    if name == "ServiceUpdateNotFoundFault":
+        return MemoryDBErrorKind.ServiceUpdateNotFoundFault
+    if name == "ShardNotFoundFault":
+        return MemoryDBErrorKind.ShardNotFoundFault
+    if name == "ShardsPerClusterQuotaExceededFault":
+        return MemoryDBErrorKind.ShardsPerClusterQuotaExceededFault
+    if name == "SnapshotAlreadyExistsFault":
+        return MemoryDBErrorKind.SnapshotAlreadyExistsFault
+    if name == "SnapshotNotFoundFault":
+        return MemoryDBErrorKind.SnapshotNotFoundFault
+    if name == "SnapshotQuotaExceededFault":
+        return MemoryDBErrorKind.SnapshotQuotaExceededFault
+    if name == "SubnetGroupAlreadyExistsFault":
+        return MemoryDBErrorKind.SubnetGroupAlreadyExistsFault
+    if name == "SubnetGroupInUseFault":
+        return MemoryDBErrorKind.SubnetGroupInUseFault
+    if name == "SubnetGroupNotFoundFault":
+        return MemoryDBErrorKind.SubnetGroupNotFoundFault
+    if name == "SubnetGroupQuotaExceededFault":
+        return MemoryDBErrorKind.SubnetGroupQuotaExceededFault
+    if name == "SubnetInUse":
+        return MemoryDBErrorKind.SubnetInUse
+    if name == "SubnetNotAllowedFault":
+        return MemoryDBErrorKind.SubnetNotAllowedFault
+    if name == "SubnetQuotaExceededFault":
+        return MemoryDBErrorKind.SubnetQuotaExceededFault
+    if name == "TagNotFoundFault":
+        return MemoryDBErrorKind.TagNotFoundFault
+    if name == "TagQuotaPerResourceExceeded":
+        return MemoryDBErrorKind.TagQuotaPerResourceExceeded
+    if name == "TestFailoverNotAvailableFault":
+        return MemoryDBErrorKind.TestFailoverNotAvailableFault
+    if name == "UserAlreadyExistsFault":
+        return MemoryDBErrorKind.UserAlreadyExistsFault
+    if name == "UserNotFoundFault":
+        return MemoryDBErrorKind.UserNotFoundFault
+    if name == "UserQuotaExceededFault":
+        return MemoryDBErrorKind.UserQuotaExceededFault
+    return MemoryDBErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def memory_db_error_name(MemoryDBErrorKind k) -> str:
+    match k:
+        case MemoryDBErrorKind.ACLAlreadyExistsFault:
+            return "ACLAlreadyExistsFault"
+        case MemoryDBErrorKind.ACLNotFoundFault:
+            return "ACLNotFoundFault"
+        case MemoryDBErrorKind.ACLQuotaExceededFault:
+            return "ACLQuotaExceededFault"
+        case MemoryDBErrorKind.APICallRateForCustomerExceededFault:
+            return "APICallRateForCustomerExceededFault"
+        case MemoryDBErrorKind.ClusterAlreadyExistsFault:
+            return "ClusterAlreadyExistsFault"
+        case MemoryDBErrorKind.ClusterNotFoundFault:
+            return "ClusterNotFoundFault"
+        case MemoryDBErrorKind.ClusterQuotaForCustomerExceededFault:
+            return "ClusterQuotaForCustomerExceededFault"
+        case MemoryDBErrorKind.DefaultUserRequired:
+            return "DefaultUserRequired"
+        case MemoryDBErrorKind.DuplicateUserNameFault:
+            return "DuplicateUserNameFault"
+        case MemoryDBErrorKind.InsufficientClusterCapacityFault:
+            return "InsufficientClusterCapacityFault"
+        case MemoryDBErrorKind.InvalidACLStateFault:
+            return "InvalidACLStateFault"
+        case MemoryDBErrorKind.InvalidARNFault:
+            return "InvalidARNFault"
+        case MemoryDBErrorKind.InvalidClusterStateFault:
+            return "InvalidClusterStateFault"
+        case MemoryDBErrorKind.InvalidCredentialsException:
+            return "InvalidCredentialsException"
+        case MemoryDBErrorKind.InvalidKMSKeyFault:
+            return "InvalidKMSKeyFault"
+        case MemoryDBErrorKind.InvalidMultiRegionClusterStateFault:
+            return "InvalidMultiRegionClusterStateFault"
+        case MemoryDBErrorKind.InvalidNodeStateFault:
+            return "InvalidNodeStateFault"
+        case MemoryDBErrorKind.InvalidParameterCombinationException:
+            return "InvalidParameterCombinationException"
+        case MemoryDBErrorKind.InvalidParameterGroupStateFault:
+            return "InvalidParameterGroupStateFault"
+        case MemoryDBErrorKind.InvalidParameterValueException:
+            return "InvalidParameterValueException"
+        case MemoryDBErrorKind.InvalidSnapshotStateFault:
+            return "InvalidSnapshotStateFault"
+        case MemoryDBErrorKind.InvalidSubnet:
+            return "InvalidSubnet"
+        case MemoryDBErrorKind.InvalidUserStateFault:
+            return "InvalidUserStateFault"
+        case MemoryDBErrorKind.InvalidVPCNetworkStateFault:
+            return "InvalidVPCNetworkStateFault"
+        case MemoryDBErrorKind.MultiRegionClusterAlreadyExistsFault:
+            return "MultiRegionClusterAlreadyExistsFault"
+        case MemoryDBErrorKind.MultiRegionClusterNotFoundFault:
+            return "MultiRegionClusterNotFoundFault"
+        case MemoryDBErrorKind.MultiRegionParameterGroupNotFoundFault:
+            return "MultiRegionParameterGroupNotFoundFault"
+        case MemoryDBErrorKind.NoOperationFault:
+            return "NoOperationFault"
+        case MemoryDBErrorKind.NodeQuotaForClusterExceededFault:
+            return "NodeQuotaForClusterExceededFault"
+        case MemoryDBErrorKind.NodeQuotaForCustomerExceededFault:
+            return "NodeQuotaForCustomerExceededFault"
+        case MemoryDBErrorKind.ParameterGroupAlreadyExistsFault:
+            return "ParameterGroupAlreadyExistsFault"
+        case MemoryDBErrorKind.ParameterGroupNotFoundFault:
+            return "ParameterGroupNotFoundFault"
+        case MemoryDBErrorKind.ParameterGroupQuotaExceededFault:
+            return "ParameterGroupQuotaExceededFault"
+        case MemoryDBErrorKind.ReservedNodeAlreadyExistsFault:
+            return "ReservedNodeAlreadyExistsFault"
+        case MemoryDBErrorKind.ReservedNodeNotFoundFault:
+            return "ReservedNodeNotFoundFault"
+        case MemoryDBErrorKind.ReservedNodeQuotaExceededFault:
+            return "ReservedNodeQuotaExceededFault"
+        case MemoryDBErrorKind.ReservedNodesOfferingNotFoundFault:
+            return "ReservedNodesOfferingNotFoundFault"
+        case MemoryDBErrorKind.ServiceLinkedRoleNotFoundFault:
+            return "ServiceLinkedRoleNotFoundFault"
+        case MemoryDBErrorKind.ServiceUpdateNotFoundFault:
+            return "ServiceUpdateNotFoundFault"
+        case MemoryDBErrorKind.ShardNotFoundFault:
+            return "ShardNotFoundFault"
+        case MemoryDBErrorKind.ShardsPerClusterQuotaExceededFault:
+            return "ShardsPerClusterQuotaExceededFault"
+        case MemoryDBErrorKind.SnapshotAlreadyExistsFault:
+            return "SnapshotAlreadyExistsFault"
+        case MemoryDBErrorKind.SnapshotNotFoundFault:
+            return "SnapshotNotFoundFault"
+        case MemoryDBErrorKind.SnapshotQuotaExceededFault:
+            return "SnapshotQuotaExceededFault"
+        case MemoryDBErrorKind.SubnetGroupAlreadyExistsFault:
+            return "SubnetGroupAlreadyExistsFault"
+        case MemoryDBErrorKind.SubnetGroupInUseFault:
+            return "SubnetGroupInUseFault"
+        case MemoryDBErrorKind.SubnetGroupNotFoundFault:
+            return "SubnetGroupNotFoundFault"
+        case MemoryDBErrorKind.SubnetGroupQuotaExceededFault:
+            return "SubnetGroupQuotaExceededFault"
+        case MemoryDBErrorKind.SubnetInUse:
+            return "SubnetInUse"
+        case MemoryDBErrorKind.SubnetNotAllowedFault:
+            return "SubnetNotAllowedFault"
+        case MemoryDBErrorKind.SubnetQuotaExceededFault:
+            return "SubnetQuotaExceededFault"
+        case MemoryDBErrorKind.TagNotFoundFault:
+            return "TagNotFoundFault"
+        case MemoryDBErrorKind.TagQuotaPerResourceExceeded:
+            return "TagQuotaPerResourceExceeded"
+        case MemoryDBErrorKind.TestFailoverNotAvailableFault:
+            return "TestFailoverNotAvailableFault"
+        case MemoryDBErrorKind.UserAlreadyExistsFault:
+            return "UserAlreadyExistsFault"
+        case MemoryDBErrorKind.UserNotFoundFault:
+            return "UserNotFoundFault"
+        case MemoryDBErrorKind.UserQuotaExceededFault:
+            return "UserQuotaExceededFault"
+        case MemoryDBErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

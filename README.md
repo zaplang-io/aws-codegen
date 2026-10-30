@@ -79,10 +79,17 @@ contains:
     says so (epoch by default, matching awsJson);
   - blobs → `bytes` (type-driven base64, no annotation);
   - string enums → `@json(open)` enums with an `Unknown(str value)` fallback.
-- **A service error enum** (`enum <Svc>Error`) over every operation's errors plus
-  service-level errors, with an `Unknown(str code)` fallback and a
-  `<svc>_error_from_code(str)` classifier driven by the codec's `__type` /
-  `X-Amzn-ErrorType` handling.
+- **A typed-error surface** on top of the hand-written `aws_core.errors` base
+  ([zaplang-io/zap#361](https://github.com/zaplang-io/zap/issues/361); the aws
+  repo's `DECISIONS.md` D-0006 is the generator contract, proven against the
+  hand-wired `S3ErrorKind` reference): an open enum `enum <Svc>ErrorKind` with one
+  bare variant per modeled error shape plus an `Unknown(str code)` catch-all, a
+  `<svc>_error_kind(str)` classifier that normalizes the raw code through
+  `errors.error_code` (stripping any namespace/suffix) before matching by name,
+  and an exhaustive, module-local `<svc>_error_name(<Svc>ErrorKind)` dispatcher.
+  The base carrier (`AwsServiceError`), the `X-Amzn-ErrorType` fallback and the
+  `raise`/`check_response` bridge are inherited from `aws_core.errors`, not
+  re-emitted. See `DECISIONS.md` D-0007.
 - **A client struct** (`struct <Svc>Client`) holding `Credentials` + region, with
   one method per operation that builds the input shape and dispatches through the
   `aws.awsjson` codec — the same shape as the hand-written `aws.dynamodb` client.

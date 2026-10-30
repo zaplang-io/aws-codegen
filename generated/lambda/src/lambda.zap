@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service lambda)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -2842,9 +2843,16 @@ struct WaitSucceededDetails:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by lambda__error_from_code.
-enum LambdaError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum LambdaErrorKind:
     AliasLimitExceededException
     CallbackTimeoutException
     CapacityProviderLimitExceededException
@@ -2903,122 +2911,247 @@ enum LambdaError:
     UnsupportedMediaTypeException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def lambda__error_from_code(str code) -> LambdaError:
-    if code == "AliasLimitExceededException":
-        return LambdaError.AliasLimitExceededException
-    if code == "CallbackTimeoutException":
-        return LambdaError.CallbackTimeoutException
-    if code == "CapacityProviderLimitExceededException":
-        return LambdaError.CapacityProviderLimitExceededException
-    if code == "CodeArtifactUserDeletedException":
-        return LambdaError.CodeArtifactUserDeletedException
-    if code == "CodeArtifactUserFailedException":
-        return LambdaError.CodeArtifactUserFailedException
-    if code == "CodeArtifactUserPendingException":
-        return LambdaError.CodeArtifactUserPendingException
-    if code == "CodeSigningConfigNotFoundException":
-        return LambdaError.CodeSigningConfigNotFoundException
-    if code == "CodeStorageExceededException":
-        return LambdaError.CodeStorageExceededException
-    if code == "CodeVerificationFailedException":
-        return LambdaError.CodeVerificationFailedException
-    if code == "DurableExecutionAlreadyStartedException":
-        return LambdaError.DurableExecutionAlreadyStartedException
-    if code == "EC2AccessDeniedException":
-        return LambdaError.EC2AccessDeniedException
-    if code == "EC2ThrottledException":
-        return LambdaError.EC2ThrottledException
-    if code == "EC2UnexpectedException":
-        return LambdaError.EC2UnexpectedException
-    if code == "EFSIOException":
-        return LambdaError.EFSIOException
-    if code == "EFSMountConnectivityException":
-        return LambdaError.EFSMountConnectivityException
-    if code == "EFSMountFailureException":
-        return LambdaError.EFSMountFailureException
-    if code == "EFSMountTimeoutException":
-        return LambdaError.EFSMountTimeoutException
-    if code == "ENILimitReachedException":
-        return LambdaError.ENILimitReachedException
-    if code == "ENINotReadyException":
-        return LambdaError.ENINotReadyException
-    if code == "FunctionVersionsPerCapacityProviderLimitExceededException":
-        return LambdaError.FunctionVersionsPerCapacityProviderLimitExceededException
-    if code == "InvalidCodeSignatureException":
-        return LambdaError.InvalidCodeSignatureException
-    if code == "InvalidParameterValueException":
-        return LambdaError.InvalidParameterValueException
-    if code == "InvalidRequestContentException":
-        return LambdaError.InvalidRequestContentException
-    if code == "InvalidRuntimeException":
-        return LambdaError.InvalidRuntimeException
-    if code == "InvalidSecurityGroupIDException":
-        return LambdaError.InvalidSecurityGroupIDException
-    if code == "InvalidSubnetIDException":
-        return LambdaError.InvalidSubnetIDException
-    if code == "InvalidZipFileException":
-        return LambdaError.InvalidZipFileException
-    if code == "KMSAccessDeniedException":
-        return LambdaError.KMSAccessDeniedException
-    if code == "KMSDisabledException":
-        return LambdaError.KMSDisabledException
-    if code == "KMSInvalidStateException":
-        return LambdaError.KMSInvalidStateException
-    if code == "KMSNotFoundException":
-        return LambdaError.KMSNotFoundException
-    if code == "ModeNotSupportedException":
-        return LambdaError.ModeNotSupportedException
-    if code == "NoPublishedVersionException":
-        return LambdaError.NoPublishedVersionException
-    if code == "PolicyLengthExceededException":
-        return LambdaError.PolicyLengthExceededException
-    if code == "PreconditionFailedException":
-        return LambdaError.PreconditionFailedException
-    if code == "ProvisionedConcurrencyConfigNotFoundException":
-        return LambdaError.ProvisionedConcurrencyConfigNotFoundException
-    if code == "PublicPolicyException":
-        return LambdaError.PublicPolicyException
-    if code == "RecursiveInvocationException":
-        return LambdaError.RecursiveInvocationException
-    if code == "RequestTooLargeException":
-        return LambdaError.RequestTooLargeException
-    if code == "ResourceConflictException":
-        return LambdaError.ResourceConflictException
-    if code == "ResourceInUseException":
-        return LambdaError.ResourceInUseException
-    if code == "ResourceNotFoundException":
-        return LambdaError.ResourceNotFoundException
-    if code == "ResourceNotReadyException":
-        return LambdaError.ResourceNotReadyException
-    if code == "S3FilesMountConnectivityException":
-        return LambdaError.S3FilesMountConnectivityException
-    if code == "S3FilesMountFailureException":
-        return LambdaError.S3FilesMountFailureException
-    if code == "S3FilesMountTimeoutException":
-        return LambdaError.S3FilesMountTimeoutException
-    if code == "SerializedRequestEntityTooLargeException":
-        return LambdaError.SerializedRequestEntityTooLargeException
-    if code == "ServiceException":
-        return LambdaError.ServiceException
-    if code == "ServiceQuotaExceededException":
-        return LambdaError.ServiceQuotaExceededException
-    if code == "SnapStartException":
-        return LambdaError.SnapStartException
-    if code == "SnapStartNotReadyException":
-        return LambdaError.SnapStartNotReadyException
-    if code == "SnapStartRegenerationFailureException":
-        return LambdaError.SnapStartRegenerationFailureException
-    if code == "SnapStartTimeoutException":
-        return LambdaError.SnapStartTimeoutException
-    if code == "SubnetIPAddressLimitReachedException":
-        return LambdaError.SubnetIPAddressLimitReachedException
-    if code == "TooManyRequestsException":
-        return LambdaError.TooManyRequestsException
-    if code == "UnsupportedMediaTypeException":
-        return LambdaError.UnsupportedMediaTypeException
-    return LambdaError.Unknown(code=code)
+# Classify an AWS error code into `LambdaErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def lambda__error_kind(str code) -> LambdaErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AliasLimitExceededException":
+        return LambdaErrorKind.AliasLimitExceededException
+    if name == "CallbackTimeoutException":
+        return LambdaErrorKind.CallbackTimeoutException
+    if name == "CapacityProviderLimitExceededException":
+        return LambdaErrorKind.CapacityProviderLimitExceededException
+    if name == "CodeArtifactUserDeletedException":
+        return LambdaErrorKind.CodeArtifactUserDeletedException
+    if name == "CodeArtifactUserFailedException":
+        return LambdaErrorKind.CodeArtifactUserFailedException
+    if name == "CodeArtifactUserPendingException":
+        return LambdaErrorKind.CodeArtifactUserPendingException
+    if name == "CodeSigningConfigNotFoundException":
+        return LambdaErrorKind.CodeSigningConfigNotFoundException
+    if name == "CodeStorageExceededException":
+        return LambdaErrorKind.CodeStorageExceededException
+    if name == "CodeVerificationFailedException":
+        return LambdaErrorKind.CodeVerificationFailedException
+    if name == "DurableExecutionAlreadyStartedException":
+        return LambdaErrorKind.DurableExecutionAlreadyStartedException
+    if name == "EC2AccessDeniedException":
+        return LambdaErrorKind.EC2AccessDeniedException
+    if name == "EC2ThrottledException":
+        return LambdaErrorKind.EC2ThrottledException
+    if name == "EC2UnexpectedException":
+        return LambdaErrorKind.EC2UnexpectedException
+    if name == "EFSIOException":
+        return LambdaErrorKind.EFSIOException
+    if name == "EFSMountConnectivityException":
+        return LambdaErrorKind.EFSMountConnectivityException
+    if name == "EFSMountFailureException":
+        return LambdaErrorKind.EFSMountFailureException
+    if name == "EFSMountTimeoutException":
+        return LambdaErrorKind.EFSMountTimeoutException
+    if name == "ENILimitReachedException":
+        return LambdaErrorKind.ENILimitReachedException
+    if name == "ENINotReadyException":
+        return LambdaErrorKind.ENINotReadyException
+    if name == "FunctionVersionsPerCapacityProviderLimitExceededException":
+        return LambdaErrorKind.FunctionVersionsPerCapacityProviderLimitExceededException
+    if name == "InvalidCodeSignatureException":
+        return LambdaErrorKind.InvalidCodeSignatureException
+    if name == "InvalidParameterValueException":
+        return LambdaErrorKind.InvalidParameterValueException
+    if name == "InvalidRequestContentException":
+        return LambdaErrorKind.InvalidRequestContentException
+    if name == "InvalidRuntimeException":
+        return LambdaErrorKind.InvalidRuntimeException
+    if name == "InvalidSecurityGroupIDException":
+        return LambdaErrorKind.InvalidSecurityGroupIDException
+    if name == "InvalidSubnetIDException":
+        return LambdaErrorKind.InvalidSubnetIDException
+    if name == "InvalidZipFileException":
+        return LambdaErrorKind.InvalidZipFileException
+    if name == "KMSAccessDeniedException":
+        return LambdaErrorKind.KMSAccessDeniedException
+    if name == "KMSDisabledException":
+        return LambdaErrorKind.KMSDisabledException
+    if name == "KMSInvalidStateException":
+        return LambdaErrorKind.KMSInvalidStateException
+    if name == "KMSNotFoundException":
+        return LambdaErrorKind.KMSNotFoundException
+    if name == "ModeNotSupportedException":
+        return LambdaErrorKind.ModeNotSupportedException
+    if name == "NoPublishedVersionException":
+        return LambdaErrorKind.NoPublishedVersionException
+    if name == "PolicyLengthExceededException":
+        return LambdaErrorKind.PolicyLengthExceededException
+    if name == "PreconditionFailedException":
+        return LambdaErrorKind.PreconditionFailedException
+    if name == "ProvisionedConcurrencyConfigNotFoundException":
+        return LambdaErrorKind.ProvisionedConcurrencyConfigNotFoundException
+    if name == "PublicPolicyException":
+        return LambdaErrorKind.PublicPolicyException
+    if name == "RecursiveInvocationException":
+        return LambdaErrorKind.RecursiveInvocationException
+    if name == "RequestTooLargeException":
+        return LambdaErrorKind.RequestTooLargeException
+    if name == "ResourceConflictException":
+        return LambdaErrorKind.ResourceConflictException
+    if name == "ResourceInUseException":
+        return LambdaErrorKind.ResourceInUseException
+    if name == "ResourceNotFoundException":
+        return LambdaErrorKind.ResourceNotFoundException
+    if name == "ResourceNotReadyException":
+        return LambdaErrorKind.ResourceNotReadyException
+    if name == "S3FilesMountConnectivityException":
+        return LambdaErrorKind.S3FilesMountConnectivityException
+    if name == "S3FilesMountFailureException":
+        return LambdaErrorKind.S3FilesMountFailureException
+    if name == "S3FilesMountTimeoutException":
+        return LambdaErrorKind.S3FilesMountTimeoutException
+    if name == "SerializedRequestEntityTooLargeException":
+        return LambdaErrorKind.SerializedRequestEntityTooLargeException
+    if name == "ServiceException":
+        return LambdaErrorKind.ServiceException
+    if name == "ServiceQuotaExceededException":
+        return LambdaErrorKind.ServiceQuotaExceededException
+    if name == "SnapStartException":
+        return LambdaErrorKind.SnapStartException
+    if name == "SnapStartNotReadyException":
+        return LambdaErrorKind.SnapStartNotReadyException
+    if name == "SnapStartRegenerationFailureException":
+        return LambdaErrorKind.SnapStartRegenerationFailureException
+    if name == "SnapStartTimeoutException":
+        return LambdaErrorKind.SnapStartTimeoutException
+    if name == "SubnetIPAddressLimitReachedException":
+        return LambdaErrorKind.SubnetIPAddressLimitReachedException
+    if name == "TooManyRequestsException":
+        return LambdaErrorKind.TooManyRequestsException
+    if name == "UnsupportedMediaTypeException":
+        return LambdaErrorKind.UnsupportedMediaTypeException
+    return LambdaErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def lambda__error_name(LambdaErrorKind k) -> str:
+    match k:
+        case LambdaErrorKind.AliasLimitExceededException:
+            return "AliasLimitExceededException"
+        case LambdaErrorKind.CallbackTimeoutException:
+            return "CallbackTimeoutException"
+        case LambdaErrorKind.CapacityProviderLimitExceededException:
+            return "CapacityProviderLimitExceededException"
+        case LambdaErrorKind.CodeArtifactUserDeletedException:
+            return "CodeArtifactUserDeletedException"
+        case LambdaErrorKind.CodeArtifactUserFailedException:
+            return "CodeArtifactUserFailedException"
+        case LambdaErrorKind.CodeArtifactUserPendingException:
+            return "CodeArtifactUserPendingException"
+        case LambdaErrorKind.CodeSigningConfigNotFoundException:
+            return "CodeSigningConfigNotFoundException"
+        case LambdaErrorKind.CodeStorageExceededException:
+            return "CodeStorageExceededException"
+        case LambdaErrorKind.CodeVerificationFailedException:
+            return "CodeVerificationFailedException"
+        case LambdaErrorKind.DurableExecutionAlreadyStartedException:
+            return "DurableExecutionAlreadyStartedException"
+        case LambdaErrorKind.EC2AccessDeniedException:
+            return "EC2AccessDeniedException"
+        case LambdaErrorKind.EC2ThrottledException:
+            return "EC2ThrottledException"
+        case LambdaErrorKind.EC2UnexpectedException:
+            return "EC2UnexpectedException"
+        case LambdaErrorKind.EFSIOException:
+            return "EFSIOException"
+        case LambdaErrorKind.EFSMountConnectivityException:
+            return "EFSMountConnectivityException"
+        case LambdaErrorKind.EFSMountFailureException:
+            return "EFSMountFailureException"
+        case LambdaErrorKind.EFSMountTimeoutException:
+            return "EFSMountTimeoutException"
+        case LambdaErrorKind.ENILimitReachedException:
+            return "ENILimitReachedException"
+        case LambdaErrorKind.ENINotReadyException:
+            return "ENINotReadyException"
+        case LambdaErrorKind.FunctionVersionsPerCapacityProviderLimitExceededException:
+            return "FunctionVersionsPerCapacityProviderLimitExceededException"
+        case LambdaErrorKind.InvalidCodeSignatureException:
+            return "InvalidCodeSignatureException"
+        case LambdaErrorKind.InvalidParameterValueException:
+            return "InvalidParameterValueException"
+        case LambdaErrorKind.InvalidRequestContentException:
+            return "InvalidRequestContentException"
+        case LambdaErrorKind.InvalidRuntimeException:
+            return "InvalidRuntimeException"
+        case LambdaErrorKind.InvalidSecurityGroupIDException:
+            return "InvalidSecurityGroupIDException"
+        case LambdaErrorKind.InvalidSubnetIDException:
+            return "InvalidSubnetIDException"
+        case LambdaErrorKind.InvalidZipFileException:
+            return "InvalidZipFileException"
+        case LambdaErrorKind.KMSAccessDeniedException:
+            return "KMSAccessDeniedException"
+        case LambdaErrorKind.KMSDisabledException:
+            return "KMSDisabledException"
+        case LambdaErrorKind.KMSInvalidStateException:
+            return "KMSInvalidStateException"
+        case LambdaErrorKind.KMSNotFoundException:
+            return "KMSNotFoundException"
+        case LambdaErrorKind.ModeNotSupportedException:
+            return "ModeNotSupportedException"
+        case LambdaErrorKind.NoPublishedVersionException:
+            return "NoPublishedVersionException"
+        case LambdaErrorKind.PolicyLengthExceededException:
+            return "PolicyLengthExceededException"
+        case LambdaErrorKind.PreconditionFailedException:
+            return "PreconditionFailedException"
+        case LambdaErrorKind.ProvisionedConcurrencyConfigNotFoundException:
+            return "ProvisionedConcurrencyConfigNotFoundException"
+        case LambdaErrorKind.PublicPolicyException:
+            return "PublicPolicyException"
+        case LambdaErrorKind.RecursiveInvocationException:
+            return "RecursiveInvocationException"
+        case LambdaErrorKind.RequestTooLargeException:
+            return "RequestTooLargeException"
+        case LambdaErrorKind.ResourceConflictException:
+            return "ResourceConflictException"
+        case LambdaErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case LambdaErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case LambdaErrorKind.ResourceNotReadyException:
+            return "ResourceNotReadyException"
+        case LambdaErrorKind.S3FilesMountConnectivityException:
+            return "S3FilesMountConnectivityException"
+        case LambdaErrorKind.S3FilesMountFailureException:
+            return "S3FilesMountFailureException"
+        case LambdaErrorKind.S3FilesMountTimeoutException:
+            return "S3FilesMountTimeoutException"
+        case LambdaErrorKind.SerializedRequestEntityTooLargeException:
+            return "SerializedRequestEntityTooLargeException"
+        case LambdaErrorKind.ServiceException:
+            return "ServiceException"
+        case LambdaErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case LambdaErrorKind.SnapStartException:
+            return "SnapStartException"
+        case LambdaErrorKind.SnapStartNotReadyException:
+            return "SnapStartNotReadyException"
+        case LambdaErrorKind.SnapStartRegenerationFailureException:
+            return "SnapStartRegenerationFailureException"
+        case LambdaErrorKind.SnapStartTimeoutException:
+            return "SnapStartTimeoutException"
+        case LambdaErrorKind.SubnetIPAddressLimitReachedException:
+            return "SubnetIPAddressLimitReachedException"
+        case LambdaErrorKind.TooManyRequestsException:
+            return "TooManyRequestsException"
+        case LambdaErrorKind.UnsupportedMediaTypeException:
+            return "UnsupportedMediaTypeException"
+        case LambdaErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

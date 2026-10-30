@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.0 (targetPrefix DynamoDB_20120810)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import base64
@@ -2448,9 +2450,16 @@ struct WriteRequest:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by dynamodb_error_from_code.
-enum DynamoDBError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum DynamoDBErrorKind:
     BackupInUseException
     BackupNotFoundException
     ConditionalCheckFailedException
@@ -2487,77 +2496,159 @@ enum DynamoDBError:
     TransactionInProgressException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def dynamodb_error_from_code(str code) -> DynamoDBError:
-    if code == "BackupInUseException":
-        return DynamoDBError.BackupInUseException
-    if code == "BackupNotFoundException":
-        return DynamoDBError.BackupNotFoundException
-    if code == "ConditionalCheckFailedException":
-        return DynamoDBError.ConditionalCheckFailedException
-    if code == "ContinuousBackupsUnavailableException":
-        return DynamoDBError.ContinuousBackupsUnavailableException
-    if code == "DuplicateItemException":
-        return DynamoDBError.DuplicateItemException
-    if code == "ExportConflictException":
-        return DynamoDBError.ExportConflictException
-    if code == "ExportNotFoundException":
-        return DynamoDBError.ExportNotFoundException
-    if code == "GlobalTableAlreadyExistsException":
-        return DynamoDBError.GlobalTableAlreadyExistsException
-    if code == "GlobalTableNotFoundException":
-        return DynamoDBError.GlobalTableNotFoundException
-    if code == "IdempotentParameterMismatchException":
-        return DynamoDBError.IdempotentParameterMismatchException
-    if code == "ImportConflictException":
-        return DynamoDBError.ImportConflictException
-    if code == "ImportNotFoundException":
-        return DynamoDBError.ImportNotFoundException
-    if code == "IndexNotFoundException":
-        return DynamoDBError.IndexNotFoundException
-    if code == "InternalServerError":
-        return DynamoDBError.InternalServerError
-    if code == "InvalidExportTimeException":
-        return DynamoDBError.InvalidExportTimeException
-    if code == "InvalidRestoreTimeException":
-        return DynamoDBError.InvalidRestoreTimeException
-    if code == "ItemCollectionSizeLimitExceededException":
-        return DynamoDBError.ItemCollectionSizeLimitExceededException
-    if code == "LimitExceededException":
-        return DynamoDBError.LimitExceededException
-    if code == "PointInTimeRecoveryUnavailableException":
-        return DynamoDBError.PointInTimeRecoveryUnavailableException
-    if code == "PolicyNotFoundException":
-        return DynamoDBError.PolicyNotFoundException
-    if code == "ProvisionedThroughputExceededException":
-        return DynamoDBError.ProvisionedThroughputExceededException
-    if code == "ReplicaAlreadyExistsException":
-        return DynamoDBError.ReplicaAlreadyExistsException
-    if code == "ReplicaNotFoundException":
-        return DynamoDBError.ReplicaNotFoundException
-    if code == "ReplicatedWriteConflictException":
-        return DynamoDBError.ReplicatedWriteConflictException
-    if code == "RequestLimitExceeded":
-        return DynamoDBError.RequestLimitExceeded
-    if code == "ResourceInUseException":
-        return DynamoDBError.ResourceInUseException
-    if code == "ResourceNotFoundException":
-        return DynamoDBError.ResourceNotFoundException
-    if code == "TableAlreadyExistsException":
-        return DynamoDBError.TableAlreadyExistsException
-    if code == "TableInUseException":
-        return DynamoDBError.TableInUseException
-    if code == "TableNotFoundException":
-        return DynamoDBError.TableNotFoundException
-    if code == "ThrottlingException":
-        return DynamoDBError.ThrottlingException
-    if code == "TransactionCanceledException":
-        return DynamoDBError.TransactionCanceledException
-    if code == "TransactionConflictException":
-        return DynamoDBError.TransactionConflictException
-    if code == "TransactionInProgressException":
-        return DynamoDBError.TransactionInProgressException
-    return DynamoDBError.Unknown(code=code)
+# Classify an AWS error code into `DynamoDBErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def dynamodb_error_kind(str code) -> DynamoDBErrorKind:
+    auto name = errors.error_code(code)
+    if name == "BackupInUseException":
+        return DynamoDBErrorKind.BackupInUseException
+    if name == "BackupNotFoundException":
+        return DynamoDBErrorKind.BackupNotFoundException
+    if name == "ConditionalCheckFailedException":
+        return DynamoDBErrorKind.ConditionalCheckFailedException
+    if name == "ContinuousBackupsUnavailableException":
+        return DynamoDBErrorKind.ContinuousBackupsUnavailableException
+    if name == "DuplicateItemException":
+        return DynamoDBErrorKind.DuplicateItemException
+    if name == "ExportConflictException":
+        return DynamoDBErrorKind.ExportConflictException
+    if name == "ExportNotFoundException":
+        return DynamoDBErrorKind.ExportNotFoundException
+    if name == "GlobalTableAlreadyExistsException":
+        return DynamoDBErrorKind.GlobalTableAlreadyExistsException
+    if name == "GlobalTableNotFoundException":
+        return DynamoDBErrorKind.GlobalTableNotFoundException
+    if name == "IdempotentParameterMismatchException":
+        return DynamoDBErrorKind.IdempotentParameterMismatchException
+    if name == "ImportConflictException":
+        return DynamoDBErrorKind.ImportConflictException
+    if name == "ImportNotFoundException":
+        return DynamoDBErrorKind.ImportNotFoundException
+    if name == "IndexNotFoundException":
+        return DynamoDBErrorKind.IndexNotFoundException
+    if name == "InternalServerError":
+        return DynamoDBErrorKind.InternalServerError
+    if name == "InvalidExportTimeException":
+        return DynamoDBErrorKind.InvalidExportTimeException
+    if name == "InvalidRestoreTimeException":
+        return DynamoDBErrorKind.InvalidRestoreTimeException
+    if name == "ItemCollectionSizeLimitExceededException":
+        return DynamoDBErrorKind.ItemCollectionSizeLimitExceededException
+    if name == "LimitExceededException":
+        return DynamoDBErrorKind.LimitExceededException
+    if name == "PointInTimeRecoveryUnavailableException":
+        return DynamoDBErrorKind.PointInTimeRecoveryUnavailableException
+    if name == "PolicyNotFoundException":
+        return DynamoDBErrorKind.PolicyNotFoundException
+    if name == "ProvisionedThroughputExceededException":
+        return DynamoDBErrorKind.ProvisionedThroughputExceededException
+    if name == "ReplicaAlreadyExistsException":
+        return DynamoDBErrorKind.ReplicaAlreadyExistsException
+    if name == "ReplicaNotFoundException":
+        return DynamoDBErrorKind.ReplicaNotFoundException
+    if name == "ReplicatedWriteConflictException":
+        return DynamoDBErrorKind.ReplicatedWriteConflictException
+    if name == "RequestLimitExceeded":
+        return DynamoDBErrorKind.RequestLimitExceeded
+    if name == "ResourceInUseException":
+        return DynamoDBErrorKind.ResourceInUseException
+    if name == "ResourceNotFoundException":
+        return DynamoDBErrorKind.ResourceNotFoundException
+    if name == "TableAlreadyExistsException":
+        return DynamoDBErrorKind.TableAlreadyExistsException
+    if name == "TableInUseException":
+        return DynamoDBErrorKind.TableInUseException
+    if name == "TableNotFoundException":
+        return DynamoDBErrorKind.TableNotFoundException
+    if name == "ThrottlingException":
+        return DynamoDBErrorKind.ThrottlingException
+    if name == "TransactionCanceledException":
+        return DynamoDBErrorKind.TransactionCanceledException
+    if name == "TransactionConflictException":
+        return DynamoDBErrorKind.TransactionConflictException
+    if name == "TransactionInProgressException":
+        return DynamoDBErrorKind.TransactionInProgressException
+    return DynamoDBErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def dynamodb_error_name(DynamoDBErrorKind k) -> str:
+    match k:
+        case DynamoDBErrorKind.BackupInUseException:
+            return "BackupInUseException"
+        case DynamoDBErrorKind.BackupNotFoundException:
+            return "BackupNotFoundException"
+        case DynamoDBErrorKind.ConditionalCheckFailedException:
+            return "ConditionalCheckFailedException"
+        case DynamoDBErrorKind.ContinuousBackupsUnavailableException:
+            return "ContinuousBackupsUnavailableException"
+        case DynamoDBErrorKind.DuplicateItemException:
+            return "DuplicateItemException"
+        case DynamoDBErrorKind.ExportConflictException:
+            return "ExportConflictException"
+        case DynamoDBErrorKind.ExportNotFoundException:
+            return "ExportNotFoundException"
+        case DynamoDBErrorKind.GlobalTableAlreadyExistsException:
+            return "GlobalTableAlreadyExistsException"
+        case DynamoDBErrorKind.GlobalTableNotFoundException:
+            return "GlobalTableNotFoundException"
+        case DynamoDBErrorKind.IdempotentParameterMismatchException:
+            return "IdempotentParameterMismatchException"
+        case DynamoDBErrorKind.ImportConflictException:
+            return "ImportConflictException"
+        case DynamoDBErrorKind.ImportNotFoundException:
+            return "ImportNotFoundException"
+        case DynamoDBErrorKind.IndexNotFoundException:
+            return "IndexNotFoundException"
+        case DynamoDBErrorKind.InternalServerError:
+            return "InternalServerError"
+        case DynamoDBErrorKind.InvalidExportTimeException:
+            return "InvalidExportTimeException"
+        case DynamoDBErrorKind.InvalidRestoreTimeException:
+            return "InvalidRestoreTimeException"
+        case DynamoDBErrorKind.ItemCollectionSizeLimitExceededException:
+            return "ItemCollectionSizeLimitExceededException"
+        case DynamoDBErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case DynamoDBErrorKind.PointInTimeRecoveryUnavailableException:
+            return "PointInTimeRecoveryUnavailableException"
+        case DynamoDBErrorKind.PolicyNotFoundException:
+            return "PolicyNotFoundException"
+        case DynamoDBErrorKind.ProvisionedThroughputExceededException:
+            return "ProvisionedThroughputExceededException"
+        case DynamoDBErrorKind.ReplicaAlreadyExistsException:
+            return "ReplicaAlreadyExistsException"
+        case DynamoDBErrorKind.ReplicaNotFoundException:
+            return "ReplicaNotFoundException"
+        case DynamoDBErrorKind.ReplicatedWriteConflictException:
+            return "ReplicatedWriteConflictException"
+        case DynamoDBErrorKind.RequestLimitExceeded:
+            return "RequestLimitExceeded"
+        case DynamoDBErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case DynamoDBErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case DynamoDBErrorKind.TableAlreadyExistsException:
+            return "TableAlreadyExistsException"
+        case DynamoDBErrorKind.TableInUseException:
+            return "TableInUseException"
+        case DynamoDBErrorKind.TableNotFoundException:
+            return "TableNotFoundException"
+        case DynamoDBErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case DynamoDBErrorKind.TransactionCanceledException:
+            return "TransactionCanceledException"
+        case DynamoDBErrorKind.TransactionConflictException:
+            return "TransactionConflictException"
+        case DynamoDBErrorKind.TransactionInProgressException:
+            return "TransactionInProgressException"
+        case DynamoDBErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

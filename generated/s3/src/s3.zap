@@ -6,8 +6,8 @@
 # Protocol: rest-xml (SigV4 service s3)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restxml) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restxml) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and an
 # httpPayload structure is serialized as the XML document body.
@@ -27,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restxml
@@ -3157,9 +3158,16 @@ struct WriteGetObjectResponseRequest:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# rest-xml `<Error><Code>` element code by s3_error_from_code.
-enum S3Error:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the rest-xml `<Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum S3ErrorKind:
     AccessDenied
     AnnotationLimitExceeded
     AnnotationNameTooLong
@@ -3182,50 +3190,103 @@ enum S3Error:
     UnsupportedMediaType
     Unknown(str code)
 
-# Map a rest-xml error code (the <Error><Code> text from rest_xml_error_code)
-# to a variant.
-def s3_error_from_code(str code) -> S3Error:
-    if code == "AccessDenied":
-        return S3Error.AccessDenied
-    if code == "AnnotationLimitExceeded":
-        return S3Error.AnnotationLimitExceeded
-    if code == "AnnotationNameTooLong":
-        return S3Error.AnnotationNameTooLong
-    if code == "BucketAlreadyExists":
-        return S3Error.BucketAlreadyExists
-    if code == "BucketAlreadyOwnedByYou":
-        return S3Error.BucketAlreadyOwnedByYou
-    if code == "EncryptionTypeMismatch":
-        return S3Error.EncryptionTypeMismatch
-    if code == "IdempotencyParameterMismatch":
-        return S3Error.IdempotencyParameterMismatch
-    if code == "InvalidAnnotationName":
-        return S3Error.InvalidAnnotationName
-    if code == "InvalidObjectState":
-        return S3Error.InvalidObjectState
-    if code == "InvalidPrefix":
-        return S3Error.InvalidPrefix
-    if code == "InvalidRequest":
-        return S3Error.InvalidRequest
-    if code == "InvalidWriteOffset":
-        return S3Error.InvalidWriteOffset
-    if code == "NoSuchAnnotation":
-        return S3Error.NoSuchAnnotation
-    if code == "NoSuchBucket":
-        return S3Error.NoSuchBucket
-    if code == "NoSuchKey":
-        return S3Error.NoSuchKey
-    if code == "NoSuchUpload":
-        return S3Error.NoSuchUpload
-    if code == "ObjectAlreadyInActiveTierError":
-        return S3Error.ObjectAlreadyInActiveTierError
-    if code == "ObjectNotInActiveTierError":
-        return S3Error.ObjectNotInActiveTierError
-    if code == "TooManyParts":
-        return S3Error.TooManyParts
-    if code == "UnsupportedMediaType":
-        return S3Error.UnsupportedMediaType
-    return S3Error.Unknown(code=code)
+# Classify an AWS error code into `S3ErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def s3_error_kind(str code) -> S3ErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDenied":
+        return S3ErrorKind.AccessDenied
+    if name == "AnnotationLimitExceeded":
+        return S3ErrorKind.AnnotationLimitExceeded
+    if name == "AnnotationNameTooLong":
+        return S3ErrorKind.AnnotationNameTooLong
+    if name == "BucketAlreadyExists":
+        return S3ErrorKind.BucketAlreadyExists
+    if name == "BucketAlreadyOwnedByYou":
+        return S3ErrorKind.BucketAlreadyOwnedByYou
+    if name == "EncryptionTypeMismatch":
+        return S3ErrorKind.EncryptionTypeMismatch
+    if name == "IdempotencyParameterMismatch":
+        return S3ErrorKind.IdempotencyParameterMismatch
+    if name == "InvalidAnnotationName":
+        return S3ErrorKind.InvalidAnnotationName
+    if name == "InvalidObjectState":
+        return S3ErrorKind.InvalidObjectState
+    if name == "InvalidPrefix":
+        return S3ErrorKind.InvalidPrefix
+    if name == "InvalidRequest":
+        return S3ErrorKind.InvalidRequest
+    if name == "InvalidWriteOffset":
+        return S3ErrorKind.InvalidWriteOffset
+    if name == "NoSuchAnnotation":
+        return S3ErrorKind.NoSuchAnnotation
+    if name == "NoSuchBucket":
+        return S3ErrorKind.NoSuchBucket
+    if name == "NoSuchKey":
+        return S3ErrorKind.NoSuchKey
+    if name == "NoSuchUpload":
+        return S3ErrorKind.NoSuchUpload
+    if name == "ObjectAlreadyInActiveTierError":
+        return S3ErrorKind.ObjectAlreadyInActiveTierError
+    if name == "ObjectNotInActiveTierError":
+        return S3ErrorKind.ObjectNotInActiveTierError
+    if name == "TooManyParts":
+        return S3ErrorKind.TooManyParts
+    if name == "UnsupportedMediaType":
+        return S3ErrorKind.UnsupportedMediaType
+    return S3ErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def s3_error_name(S3ErrorKind k) -> str:
+    match k:
+        case S3ErrorKind.AccessDenied:
+            return "AccessDenied"
+        case S3ErrorKind.AnnotationLimitExceeded:
+            return "AnnotationLimitExceeded"
+        case S3ErrorKind.AnnotationNameTooLong:
+            return "AnnotationNameTooLong"
+        case S3ErrorKind.BucketAlreadyExists:
+            return "BucketAlreadyExists"
+        case S3ErrorKind.BucketAlreadyOwnedByYou:
+            return "BucketAlreadyOwnedByYou"
+        case S3ErrorKind.EncryptionTypeMismatch:
+            return "EncryptionTypeMismatch"
+        case S3ErrorKind.IdempotencyParameterMismatch:
+            return "IdempotencyParameterMismatch"
+        case S3ErrorKind.InvalidAnnotationName:
+            return "InvalidAnnotationName"
+        case S3ErrorKind.InvalidObjectState:
+            return "InvalidObjectState"
+        case S3ErrorKind.InvalidPrefix:
+            return "InvalidPrefix"
+        case S3ErrorKind.InvalidRequest:
+            return "InvalidRequest"
+        case S3ErrorKind.InvalidWriteOffset:
+            return "InvalidWriteOffset"
+        case S3ErrorKind.NoSuchAnnotation:
+            return "NoSuchAnnotation"
+        case S3ErrorKind.NoSuchBucket:
+            return "NoSuchBucket"
+        case S3ErrorKind.NoSuchKey:
+            return "NoSuchKey"
+        case S3ErrorKind.NoSuchUpload:
+            return "NoSuchUpload"
+        case S3ErrorKind.ObjectAlreadyInActiveTierError:
+            return "ObjectAlreadyInActiveTierError"
+        case S3ErrorKind.ObjectNotInActiveTierError:
+            return "ObjectNotInActiveTierError"
+        case S3ErrorKind.TooManyParts:
+            return "TooManyParts"
+        case S3ErrorKind.UnsupportedMediaType:
+            return "UnsupportedMediaType"
+        case S3ErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

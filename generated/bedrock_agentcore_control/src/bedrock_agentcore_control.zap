@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service bedrock-agentcore)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -7089,9 +7090,16 @@ struct WorkloadIdentityType:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by bedrock_agentcore_control_error_from_code.
-enum Bedrock_AgentCore_ControlError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Bedrock_AgentCore_ControlErrorKind:
     AccessDeniedException
     ConcurrentModificationException
     ConflictException
@@ -7110,42 +7118,87 @@ enum Bedrock_AgentCore_ControlError:
     ValidationException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def bedrock_agentcore_control_error_from_code(str code) -> Bedrock_AgentCore_ControlError:
-    if code == "AccessDeniedException":
-        return Bedrock_AgentCore_ControlError.AccessDeniedException
-    if code == "ConcurrentModificationException":
-        return Bedrock_AgentCore_ControlError.ConcurrentModificationException
-    if code == "ConflictException":
-        return Bedrock_AgentCore_ControlError.ConflictException
-    if code == "DecryptionFailure":
-        return Bedrock_AgentCore_ControlError.DecryptionFailure
-    if code == "EncryptionFailure":
-        return Bedrock_AgentCore_ControlError.EncryptionFailure
-    if code == "InternalServerException":
-        return Bedrock_AgentCore_ControlError.InternalServerException
-    if code == "ResourceLimitExceededException":
-        return Bedrock_AgentCore_ControlError.ResourceLimitExceededException
-    if code == "ResourceNotFoundException":
-        return Bedrock_AgentCore_ControlError.ResourceNotFoundException
-    if code == "RetryableConflictException":
-        return Bedrock_AgentCore_ControlError.RetryableConflictException
-    if code == "ServiceException":
-        return Bedrock_AgentCore_ControlError.ServiceException
-    if code == "ServiceQuotaExceededException":
-        return Bedrock_AgentCore_ControlError.ServiceQuotaExceededException
-    if code == "SubscriptionRequiredException":
-        return Bedrock_AgentCore_ControlError.SubscriptionRequiredException
-    if code == "ThrottledException":
-        return Bedrock_AgentCore_ControlError.ThrottledException
-    if code == "ThrottlingException":
-        return Bedrock_AgentCore_ControlError.ThrottlingException
-    if code == "UnauthorizedException":
-        return Bedrock_AgentCore_ControlError.UnauthorizedException
-    if code == "ValidationException":
-        return Bedrock_AgentCore_ControlError.ValidationException
-    return Bedrock_AgentCore_ControlError.Unknown(code=code)
+# Classify an AWS error code into `Bedrock_AgentCore_ControlErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def bedrock_agentcore_control_error_kind(str code) -> Bedrock_AgentCore_ControlErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return Bedrock_AgentCore_ControlErrorKind.AccessDeniedException
+    if name == "ConcurrentModificationException":
+        return Bedrock_AgentCore_ControlErrorKind.ConcurrentModificationException
+    if name == "ConflictException":
+        return Bedrock_AgentCore_ControlErrorKind.ConflictException
+    if name == "DecryptionFailure":
+        return Bedrock_AgentCore_ControlErrorKind.DecryptionFailure
+    if name == "EncryptionFailure":
+        return Bedrock_AgentCore_ControlErrorKind.EncryptionFailure
+    if name == "InternalServerException":
+        return Bedrock_AgentCore_ControlErrorKind.InternalServerException
+    if name == "ResourceLimitExceededException":
+        return Bedrock_AgentCore_ControlErrorKind.ResourceLimitExceededException
+    if name == "ResourceNotFoundException":
+        return Bedrock_AgentCore_ControlErrorKind.ResourceNotFoundException
+    if name == "RetryableConflictException":
+        return Bedrock_AgentCore_ControlErrorKind.RetryableConflictException
+    if name == "ServiceException":
+        return Bedrock_AgentCore_ControlErrorKind.ServiceException
+    if name == "ServiceQuotaExceededException":
+        return Bedrock_AgentCore_ControlErrorKind.ServiceQuotaExceededException
+    if name == "SubscriptionRequiredException":
+        return Bedrock_AgentCore_ControlErrorKind.SubscriptionRequiredException
+    if name == "ThrottledException":
+        return Bedrock_AgentCore_ControlErrorKind.ThrottledException
+    if name == "ThrottlingException":
+        return Bedrock_AgentCore_ControlErrorKind.ThrottlingException
+    if name == "UnauthorizedException":
+        return Bedrock_AgentCore_ControlErrorKind.UnauthorizedException
+    if name == "ValidationException":
+        return Bedrock_AgentCore_ControlErrorKind.ValidationException
+    return Bedrock_AgentCore_ControlErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def bedrock_agentcore_control_error_name(Bedrock_AgentCore_ControlErrorKind k) -> str:
+    match k:
+        case Bedrock_AgentCore_ControlErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case Bedrock_AgentCore_ControlErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case Bedrock_AgentCore_ControlErrorKind.ConflictException:
+            return "ConflictException"
+        case Bedrock_AgentCore_ControlErrorKind.DecryptionFailure:
+            return "DecryptionFailure"
+        case Bedrock_AgentCore_ControlErrorKind.EncryptionFailure:
+            return "EncryptionFailure"
+        case Bedrock_AgentCore_ControlErrorKind.InternalServerException:
+            return "InternalServerException"
+        case Bedrock_AgentCore_ControlErrorKind.ResourceLimitExceededException:
+            return "ResourceLimitExceededException"
+        case Bedrock_AgentCore_ControlErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case Bedrock_AgentCore_ControlErrorKind.RetryableConflictException:
+            return "RetryableConflictException"
+        case Bedrock_AgentCore_ControlErrorKind.ServiceException:
+            return "ServiceException"
+        case Bedrock_AgentCore_ControlErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case Bedrock_AgentCore_ControlErrorKind.SubscriptionRequiredException:
+            return "SubscriptionRequiredException"
+        case Bedrock_AgentCore_ControlErrorKind.ThrottledException:
+            return "ThrottledException"
+        case Bedrock_AgentCore_ControlErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case Bedrock_AgentCore_ControlErrorKind.UnauthorizedException:
+            return "UnauthorizedException"
+        case Bedrock_AgentCore_ControlErrorKind.ValidationException:
+            return "ValidationException"
+        case Bedrock_AgentCore_ControlErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

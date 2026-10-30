@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service rds-data)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -346,9 +347,16 @@ struct Value:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by rds_data_error_from_code.
-enum RDS_DataError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum RDS_DataErrorKind:
     AccessDeniedException
     BadRequestException
     DatabaseErrorException
@@ -368,44 +376,91 @@ enum RDS_DataError:
     UnsupportedResultException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def rds_data_error_from_code(str code) -> RDS_DataError:
-    if code == "AccessDeniedException":
-        return RDS_DataError.AccessDeniedException
-    if code == "BadRequestException":
-        return RDS_DataError.BadRequestException
-    if code == "DatabaseErrorException":
-        return RDS_DataError.DatabaseErrorException
-    if code == "DatabaseNotFoundException":
-        return RDS_DataError.DatabaseNotFoundException
-    if code == "DatabaseResumingException":
-        return RDS_DataError.DatabaseResumingException
-    if code == "DatabaseUnavailableException":
-        return RDS_DataError.DatabaseUnavailableException
-    if code == "ForbiddenException":
-        return RDS_DataError.ForbiddenException
-    if code == "HttpEndpointNotEnabledException":
-        return RDS_DataError.HttpEndpointNotEnabledException
-    if code == "InternalServerErrorException":
-        return RDS_DataError.InternalServerErrorException
-    if code == "InvalidResourceStateException":
-        return RDS_DataError.InvalidResourceStateException
-    if code == "InvalidSecretException":
-        return RDS_DataError.InvalidSecretException
-    if code == "NotFoundException":
-        return RDS_DataError.NotFoundException
-    if code == "SecretsErrorException":
-        return RDS_DataError.SecretsErrorException
-    if code == "ServiceUnavailableError":
-        return RDS_DataError.ServiceUnavailableError
-    if code == "StatementTimeoutException":
-        return RDS_DataError.StatementTimeoutException
-    if code == "TransactionNotFoundException":
-        return RDS_DataError.TransactionNotFoundException
-    if code == "UnsupportedResultException":
-        return RDS_DataError.UnsupportedResultException
-    return RDS_DataError.Unknown(code=code)
+# Classify an AWS error code into `RDS_DataErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def rds_data_error_kind(str code) -> RDS_DataErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return RDS_DataErrorKind.AccessDeniedException
+    if name == "BadRequestException":
+        return RDS_DataErrorKind.BadRequestException
+    if name == "DatabaseErrorException":
+        return RDS_DataErrorKind.DatabaseErrorException
+    if name == "DatabaseNotFoundException":
+        return RDS_DataErrorKind.DatabaseNotFoundException
+    if name == "DatabaseResumingException":
+        return RDS_DataErrorKind.DatabaseResumingException
+    if name == "DatabaseUnavailableException":
+        return RDS_DataErrorKind.DatabaseUnavailableException
+    if name == "ForbiddenException":
+        return RDS_DataErrorKind.ForbiddenException
+    if name == "HttpEndpointNotEnabledException":
+        return RDS_DataErrorKind.HttpEndpointNotEnabledException
+    if name == "InternalServerErrorException":
+        return RDS_DataErrorKind.InternalServerErrorException
+    if name == "InvalidResourceStateException":
+        return RDS_DataErrorKind.InvalidResourceStateException
+    if name == "InvalidSecretException":
+        return RDS_DataErrorKind.InvalidSecretException
+    if name == "NotFoundException":
+        return RDS_DataErrorKind.NotFoundException
+    if name == "SecretsErrorException":
+        return RDS_DataErrorKind.SecretsErrorException
+    if name == "ServiceUnavailableError":
+        return RDS_DataErrorKind.ServiceUnavailableError
+    if name == "StatementTimeoutException":
+        return RDS_DataErrorKind.StatementTimeoutException
+    if name == "TransactionNotFoundException":
+        return RDS_DataErrorKind.TransactionNotFoundException
+    if name == "UnsupportedResultException":
+        return RDS_DataErrorKind.UnsupportedResultException
+    return RDS_DataErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def rds_data_error_name(RDS_DataErrorKind k) -> str:
+    match k:
+        case RDS_DataErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case RDS_DataErrorKind.BadRequestException:
+            return "BadRequestException"
+        case RDS_DataErrorKind.DatabaseErrorException:
+            return "DatabaseErrorException"
+        case RDS_DataErrorKind.DatabaseNotFoundException:
+            return "DatabaseNotFoundException"
+        case RDS_DataErrorKind.DatabaseResumingException:
+            return "DatabaseResumingException"
+        case RDS_DataErrorKind.DatabaseUnavailableException:
+            return "DatabaseUnavailableException"
+        case RDS_DataErrorKind.ForbiddenException:
+            return "ForbiddenException"
+        case RDS_DataErrorKind.HttpEndpointNotEnabledException:
+            return "HttpEndpointNotEnabledException"
+        case RDS_DataErrorKind.InternalServerErrorException:
+            return "InternalServerErrorException"
+        case RDS_DataErrorKind.InvalidResourceStateException:
+            return "InvalidResourceStateException"
+        case RDS_DataErrorKind.InvalidSecretException:
+            return "InvalidSecretException"
+        case RDS_DataErrorKind.NotFoundException:
+            return "NotFoundException"
+        case RDS_DataErrorKind.SecretsErrorException:
+            return "SecretsErrorException"
+        case RDS_DataErrorKind.ServiceUnavailableError:
+            return "ServiceUnavailableError"
+        case RDS_DataErrorKind.StatementTimeoutException:
+            return "StatementTimeoutException"
+        case RDS_DataErrorKind.TransactionNotFoundException:
+            return "TransactionNotFoundException"
+        case RDS_DataErrorKind.UnsupportedResultException:
+            return "UnsupportedResultException"
+        case RDS_DataErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

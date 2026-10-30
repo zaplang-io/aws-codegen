@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix com.amazonaws.cloudtrail.v20131101.CloudTrail_20131101)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import datetime
@@ -1856,9 +1858,16 @@ struct Widget:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by cloudtrail_error_from_code.
-enum CloudTrailError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum CloudTrailErrorKind:
     AccessDeniedException
     AccountHasOngoingImportException
     AccountNotFoundException
@@ -1947,181 +1956,367 @@ enum CloudTrailError:
     UnsupportedOperationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def cloudtrail_error_from_code(str code) -> CloudTrailError:
-    if code == "AccessDeniedException":
-        return CloudTrailError.AccessDeniedException
-    if code == "AccountHasOngoingImportException":
-        return CloudTrailError.AccountHasOngoingImportException
-    if code == "AccountNotFoundException":
-        return CloudTrailError.AccountNotFoundException
-    if code == "AccountNotRegisteredException":
-        return CloudTrailError.AccountNotRegisteredException
-    if code == "AccountRegisteredException":
-        return CloudTrailError.AccountRegisteredException
-    if code == "CannotDelegateManagementAccountException":
-        return CloudTrailError.CannotDelegateManagementAccountException
-    if code == "ChannelARNInvalidException":
-        return CloudTrailError.ChannelARNInvalidException
-    if code == "ChannelAlreadyExistsException":
-        return CloudTrailError.ChannelAlreadyExistsException
-    if code == "ChannelExistsForEDSException":
-        return CloudTrailError.ChannelExistsForEDSException
-    if code == "ChannelMaxLimitExceededException":
-        return CloudTrailError.ChannelMaxLimitExceededException
-    if code == "ChannelNotFoundException":
-        return CloudTrailError.ChannelNotFoundException
-    if code == "CloudTrailARNInvalidException":
-        return CloudTrailError.CloudTrailARNInvalidException
-    if code == "CloudTrailAccessNotEnabledException":
-        return CloudTrailError.CloudTrailAccessNotEnabledException
-    if code == "CloudTrailInvalidClientTokenIdException":
-        return CloudTrailError.CloudTrailInvalidClientTokenIdException
-    if code == "CloudWatchLogsDeliveryUnavailableException":
-        return CloudTrailError.CloudWatchLogsDeliveryUnavailableException
-    if code == "ConcurrentModificationException":
-        return CloudTrailError.ConcurrentModificationException
-    if code == "ConflictException":
-        return CloudTrailError.ConflictException
-    if code == "DelegatedAdminAccountLimitExceededException":
-        return CloudTrailError.DelegatedAdminAccountLimitExceededException
-    if code == "EventDataStoreARNInvalidException":
-        return CloudTrailError.EventDataStoreARNInvalidException
-    if code == "EventDataStoreAlreadyExistsException":
-        return CloudTrailError.EventDataStoreAlreadyExistsException
-    if code == "EventDataStoreFederationEnabledException":
-        return CloudTrailError.EventDataStoreFederationEnabledException
-    if code == "EventDataStoreHasOngoingImportException":
-        return CloudTrailError.EventDataStoreHasOngoingImportException
-    if code == "EventDataStoreMaxLimitExceededException":
-        return CloudTrailError.EventDataStoreMaxLimitExceededException
-    if code == "EventDataStoreNotFoundException":
-        return CloudTrailError.EventDataStoreNotFoundException
-    if code == "EventDataStoreTerminationProtectedException":
-        return CloudTrailError.EventDataStoreTerminationProtectedException
-    if code == "GenerateResponseException":
-        return CloudTrailError.GenerateResponseException
-    if code == "ImportNotFoundException":
-        return CloudTrailError.ImportNotFoundException
-    if code == "InactiveEventDataStoreException":
-        return CloudTrailError.InactiveEventDataStoreException
-    if code == "InactiveQueryException":
-        return CloudTrailError.InactiveQueryException
-    if code == "InsightNotEnabledException":
-        return CloudTrailError.InsightNotEnabledException
-    if code == "InsufficientDependencyServiceAccessPermissionException":
-        return CloudTrailError.InsufficientDependencyServiceAccessPermissionException
-    if code == "InsufficientEncryptionPolicyException":
-        return CloudTrailError.InsufficientEncryptionPolicyException
-    if code == "InsufficientIAMAccessPermissionException":
-        return CloudTrailError.InsufficientIAMAccessPermissionException
-    if code == "InsufficientS3BucketPolicyException":
-        return CloudTrailError.InsufficientS3BucketPolicyException
-    if code == "InsufficientSnsTopicPolicyException":
-        return CloudTrailError.InsufficientSnsTopicPolicyException
-    if code == "InvalidCloudWatchLogsLogGroupArnException":
-        return CloudTrailError.InvalidCloudWatchLogsLogGroupArnException
-    if code == "InvalidCloudWatchLogsRoleArnException":
-        return CloudTrailError.InvalidCloudWatchLogsRoleArnException
-    if code == "InvalidDateRangeException":
-        return CloudTrailError.InvalidDateRangeException
-    if code == "InvalidEventCategoryException":
-        return CloudTrailError.InvalidEventCategoryException
-    if code == "InvalidEventDataStoreCategoryException":
-        return CloudTrailError.InvalidEventDataStoreCategoryException
-    if code == "InvalidEventDataStoreStatusException":
-        return CloudTrailError.InvalidEventDataStoreStatusException
-    if code == "InvalidEventSelectorsException":
-        return CloudTrailError.InvalidEventSelectorsException
-    if code == "InvalidHomeRegionException":
-        return CloudTrailError.InvalidHomeRegionException
-    if code == "InvalidImportSourceException":
-        return CloudTrailError.InvalidImportSourceException
-    if code == "InvalidInsightSelectorsException":
-        return CloudTrailError.InvalidInsightSelectorsException
-    if code == "InvalidKmsKeyIdException":
-        return CloudTrailError.InvalidKmsKeyIdException
-    if code == "InvalidLookupAttributesException":
-        return CloudTrailError.InvalidLookupAttributesException
-    if code == "InvalidMaxResultsException":
-        return CloudTrailError.InvalidMaxResultsException
-    if code == "InvalidNextTokenException":
-        return CloudTrailError.InvalidNextTokenException
-    if code == "InvalidParameterCombinationException":
-        return CloudTrailError.InvalidParameterCombinationException
-    if code == "InvalidParameterException":
-        return CloudTrailError.InvalidParameterException
-    if code == "InvalidQueryStatementException":
-        return CloudTrailError.InvalidQueryStatementException
-    if code == "InvalidQueryStatusException":
-        return CloudTrailError.InvalidQueryStatusException
-    if code == "InvalidS3BucketNameException":
-        return CloudTrailError.InvalidS3BucketNameException
-    if code == "InvalidS3PrefixException":
-        return CloudTrailError.InvalidS3PrefixException
-    if code == "InvalidSnsTopicNameException":
-        return CloudTrailError.InvalidSnsTopicNameException
-    if code == "InvalidSourceException":
-        return CloudTrailError.InvalidSourceException
-    if code == "InvalidTagParameterException":
-        return CloudTrailError.InvalidTagParameterException
-    if code == "InvalidTimeRangeException":
-        return CloudTrailError.InvalidTimeRangeException
-    if code == "InvalidTokenException":
-        return CloudTrailError.InvalidTokenException
-    if code == "InvalidTrailNameException":
-        return CloudTrailError.InvalidTrailNameException
-    if code == "KmsException":
-        return CloudTrailError.KmsException
-    if code == "KmsKeyDisabledException":
-        return CloudTrailError.KmsKeyDisabledException
-    if code == "KmsKeyNotFoundException":
-        return CloudTrailError.KmsKeyNotFoundException
-    if code == "MaxConcurrentQueriesException":
-        return CloudTrailError.MaxConcurrentQueriesException
-    if code == "MaximumNumberOfTrailsExceededException":
-        return CloudTrailError.MaximumNumberOfTrailsExceededException
-    if code == "NoManagementAccountSLRExistsException":
-        return CloudTrailError.NoManagementAccountSLRExistsException
-    if code == "NotOrganizationManagementAccountException":
-        return CloudTrailError.NotOrganizationManagementAccountException
-    if code == "NotOrganizationMasterAccountException":
-        return CloudTrailError.NotOrganizationMasterAccountException
-    if code == "OperationNotPermittedException":
-        return CloudTrailError.OperationNotPermittedException
-    if code == "OrganizationNotInAllFeaturesModeException":
-        return CloudTrailError.OrganizationNotInAllFeaturesModeException
-    if code == "OrganizationsNotInUseException":
-        return CloudTrailError.OrganizationsNotInUseException
-    if code == "QueryIdNotFoundException":
-        return CloudTrailError.QueryIdNotFoundException
-    if code == "ResourceARNNotValidException":
-        return CloudTrailError.ResourceARNNotValidException
-    if code == "ResourceNotFoundException":
-        return CloudTrailError.ResourceNotFoundException
-    if code == "ResourcePolicyNotFoundException":
-        return CloudTrailError.ResourcePolicyNotFoundException
-    if code == "ResourcePolicyNotValidException":
-        return CloudTrailError.ResourcePolicyNotValidException
-    if code == "ResourceTypeNotSupportedException":
-        return CloudTrailError.ResourceTypeNotSupportedException
-    if code == "S3BucketDoesNotExistException":
-        return CloudTrailError.S3BucketDoesNotExistException
-    if code == "ServiceQuotaExceededException":
-        return CloudTrailError.ServiceQuotaExceededException
-    if code == "TagsLimitExceededException":
-        return CloudTrailError.TagsLimitExceededException
-    if code == "ThrottlingException":
-        return CloudTrailError.ThrottlingException
-    if code == "TrailAlreadyExistsException":
-        return CloudTrailError.TrailAlreadyExistsException
-    if code == "TrailNotFoundException":
-        return CloudTrailError.TrailNotFoundException
-    if code == "TrailNotProvidedException":
-        return CloudTrailError.TrailNotProvidedException
-    if code == "UnsupportedOperationException":
-        return CloudTrailError.UnsupportedOperationException
-    return CloudTrailError.Unknown(code=code)
+# Classify an AWS error code into `CloudTrailErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def cloudtrail_error_kind(str code) -> CloudTrailErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return CloudTrailErrorKind.AccessDeniedException
+    if name == "AccountHasOngoingImportException":
+        return CloudTrailErrorKind.AccountHasOngoingImportException
+    if name == "AccountNotFoundException":
+        return CloudTrailErrorKind.AccountNotFoundException
+    if name == "AccountNotRegisteredException":
+        return CloudTrailErrorKind.AccountNotRegisteredException
+    if name == "AccountRegisteredException":
+        return CloudTrailErrorKind.AccountRegisteredException
+    if name == "CannotDelegateManagementAccountException":
+        return CloudTrailErrorKind.CannotDelegateManagementAccountException
+    if name == "ChannelARNInvalidException":
+        return CloudTrailErrorKind.ChannelARNInvalidException
+    if name == "ChannelAlreadyExistsException":
+        return CloudTrailErrorKind.ChannelAlreadyExistsException
+    if name == "ChannelExistsForEDSException":
+        return CloudTrailErrorKind.ChannelExistsForEDSException
+    if name == "ChannelMaxLimitExceededException":
+        return CloudTrailErrorKind.ChannelMaxLimitExceededException
+    if name == "ChannelNotFoundException":
+        return CloudTrailErrorKind.ChannelNotFoundException
+    if name == "CloudTrailARNInvalidException":
+        return CloudTrailErrorKind.CloudTrailARNInvalidException
+    if name == "CloudTrailAccessNotEnabledException":
+        return CloudTrailErrorKind.CloudTrailAccessNotEnabledException
+    if name == "CloudTrailInvalidClientTokenIdException":
+        return CloudTrailErrorKind.CloudTrailInvalidClientTokenIdException
+    if name == "CloudWatchLogsDeliveryUnavailableException":
+        return CloudTrailErrorKind.CloudWatchLogsDeliveryUnavailableException
+    if name == "ConcurrentModificationException":
+        return CloudTrailErrorKind.ConcurrentModificationException
+    if name == "ConflictException":
+        return CloudTrailErrorKind.ConflictException
+    if name == "DelegatedAdminAccountLimitExceededException":
+        return CloudTrailErrorKind.DelegatedAdminAccountLimitExceededException
+    if name == "EventDataStoreARNInvalidException":
+        return CloudTrailErrorKind.EventDataStoreARNInvalidException
+    if name == "EventDataStoreAlreadyExistsException":
+        return CloudTrailErrorKind.EventDataStoreAlreadyExistsException
+    if name == "EventDataStoreFederationEnabledException":
+        return CloudTrailErrorKind.EventDataStoreFederationEnabledException
+    if name == "EventDataStoreHasOngoingImportException":
+        return CloudTrailErrorKind.EventDataStoreHasOngoingImportException
+    if name == "EventDataStoreMaxLimitExceededException":
+        return CloudTrailErrorKind.EventDataStoreMaxLimitExceededException
+    if name == "EventDataStoreNotFoundException":
+        return CloudTrailErrorKind.EventDataStoreNotFoundException
+    if name == "EventDataStoreTerminationProtectedException":
+        return CloudTrailErrorKind.EventDataStoreTerminationProtectedException
+    if name == "GenerateResponseException":
+        return CloudTrailErrorKind.GenerateResponseException
+    if name == "ImportNotFoundException":
+        return CloudTrailErrorKind.ImportNotFoundException
+    if name == "InactiveEventDataStoreException":
+        return CloudTrailErrorKind.InactiveEventDataStoreException
+    if name == "InactiveQueryException":
+        return CloudTrailErrorKind.InactiveQueryException
+    if name == "InsightNotEnabledException":
+        return CloudTrailErrorKind.InsightNotEnabledException
+    if name == "InsufficientDependencyServiceAccessPermissionException":
+        return CloudTrailErrorKind.InsufficientDependencyServiceAccessPermissionException
+    if name == "InsufficientEncryptionPolicyException":
+        return CloudTrailErrorKind.InsufficientEncryptionPolicyException
+    if name == "InsufficientIAMAccessPermissionException":
+        return CloudTrailErrorKind.InsufficientIAMAccessPermissionException
+    if name == "InsufficientS3BucketPolicyException":
+        return CloudTrailErrorKind.InsufficientS3BucketPolicyException
+    if name == "InsufficientSnsTopicPolicyException":
+        return CloudTrailErrorKind.InsufficientSnsTopicPolicyException
+    if name == "InvalidCloudWatchLogsLogGroupArnException":
+        return CloudTrailErrorKind.InvalidCloudWatchLogsLogGroupArnException
+    if name == "InvalidCloudWatchLogsRoleArnException":
+        return CloudTrailErrorKind.InvalidCloudWatchLogsRoleArnException
+    if name == "InvalidDateRangeException":
+        return CloudTrailErrorKind.InvalidDateRangeException
+    if name == "InvalidEventCategoryException":
+        return CloudTrailErrorKind.InvalidEventCategoryException
+    if name == "InvalidEventDataStoreCategoryException":
+        return CloudTrailErrorKind.InvalidEventDataStoreCategoryException
+    if name == "InvalidEventDataStoreStatusException":
+        return CloudTrailErrorKind.InvalidEventDataStoreStatusException
+    if name == "InvalidEventSelectorsException":
+        return CloudTrailErrorKind.InvalidEventSelectorsException
+    if name == "InvalidHomeRegionException":
+        return CloudTrailErrorKind.InvalidHomeRegionException
+    if name == "InvalidImportSourceException":
+        return CloudTrailErrorKind.InvalidImportSourceException
+    if name == "InvalidInsightSelectorsException":
+        return CloudTrailErrorKind.InvalidInsightSelectorsException
+    if name == "InvalidKmsKeyIdException":
+        return CloudTrailErrorKind.InvalidKmsKeyIdException
+    if name == "InvalidLookupAttributesException":
+        return CloudTrailErrorKind.InvalidLookupAttributesException
+    if name == "InvalidMaxResultsException":
+        return CloudTrailErrorKind.InvalidMaxResultsException
+    if name == "InvalidNextTokenException":
+        return CloudTrailErrorKind.InvalidNextTokenException
+    if name == "InvalidParameterCombinationException":
+        return CloudTrailErrorKind.InvalidParameterCombinationException
+    if name == "InvalidParameterException":
+        return CloudTrailErrorKind.InvalidParameterException
+    if name == "InvalidQueryStatementException":
+        return CloudTrailErrorKind.InvalidQueryStatementException
+    if name == "InvalidQueryStatusException":
+        return CloudTrailErrorKind.InvalidQueryStatusException
+    if name == "InvalidS3BucketNameException":
+        return CloudTrailErrorKind.InvalidS3BucketNameException
+    if name == "InvalidS3PrefixException":
+        return CloudTrailErrorKind.InvalidS3PrefixException
+    if name == "InvalidSnsTopicNameException":
+        return CloudTrailErrorKind.InvalidSnsTopicNameException
+    if name == "InvalidSourceException":
+        return CloudTrailErrorKind.InvalidSourceException
+    if name == "InvalidTagParameterException":
+        return CloudTrailErrorKind.InvalidTagParameterException
+    if name == "InvalidTimeRangeException":
+        return CloudTrailErrorKind.InvalidTimeRangeException
+    if name == "InvalidTokenException":
+        return CloudTrailErrorKind.InvalidTokenException
+    if name == "InvalidTrailNameException":
+        return CloudTrailErrorKind.InvalidTrailNameException
+    if name == "KmsException":
+        return CloudTrailErrorKind.KmsException
+    if name == "KmsKeyDisabledException":
+        return CloudTrailErrorKind.KmsKeyDisabledException
+    if name == "KmsKeyNotFoundException":
+        return CloudTrailErrorKind.KmsKeyNotFoundException
+    if name == "MaxConcurrentQueriesException":
+        return CloudTrailErrorKind.MaxConcurrentQueriesException
+    if name == "MaximumNumberOfTrailsExceededException":
+        return CloudTrailErrorKind.MaximumNumberOfTrailsExceededException
+    if name == "NoManagementAccountSLRExistsException":
+        return CloudTrailErrorKind.NoManagementAccountSLRExistsException
+    if name == "NotOrganizationManagementAccountException":
+        return CloudTrailErrorKind.NotOrganizationManagementAccountException
+    if name == "NotOrganizationMasterAccountException":
+        return CloudTrailErrorKind.NotOrganizationMasterAccountException
+    if name == "OperationNotPermittedException":
+        return CloudTrailErrorKind.OperationNotPermittedException
+    if name == "OrganizationNotInAllFeaturesModeException":
+        return CloudTrailErrorKind.OrganizationNotInAllFeaturesModeException
+    if name == "OrganizationsNotInUseException":
+        return CloudTrailErrorKind.OrganizationsNotInUseException
+    if name == "QueryIdNotFoundException":
+        return CloudTrailErrorKind.QueryIdNotFoundException
+    if name == "ResourceARNNotValidException":
+        return CloudTrailErrorKind.ResourceARNNotValidException
+    if name == "ResourceNotFoundException":
+        return CloudTrailErrorKind.ResourceNotFoundException
+    if name == "ResourcePolicyNotFoundException":
+        return CloudTrailErrorKind.ResourcePolicyNotFoundException
+    if name == "ResourcePolicyNotValidException":
+        return CloudTrailErrorKind.ResourcePolicyNotValidException
+    if name == "ResourceTypeNotSupportedException":
+        return CloudTrailErrorKind.ResourceTypeNotSupportedException
+    if name == "S3BucketDoesNotExistException":
+        return CloudTrailErrorKind.S3BucketDoesNotExistException
+    if name == "ServiceQuotaExceededException":
+        return CloudTrailErrorKind.ServiceQuotaExceededException
+    if name == "TagsLimitExceededException":
+        return CloudTrailErrorKind.TagsLimitExceededException
+    if name == "ThrottlingException":
+        return CloudTrailErrorKind.ThrottlingException
+    if name == "TrailAlreadyExistsException":
+        return CloudTrailErrorKind.TrailAlreadyExistsException
+    if name == "TrailNotFoundException":
+        return CloudTrailErrorKind.TrailNotFoundException
+    if name == "TrailNotProvidedException":
+        return CloudTrailErrorKind.TrailNotProvidedException
+    if name == "UnsupportedOperationException":
+        return CloudTrailErrorKind.UnsupportedOperationException
+    return CloudTrailErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def cloudtrail_error_name(CloudTrailErrorKind k) -> str:
+    match k:
+        case CloudTrailErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case CloudTrailErrorKind.AccountHasOngoingImportException:
+            return "AccountHasOngoingImportException"
+        case CloudTrailErrorKind.AccountNotFoundException:
+            return "AccountNotFoundException"
+        case CloudTrailErrorKind.AccountNotRegisteredException:
+            return "AccountNotRegisteredException"
+        case CloudTrailErrorKind.AccountRegisteredException:
+            return "AccountRegisteredException"
+        case CloudTrailErrorKind.CannotDelegateManagementAccountException:
+            return "CannotDelegateManagementAccountException"
+        case CloudTrailErrorKind.ChannelARNInvalidException:
+            return "ChannelARNInvalidException"
+        case CloudTrailErrorKind.ChannelAlreadyExistsException:
+            return "ChannelAlreadyExistsException"
+        case CloudTrailErrorKind.ChannelExistsForEDSException:
+            return "ChannelExistsForEDSException"
+        case CloudTrailErrorKind.ChannelMaxLimitExceededException:
+            return "ChannelMaxLimitExceededException"
+        case CloudTrailErrorKind.ChannelNotFoundException:
+            return "ChannelNotFoundException"
+        case CloudTrailErrorKind.CloudTrailARNInvalidException:
+            return "CloudTrailARNInvalidException"
+        case CloudTrailErrorKind.CloudTrailAccessNotEnabledException:
+            return "CloudTrailAccessNotEnabledException"
+        case CloudTrailErrorKind.CloudTrailInvalidClientTokenIdException:
+            return "CloudTrailInvalidClientTokenIdException"
+        case CloudTrailErrorKind.CloudWatchLogsDeliveryUnavailableException:
+            return "CloudWatchLogsDeliveryUnavailableException"
+        case CloudTrailErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case CloudTrailErrorKind.ConflictException:
+            return "ConflictException"
+        case CloudTrailErrorKind.DelegatedAdminAccountLimitExceededException:
+            return "DelegatedAdminAccountLimitExceededException"
+        case CloudTrailErrorKind.EventDataStoreARNInvalidException:
+            return "EventDataStoreARNInvalidException"
+        case CloudTrailErrorKind.EventDataStoreAlreadyExistsException:
+            return "EventDataStoreAlreadyExistsException"
+        case CloudTrailErrorKind.EventDataStoreFederationEnabledException:
+            return "EventDataStoreFederationEnabledException"
+        case CloudTrailErrorKind.EventDataStoreHasOngoingImportException:
+            return "EventDataStoreHasOngoingImportException"
+        case CloudTrailErrorKind.EventDataStoreMaxLimitExceededException:
+            return "EventDataStoreMaxLimitExceededException"
+        case CloudTrailErrorKind.EventDataStoreNotFoundException:
+            return "EventDataStoreNotFoundException"
+        case CloudTrailErrorKind.EventDataStoreTerminationProtectedException:
+            return "EventDataStoreTerminationProtectedException"
+        case CloudTrailErrorKind.GenerateResponseException:
+            return "GenerateResponseException"
+        case CloudTrailErrorKind.ImportNotFoundException:
+            return "ImportNotFoundException"
+        case CloudTrailErrorKind.InactiveEventDataStoreException:
+            return "InactiveEventDataStoreException"
+        case CloudTrailErrorKind.InactiveQueryException:
+            return "InactiveQueryException"
+        case CloudTrailErrorKind.InsightNotEnabledException:
+            return "InsightNotEnabledException"
+        case CloudTrailErrorKind.InsufficientDependencyServiceAccessPermissionException:
+            return "InsufficientDependencyServiceAccessPermissionException"
+        case CloudTrailErrorKind.InsufficientEncryptionPolicyException:
+            return "InsufficientEncryptionPolicyException"
+        case CloudTrailErrorKind.InsufficientIAMAccessPermissionException:
+            return "InsufficientIAMAccessPermissionException"
+        case CloudTrailErrorKind.InsufficientS3BucketPolicyException:
+            return "InsufficientS3BucketPolicyException"
+        case CloudTrailErrorKind.InsufficientSnsTopicPolicyException:
+            return "InsufficientSnsTopicPolicyException"
+        case CloudTrailErrorKind.InvalidCloudWatchLogsLogGroupArnException:
+            return "InvalidCloudWatchLogsLogGroupArnException"
+        case CloudTrailErrorKind.InvalidCloudWatchLogsRoleArnException:
+            return "InvalidCloudWatchLogsRoleArnException"
+        case CloudTrailErrorKind.InvalidDateRangeException:
+            return "InvalidDateRangeException"
+        case CloudTrailErrorKind.InvalidEventCategoryException:
+            return "InvalidEventCategoryException"
+        case CloudTrailErrorKind.InvalidEventDataStoreCategoryException:
+            return "InvalidEventDataStoreCategoryException"
+        case CloudTrailErrorKind.InvalidEventDataStoreStatusException:
+            return "InvalidEventDataStoreStatusException"
+        case CloudTrailErrorKind.InvalidEventSelectorsException:
+            return "InvalidEventSelectorsException"
+        case CloudTrailErrorKind.InvalidHomeRegionException:
+            return "InvalidHomeRegionException"
+        case CloudTrailErrorKind.InvalidImportSourceException:
+            return "InvalidImportSourceException"
+        case CloudTrailErrorKind.InvalidInsightSelectorsException:
+            return "InvalidInsightSelectorsException"
+        case CloudTrailErrorKind.InvalidKmsKeyIdException:
+            return "InvalidKmsKeyIdException"
+        case CloudTrailErrorKind.InvalidLookupAttributesException:
+            return "InvalidLookupAttributesException"
+        case CloudTrailErrorKind.InvalidMaxResultsException:
+            return "InvalidMaxResultsException"
+        case CloudTrailErrorKind.InvalidNextTokenException:
+            return "InvalidNextTokenException"
+        case CloudTrailErrorKind.InvalidParameterCombinationException:
+            return "InvalidParameterCombinationException"
+        case CloudTrailErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case CloudTrailErrorKind.InvalidQueryStatementException:
+            return "InvalidQueryStatementException"
+        case CloudTrailErrorKind.InvalidQueryStatusException:
+            return "InvalidQueryStatusException"
+        case CloudTrailErrorKind.InvalidS3BucketNameException:
+            return "InvalidS3BucketNameException"
+        case CloudTrailErrorKind.InvalidS3PrefixException:
+            return "InvalidS3PrefixException"
+        case CloudTrailErrorKind.InvalidSnsTopicNameException:
+            return "InvalidSnsTopicNameException"
+        case CloudTrailErrorKind.InvalidSourceException:
+            return "InvalidSourceException"
+        case CloudTrailErrorKind.InvalidTagParameterException:
+            return "InvalidTagParameterException"
+        case CloudTrailErrorKind.InvalidTimeRangeException:
+            return "InvalidTimeRangeException"
+        case CloudTrailErrorKind.InvalidTokenException:
+            return "InvalidTokenException"
+        case CloudTrailErrorKind.InvalidTrailNameException:
+            return "InvalidTrailNameException"
+        case CloudTrailErrorKind.KmsException:
+            return "KmsException"
+        case CloudTrailErrorKind.KmsKeyDisabledException:
+            return "KmsKeyDisabledException"
+        case CloudTrailErrorKind.KmsKeyNotFoundException:
+            return "KmsKeyNotFoundException"
+        case CloudTrailErrorKind.MaxConcurrentQueriesException:
+            return "MaxConcurrentQueriesException"
+        case CloudTrailErrorKind.MaximumNumberOfTrailsExceededException:
+            return "MaximumNumberOfTrailsExceededException"
+        case CloudTrailErrorKind.NoManagementAccountSLRExistsException:
+            return "NoManagementAccountSLRExistsException"
+        case CloudTrailErrorKind.NotOrganizationManagementAccountException:
+            return "NotOrganizationManagementAccountException"
+        case CloudTrailErrorKind.NotOrganizationMasterAccountException:
+            return "NotOrganizationMasterAccountException"
+        case CloudTrailErrorKind.OperationNotPermittedException:
+            return "OperationNotPermittedException"
+        case CloudTrailErrorKind.OrganizationNotInAllFeaturesModeException:
+            return "OrganizationNotInAllFeaturesModeException"
+        case CloudTrailErrorKind.OrganizationsNotInUseException:
+            return "OrganizationsNotInUseException"
+        case CloudTrailErrorKind.QueryIdNotFoundException:
+            return "QueryIdNotFoundException"
+        case CloudTrailErrorKind.ResourceARNNotValidException:
+            return "ResourceARNNotValidException"
+        case CloudTrailErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case CloudTrailErrorKind.ResourcePolicyNotFoundException:
+            return "ResourcePolicyNotFoundException"
+        case CloudTrailErrorKind.ResourcePolicyNotValidException:
+            return "ResourcePolicyNotValidException"
+        case CloudTrailErrorKind.ResourceTypeNotSupportedException:
+            return "ResourceTypeNotSupportedException"
+        case CloudTrailErrorKind.S3BucketDoesNotExistException:
+            return "S3BucketDoesNotExistException"
+        case CloudTrailErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case CloudTrailErrorKind.TagsLimitExceededException:
+            return "TagsLimitExceededException"
+        case CloudTrailErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case CloudTrailErrorKind.TrailAlreadyExistsException:
+            return "TrailAlreadyExistsException"
+        case CloudTrailErrorKind.TrailNotFoundException:
+            return "TrailNotFoundException"
+        case CloudTrailErrorKind.TrailNotProvidedException:
+            return "TrailNotProvidedException"
+        case CloudTrailErrorKind.UnsupportedOperationException:
+            return "UnsupportedOperationException"
+        case CloudTrailErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

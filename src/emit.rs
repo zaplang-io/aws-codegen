@@ -338,19 +338,19 @@ impl<'a> Generator<'a> {
         h.push_str("#\n");
         match self.protocol {
             Protocol::AwsJson => h.push_str(
-                "# Imports the aws_core package (core + awsjson) via #283 module imports — see\n",
+                "# Imports the aws_core package (core + errors + awsjson) via #283 module\n# imports — see\n",
             ),
             Protocol::RestJson => h.push_str(
-                "# Imports the aws_core package (core + endpoints + binding + restjson) via\n# #283 module imports — see\n",
+                "# Imports the aws_core package (core + errors + endpoints + binding +\n# restjson) via #283 module imports — see\n",
             ),
             Protocol::RestXml => h.push_str(
-                "# Imports the aws_core package (core + endpoints + binding + restxml) via\n# #283 module imports — see\n",
+                "# Imports the aws_core package (core + errors + endpoints + binding +\n# restxml) via #283 module imports — see\n",
             ),
             Protocol::Query | Protocol::Ec2 => h.push_str(
-                "# Imports the aws_core package (core + query) via #283 module imports — see\n",
+                "# Imports the aws_core package (core + errors + query) via #283 module\n# imports — see\n",
             ),
             Protocol::Cbor => h.push_str(
-                "# Imports the aws_core package (core + endpoints + cbor) via #283 module\n# imports — see\n",
+                "# Imports the aws_core package (core + errors + endpoints + cbor) via #283\n# module imports — see\n",
             ),
         }
         h.push_str(
@@ -439,7 +439,10 @@ impl<'a> Generator<'a> {
     /// methods actually reference (`endpoints` is pulled in for the awsJson path
     /// only when a paginator — which resolves a host — is generated).
     fn imports(&self, cov: &Coverage) -> String {
-        let mut mods: Vec<&str> = vec!["core"];
+        // `errors` is always imported: every client emits the typed-error enum +
+        // classifier (#361 / D-0006), whose classifier normalizes the raw code
+        // through `errors.error_code` even when the service models no errors.
+        let mut mods: Vec<&str> = vec!["core", "errors"];
         match self.protocol {
             Protocol::AwsJson => {
                 if cov.paginators > 0 {
@@ -781,8 +784,11 @@ impl<'a> Generator<'a> {
     // --- errors ------------------------------------------------------------
 
     fn error_section(&self, cov: &mut Coverage) -> String {
-        // Union of every operation's errors (operation-level + service-level all
-        // surface the same way through the codec's __type handling).
+        // The service's modeled error shapes: the union of every operation's
+        // `errors` refs (operation-level and service-level surface the same way),
+        // deduplicated and sorted for deterministic output. The variant name is
+        // the error shape name, which is the on-the-wire code botocore keys on;
+        // `errors.error_code` normalizes any namespace/suffix before matching.
         let mut names: Vec<String> = Vec::new();
         for op in self.model.operations.values() {
             for e in &op.errors {
@@ -794,22 +800,41 @@ impl<'a> Generator<'a> {
         names.sort();
         cov.error_variants = names.len();
 
-        let enum_name = format!("{}Error", self.type_prefix);
+        // The per-service typed-error surface (#361 / DECISIONS.md D-0006), on top
+        // of the `aws_core.errors` base carrier + classifier bridge: an open enum
+        // `<Service>ErrorKind`, a `<service>_error_kind(code)` classifier, and a
+        // module-local exhaustive `<service>_error_name(kind)` dispatcher. Matches
+        // the hand-wired S3 reference (aws-core `s3.zap`); the carrier, code
+        // normalization, X-Amzn-ErrorType fallback and raise/check bridge live in
+        // `aws_core.errors` and are not re-emitted.
+        let enum_name = format!("{}ErrorKind", self.type_prefix);
+        let fn_prefix = &self.fn_prefix;
+        // Where the raw error code comes from on the wire, per protocol —
+        // `errors.error_code` then normalizes it to the bare shape name.
         let code_source = match self.protocol {
-            Protocol::AwsJson => "awsJson `__type` / X-Amzn-ErrorType",
-            Protocol::RestJson => "restJson1 X-Amzn-ErrorType / body `__type`",
-            Protocol::RestXml => "rest-xml `<Error><Code>` element",
-            Protocol::Query => "query `<ErrorResponse><Error><Code>` element",
-            Protocol::Ec2 => "ec2 `<Response><Errors><Error><Code>` element",
-            Protocol::Cbor => "smithy-rpc-v2-cbor body `__type` (cbor.cbor_error_type)",
+            Protocol::AwsJson => "the awsJson `__type` / X-Amzn-ErrorType shape name",
+            Protocol::RestJson => "the restJson1 X-Amzn-ErrorType header or body `__type`",
+            Protocol::RestXml => "the rest-xml `<Error><Code>` element",
+            Protocol::Query => "the query `<ErrorResponse><Error><Code>` element",
+            Protocol::Ec2 => "the ec2 `<Response><Errors><Error><Code>` element",
+            Protocol::Cbor => "the smithy-rpc-v2-cbor body `__type`",
         };
+
         let mut out = String::new();
+        // 1. The open enum: one bare variant per modeled shape + the catch-all.
         out.push_str(&format!(
-            "# Service error set (operation + service level), dispatched from the\n# {code_source} code by {}_error_from_code.\n",
-            self.fn_prefix
+            "# Typed service errors (#361): the per-service enum + classifier + name\n\
+             # dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One\n\
+             # bare variant per modeled error shape, plus an open-enum `Unknown(str code)`\n\
+             # catch-all, so a caller built against this model keeps working when the\n\
+             # service adds an error. The raw wire code is\n\
+             # {code_source}.\n\
+             # `errors.error_code` normalizes it to the bare shape name before matching;\n\
+             # the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge\n\
+             # are inherited from `aws_core.errors` and not re-emitted here.\n"
         ));
         out.push_str(&format!("enum {enum_name}:\n"));
-        let mut variants: Vec<(String, String)> = Vec::new(); // (wire code, variant)
+        let mut variants: Vec<(String, String)> = Vec::new(); // (shape name / wire code, variant)
         let mut used: Vec<String> = Vec::new();
         for n in &names {
             let variant = unique(&escape_ident(n).0, &used);
@@ -820,37 +845,42 @@ impl<'a> Generator<'a> {
         let fallback = unique("Unknown", &used);
         out.push_str(&format!("{IND}{fallback}(str code)\n\n"));
 
-        // Classifier: wire code -> variant.
-        let classifier_doc = match self.protocol {
-            Protocol::AwsJson => {
-                "# Map an awsJson error code (the stripped __type shape name) to a variant.".to_string()
-            }
-            Protocol::RestJson => {
-                "# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType\n# header or body __type, stripped to the bare shape name) to a variant.".to_string()
-            }
-            Protocol::RestXml => {
-                "# Map a rest-xml error code (the <Error><Code> text from rest_xml_error_code)\n# to a variant.".to_string()
-            }
-            Protocol::Query | Protocol::Ec2 => {
-                "# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's\n# error helpers) to a variant.".to_string()
-            }
-            Protocol::Cbor => {
-                "# Map a smithy-rpc-v2-cbor error code to a variant. The code is the body's\n# `__type` (cbor.cbor_error_type / cbor.cbor_error.code); it is namespaced like\n# awsJson (e.g. \"com.amazonaws.<svc>#<Name>\"), so strip to the bare shape name\n# (the text after the last '#') before dispatching.".to_string()
-            }
-        };
+        // 2. The classifier: raw code -> variant, normalizing the code first.
         out.push_str(&format!(
-            "{classifier_doc}\ndef {}_error_from_code(str code) -> {enum_name}:\n",
-            self.fn_prefix
+            "# Classify an AWS error code into `{enum_name}`,\n\
+             # normalizing first (`errors.error_code` strips any namespace/suffix) then\n\
+             # matching by name; an unmodeled code becomes `{fallback}(name)`, carrying it.\n"
         ));
-        if variants.is_empty() {
-            out.push_str(&format!("{IND}return {enum_name}.{fallback}(code=code)\n"));
-        } else {
-            for (wire, variant) in &variants {
-                out.push_str(&format!("{IND}if code == \"{wire}\":\n"));
-                out.push_str(&format!("{IND}{IND}return {enum_name}.{variant}\n"));
-            }
-            out.push_str(&format!("{IND}return {enum_name}.{fallback}(code=code)\n"));
+        out.push_str(&format!(
+            "def {fn_prefix}_error_kind(str code) -> {enum_name}:\n"
+        ));
+        out.push_str(&format!("{IND}auto name = errors.error_code(code)\n"));
+        for (wire, variant) in &variants {
+            out.push_str(&format!("{IND}if name == \"{wire}\":\n"));
+            out.push_str(&format!("{IND}{IND}return {enum_name}.{variant}\n"));
         }
+        out.push_str(&format!("{IND}return {enum_name}.{fallback}(name)\n\n"));
+
+        // 3. The name dispatcher: an exhaustive, module-local `match`.
+        out.push_str(&format!(
+            "# The canonical name of a classified error. This `match` is exhaustive over\n\
+             # every variant (the compiler enforces it, so a new variant forces it to be\n\
+             # updated — the generator emits the enum and dispatcher together) and is\n\
+             # module-local, so each pattern is a two-segment `Enum.Variant` — the portable\n\
+             # form until the compiler resolves module-qualified variant patterns in a\n\
+             # caller's own `match` (DECISIONS.md D-0006). `{fallback}` carries its code.\n"
+        ));
+        out.push_str(&format!(
+            "def {fn_prefix}_error_name({enum_name} k) -> str:\n{IND}match k:\n"
+        ));
+        for (wire, variant) in &variants {
+            out.push_str(&format!("{IND}{IND}case {enum_name}.{variant}:\n"));
+            out.push_str(&format!("{IND}{IND}{IND}return \"{wire}\"\n"));
+        }
+        out.push_str(&format!("{IND}{IND}case {enum_name}.{fallback}(c):\n"));
+        out.push_str(&format!(
+            "{IND}{IND}{IND}return \"{fallback}(\" + c + \")\"\n"
+        ));
         out
     }
 

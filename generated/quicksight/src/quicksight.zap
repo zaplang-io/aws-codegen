@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service quicksight)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -16485,9 +16486,16 @@ struct YAxisOptions:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by quicksight_error_from_code.
-enum QuickSightError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum QuickSightErrorKind:
     AccessDeniedException
     ConcurrentUpdatingException
     ConflictException
@@ -16513,56 +16521,115 @@ enum QuickSightError:
     UnsupportedUserEditionException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def quicksight_error_from_code(str code) -> QuickSightError:
-    if code == "AccessDeniedException":
-        return QuickSightError.AccessDeniedException
-    if code == "ConcurrentUpdatingException":
-        return QuickSightError.ConcurrentUpdatingException
-    if code == "ConflictException":
-        return QuickSightError.ConflictException
-    if code == "CustomerManagedKeyUnavailableException":
-        return QuickSightError.CustomerManagedKeyUnavailableException
-    if code == "DomainNotWhitelistedException":
-        return QuickSightError.DomainNotWhitelistedException
-    if code == "IdentityTypeNotSupportedException":
-        return QuickSightError.IdentityTypeNotSupportedException
-    if code == "InternalFailureException":
-        return QuickSightError.InternalFailureException
-    if code == "InternalServerException":
-        return QuickSightError.InternalServerException
-    if code == "InvalidDataSetParameterValueException":
-        return QuickSightError.InvalidDataSetParameterValueException
-    if code == "InvalidNextTokenException":
-        return QuickSightError.InvalidNextTokenException
-    if code == "InvalidParameterException":
-        return QuickSightError.InvalidParameterException
-    if code == "InvalidParameterValueException":
-        return QuickSightError.InvalidParameterValueException
-    if code == "InvalidRequestException":
-        return QuickSightError.InvalidRequestException
-    if code == "LimitExceededException":
-        return QuickSightError.LimitExceededException
-    if code == "PreconditionNotMetException":
-        return QuickSightError.PreconditionNotMetException
-    if code == "QuickSightUserNotFoundException":
-        return QuickSightError.QuickSightUserNotFoundException
-    if code == "ResourceExistsException":
-        return QuickSightError.ResourceExistsException
-    if code == "ResourceNotFoundException":
-        return QuickSightError.ResourceNotFoundException
-    if code == "ResourceUnavailableException":
-        return QuickSightError.ResourceUnavailableException
-    if code == "SessionLifetimeInMinutesInvalidException":
-        return QuickSightError.SessionLifetimeInMinutesInvalidException
-    if code == "ThrottlingException":
-        return QuickSightError.ThrottlingException
-    if code == "UnsupportedPricingPlanException":
-        return QuickSightError.UnsupportedPricingPlanException
-    if code == "UnsupportedUserEditionException":
-        return QuickSightError.UnsupportedUserEditionException
-    return QuickSightError.Unknown(code=code)
+# Classify an AWS error code into `QuickSightErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def quicksight_error_kind(str code) -> QuickSightErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return QuickSightErrorKind.AccessDeniedException
+    if name == "ConcurrentUpdatingException":
+        return QuickSightErrorKind.ConcurrentUpdatingException
+    if name == "ConflictException":
+        return QuickSightErrorKind.ConflictException
+    if name == "CustomerManagedKeyUnavailableException":
+        return QuickSightErrorKind.CustomerManagedKeyUnavailableException
+    if name == "DomainNotWhitelistedException":
+        return QuickSightErrorKind.DomainNotWhitelistedException
+    if name == "IdentityTypeNotSupportedException":
+        return QuickSightErrorKind.IdentityTypeNotSupportedException
+    if name == "InternalFailureException":
+        return QuickSightErrorKind.InternalFailureException
+    if name == "InternalServerException":
+        return QuickSightErrorKind.InternalServerException
+    if name == "InvalidDataSetParameterValueException":
+        return QuickSightErrorKind.InvalidDataSetParameterValueException
+    if name == "InvalidNextTokenException":
+        return QuickSightErrorKind.InvalidNextTokenException
+    if name == "InvalidParameterException":
+        return QuickSightErrorKind.InvalidParameterException
+    if name == "InvalidParameterValueException":
+        return QuickSightErrorKind.InvalidParameterValueException
+    if name == "InvalidRequestException":
+        return QuickSightErrorKind.InvalidRequestException
+    if name == "LimitExceededException":
+        return QuickSightErrorKind.LimitExceededException
+    if name == "PreconditionNotMetException":
+        return QuickSightErrorKind.PreconditionNotMetException
+    if name == "QuickSightUserNotFoundException":
+        return QuickSightErrorKind.QuickSightUserNotFoundException
+    if name == "ResourceExistsException":
+        return QuickSightErrorKind.ResourceExistsException
+    if name == "ResourceNotFoundException":
+        return QuickSightErrorKind.ResourceNotFoundException
+    if name == "ResourceUnavailableException":
+        return QuickSightErrorKind.ResourceUnavailableException
+    if name == "SessionLifetimeInMinutesInvalidException":
+        return QuickSightErrorKind.SessionLifetimeInMinutesInvalidException
+    if name == "ThrottlingException":
+        return QuickSightErrorKind.ThrottlingException
+    if name == "UnsupportedPricingPlanException":
+        return QuickSightErrorKind.UnsupportedPricingPlanException
+    if name == "UnsupportedUserEditionException":
+        return QuickSightErrorKind.UnsupportedUserEditionException
+    return QuickSightErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def quicksight_error_name(QuickSightErrorKind k) -> str:
+    match k:
+        case QuickSightErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case QuickSightErrorKind.ConcurrentUpdatingException:
+            return "ConcurrentUpdatingException"
+        case QuickSightErrorKind.ConflictException:
+            return "ConflictException"
+        case QuickSightErrorKind.CustomerManagedKeyUnavailableException:
+            return "CustomerManagedKeyUnavailableException"
+        case QuickSightErrorKind.DomainNotWhitelistedException:
+            return "DomainNotWhitelistedException"
+        case QuickSightErrorKind.IdentityTypeNotSupportedException:
+            return "IdentityTypeNotSupportedException"
+        case QuickSightErrorKind.InternalFailureException:
+            return "InternalFailureException"
+        case QuickSightErrorKind.InternalServerException:
+            return "InternalServerException"
+        case QuickSightErrorKind.InvalidDataSetParameterValueException:
+            return "InvalidDataSetParameterValueException"
+        case QuickSightErrorKind.InvalidNextTokenException:
+            return "InvalidNextTokenException"
+        case QuickSightErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case QuickSightErrorKind.InvalidParameterValueException:
+            return "InvalidParameterValueException"
+        case QuickSightErrorKind.InvalidRequestException:
+            return "InvalidRequestException"
+        case QuickSightErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case QuickSightErrorKind.PreconditionNotMetException:
+            return "PreconditionNotMetException"
+        case QuickSightErrorKind.QuickSightUserNotFoundException:
+            return "QuickSightUserNotFoundException"
+        case QuickSightErrorKind.ResourceExistsException:
+            return "ResourceExistsException"
+        case QuickSightErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case QuickSightErrorKind.ResourceUnavailableException:
+            return "ResourceUnavailableException"
+        case QuickSightErrorKind.SessionLifetimeInMinutesInvalidException:
+            return "SessionLifetimeInMinutesInvalidException"
+        case QuickSightErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case QuickSightErrorKind.UnsupportedPricingPlanException:
+            return "UnsupportedPricingPlanException"
+        case QuickSightErrorKind.UnsupportedUserEditionException:
+            return "UnsupportedUserEditionException"
+        case QuickSightErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

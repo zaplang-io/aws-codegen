@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix ResourceGroupsTaggingAPI_20170126)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -258,9 +260,16 @@ struct UntagResourcesOutput:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by tagging_error_from_code.
-enum Resource_Groups_Tagging_APIError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Resource_Groups_Tagging_APIErrorKind:
     ConcurrentModificationException
     ConstraintViolationException
     InternalServiceException
@@ -269,21 +278,47 @@ enum Resource_Groups_Tagging_APIError:
     ThrottledException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def tagging_error_from_code(str code) -> Resource_Groups_Tagging_APIError:
-    if code == "ConcurrentModificationException":
-        return Resource_Groups_Tagging_APIError.ConcurrentModificationException
-    if code == "ConstraintViolationException":
-        return Resource_Groups_Tagging_APIError.ConstraintViolationException
-    if code == "InternalServiceException":
-        return Resource_Groups_Tagging_APIError.InternalServiceException
-    if code == "InvalidParameterException":
-        return Resource_Groups_Tagging_APIError.InvalidParameterException
-    if code == "PaginationTokenExpiredException":
-        return Resource_Groups_Tagging_APIError.PaginationTokenExpiredException
-    if code == "ThrottledException":
-        return Resource_Groups_Tagging_APIError.ThrottledException
-    return Resource_Groups_Tagging_APIError.Unknown(code=code)
+# Classify an AWS error code into `Resource_Groups_Tagging_APIErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def tagging_error_kind(str code) -> Resource_Groups_Tagging_APIErrorKind:
+    auto name = errors.error_code(code)
+    if name == "ConcurrentModificationException":
+        return Resource_Groups_Tagging_APIErrorKind.ConcurrentModificationException
+    if name == "ConstraintViolationException":
+        return Resource_Groups_Tagging_APIErrorKind.ConstraintViolationException
+    if name == "InternalServiceException":
+        return Resource_Groups_Tagging_APIErrorKind.InternalServiceException
+    if name == "InvalidParameterException":
+        return Resource_Groups_Tagging_APIErrorKind.InvalidParameterException
+    if name == "PaginationTokenExpiredException":
+        return Resource_Groups_Tagging_APIErrorKind.PaginationTokenExpiredException
+    if name == "ThrottledException":
+        return Resource_Groups_Tagging_APIErrorKind.ThrottledException
+    return Resource_Groups_Tagging_APIErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def tagging_error_name(Resource_Groups_Tagging_APIErrorKind k) -> str:
+    match k:
+        case Resource_Groups_Tagging_APIErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case Resource_Groups_Tagging_APIErrorKind.ConstraintViolationException:
+            return "ConstraintViolationException"
+        case Resource_Groups_Tagging_APIErrorKind.InternalServiceException:
+            return "InternalServiceException"
+        case Resource_Groups_Tagging_APIErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case Resource_Groups_Tagging_APIErrorKind.PaginationTokenExpiredException:
+            return "PaginationTokenExpiredException"
+        case Resource_Groups_Tagging_APIErrorKind.ThrottledException:
+            return "ThrottledException"
+        case Resource_Groups_Tagging_APIErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

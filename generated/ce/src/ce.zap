@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix AWSInsightsIndexService)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -2060,9 +2062,16 @@ struct UtilizationByTime:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by ce_error_from_code.
-enum Cost_ExplorerError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Cost_ExplorerErrorKind:
     AnalysisNotFoundException
     BackfillLimitExceededException
     BillExpirationException
@@ -2080,39 +2089,83 @@ enum Cost_ExplorerError:
     UnresolvableUsageUnitException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def ce_error_from_code(str code) -> Cost_ExplorerError:
-    if code == "AnalysisNotFoundException":
-        return Cost_ExplorerError.AnalysisNotFoundException
-    if code == "BackfillLimitExceededException":
-        return Cost_ExplorerError.BackfillLimitExceededException
-    if code == "BillExpirationException":
-        return Cost_ExplorerError.BillExpirationException
-    if code == "BillingViewHealthStatusException":
-        return Cost_ExplorerError.BillingViewHealthStatusException
-    if code == "DataUnavailableException":
-        return Cost_ExplorerError.DataUnavailableException
-    if code == "GenerationExistsException":
-        return Cost_ExplorerError.GenerationExistsException
-    if code == "InvalidNextTokenException":
-        return Cost_ExplorerError.InvalidNextTokenException
-    if code == "LimitExceededException":
-        return Cost_ExplorerError.LimitExceededException
-    if code == "RequestChangedException":
-        return Cost_ExplorerError.RequestChangedException
-    if code == "ResourceNotFoundException":
-        return Cost_ExplorerError.ResourceNotFoundException
-    if code == "ServiceQuotaExceededException":
-        return Cost_ExplorerError.ServiceQuotaExceededException
-    if code == "TooManyTagsException":
-        return Cost_ExplorerError.TooManyTagsException
-    if code == "UnknownMonitorException":
-        return Cost_ExplorerError.UnknownMonitorException
-    if code == "UnknownSubscriptionException":
-        return Cost_ExplorerError.UnknownSubscriptionException
-    if code == "UnresolvableUsageUnitException":
-        return Cost_ExplorerError.UnresolvableUsageUnitException
-    return Cost_ExplorerError.Unknown(code=code)
+# Classify an AWS error code into `Cost_ExplorerErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def ce_error_kind(str code) -> Cost_ExplorerErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AnalysisNotFoundException":
+        return Cost_ExplorerErrorKind.AnalysisNotFoundException
+    if name == "BackfillLimitExceededException":
+        return Cost_ExplorerErrorKind.BackfillLimitExceededException
+    if name == "BillExpirationException":
+        return Cost_ExplorerErrorKind.BillExpirationException
+    if name == "BillingViewHealthStatusException":
+        return Cost_ExplorerErrorKind.BillingViewHealthStatusException
+    if name == "DataUnavailableException":
+        return Cost_ExplorerErrorKind.DataUnavailableException
+    if name == "GenerationExistsException":
+        return Cost_ExplorerErrorKind.GenerationExistsException
+    if name == "InvalidNextTokenException":
+        return Cost_ExplorerErrorKind.InvalidNextTokenException
+    if name == "LimitExceededException":
+        return Cost_ExplorerErrorKind.LimitExceededException
+    if name == "RequestChangedException":
+        return Cost_ExplorerErrorKind.RequestChangedException
+    if name == "ResourceNotFoundException":
+        return Cost_ExplorerErrorKind.ResourceNotFoundException
+    if name == "ServiceQuotaExceededException":
+        return Cost_ExplorerErrorKind.ServiceQuotaExceededException
+    if name == "TooManyTagsException":
+        return Cost_ExplorerErrorKind.TooManyTagsException
+    if name == "UnknownMonitorException":
+        return Cost_ExplorerErrorKind.UnknownMonitorException
+    if name == "UnknownSubscriptionException":
+        return Cost_ExplorerErrorKind.UnknownSubscriptionException
+    if name == "UnresolvableUsageUnitException":
+        return Cost_ExplorerErrorKind.UnresolvableUsageUnitException
+    return Cost_ExplorerErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def ce_error_name(Cost_ExplorerErrorKind k) -> str:
+    match k:
+        case Cost_ExplorerErrorKind.AnalysisNotFoundException:
+            return "AnalysisNotFoundException"
+        case Cost_ExplorerErrorKind.BackfillLimitExceededException:
+            return "BackfillLimitExceededException"
+        case Cost_ExplorerErrorKind.BillExpirationException:
+            return "BillExpirationException"
+        case Cost_ExplorerErrorKind.BillingViewHealthStatusException:
+            return "BillingViewHealthStatusException"
+        case Cost_ExplorerErrorKind.DataUnavailableException:
+            return "DataUnavailableException"
+        case Cost_ExplorerErrorKind.GenerationExistsException:
+            return "GenerationExistsException"
+        case Cost_ExplorerErrorKind.InvalidNextTokenException:
+            return "InvalidNextTokenException"
+        case Cost_ExplorerErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case Cost_ExplorerErrorKind.RequestChangedException:
+            return "RequestChangedException"
+        case Cost_ExplorerErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case Cost_ExplorerErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case Cost_ExplorerErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case Cost_ExplorerErrorKind.UnknownMonitorException:
+            return "UnknownMonitorException"
+        case Cost_ExplorerErrorKind.UnknownSubscriptionException:
+            return "UnknownSubscriptionException"
+        case Cost_ExplorerErrorKind.UnresolvableUsageUnitException:
+            return "UnresolvableUsageUnitException"
+        case Cost_ExplorerErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

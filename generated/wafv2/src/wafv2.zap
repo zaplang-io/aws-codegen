@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix AWSWAF_20190729)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.awsjson
 import base64
 
@@ -2779,9 +2781,16 @@ struct XssMatchStatement:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by wafv2_error_from_code.
-enum WAFV2Error:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum WAFV2ErrorKind:
     WAFAssociatedItemException
     WAFConfigurationWarningException
     WAFDuplicateItemException
@@ -2804,49 +2813,103 @@ enum WAFV2Error:
     WAFUnsupportedAggregateKeyTypeException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def wafv2_error_from_code(str code) -> WAFV2Error:
-    if code == "WAFAssociatedItemException":
-        return WAFV2Error.WAFAssociatedItemException
-    if code == "WAFConfigurationWarningException":
-        return WAFV2Error.WAFConfigurationWarningException
-    if code == "WAFDuplicateItemException":
-        return WAFV2Error.WAFDuplicateItemException
-    if code == "WAFExpiredManagedRuleGroupVersionException":
-        return WAFV2Error.WAFExpiredManagedRuleGroupVersionException
-    if code == "WAFFeatureNotIncludedInPricingPlanException":
-        return WAFV2Error.WAFFeatureNotIncludedInPricingPlanException
-    if code == "WAFInternalErrorException":
-        return WAFV2Error.WAFInternalErrorException
-    if code == "WAFInvalidOperationException":
-        return WAFV2Error.WAFInvalidOperationException
-    if code == "WAFInvalidParameterException":
-        return WAFV2Error.WAFInvalidParameterException
-    if code == "WAFInvalidPermissionPolicyException":
-        return WAFV2Error.WAFInvalidPermissionPolicyException
-    if code == "WAFInvalidResourceException":
-        return WAFV2Error.WAFInvalidResourceException
-    if code == "WAFLimitsExceededException":
-        return WAFV2Error.WAFLimitsExceededException
-    if code == "WAFLogDestinationPermissionIssueException":
-        return WAFV2Error.WAFLogDestinationPermissionIssueException
-    if code == "WAFNonexistentItemException":
-        return WAFV2Error.WAFNonexistentItemException
-    if code == "WAFOptimisticLockException":
-        return WAFV2Error.WAFOptimisticLockException
-    if code == "WAFServiceLinkedRoleErrorException":
-        return WAFV2Error.WAFServiceLinkedRoleErrorException
-    if code == "WAFSubscriptionNotFoundException":
-        return WAFV2Error.WAFSubscriptionNotFoundException
-    if code == "WAFTagOperationException":
-        return WAFV2Error.WAFTagOperationException
-    if code == "WAFTagOperationInternalErrorException":
-        return WAFV2Error.WAFTagOperationInternalErrorException
-    if code == "WAFUnavailableEntityException":
-        return WAFV2Error.WAFUnavailableEntityException
-    if code == "WAFUnsupportedAggregateKeyTypeException":
-        return WAFV2Error.WAFUnsupportedAggregateKeyTypeException
-    return WAFV2Error.Unknown(code=code)
+# Classify an AWS error code into `WAFV2ErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def wafv2_error_kind(str code) -> WAFV2ErrorKind:
+    auto name = errors.error_code(code)
+    if name == "WAFAssociatedItemException":
+        return WAFV2ErrorKind.WAFAssociatedItemException
+    if name == "WAFConfigurationWarningException":
+        return WAFV2ErrorKind.WAFConfigurationWarningException
+    if name == "WAFDuplicateItemException":
+        return WAFV2ErrorKind.WAFDuplicateItemException
+    if name == "WAFExpiredManagedRuleGroupVersionException":
+        return WAFV2ErrorKind.WAFExpiredManagedRuleGroupVersionException
+    if name == "WAFFeatureNotIncludedInPricingPlanException":
+        return WAFV2ErrorKind.WAFFeatureNotIncludedInPricingPlanException
+    if name == "WAFInternalErrorException":
+        return WAFV2ErrorKind.WAFInternalErrorException
+    if name == "WAFInvalidOperationException":
+        return WAFV2ErrorKind.WAFInvalidOperationException
+    if name == "WAFInvalidParameterException":
+        return WAFV2ErrorKind.WAFInvalidParameterException
+    if name == "WAFInvalidPermissionPolicyException":
+        return WAFV2ErrorKind.WAFInvalidPermissionPolicyException
+    if name == "WAFInvalidResourceException":
+        return WAFV2ErrorKind.WAFInvalidResourceException
+    if name == "WAFLimitsExceededException":
+        return WAFV2ErrorKind.WAFLimitsExceededException
+    if name == "WAFLogDestinationPermissionIssueException":
+        return WAFV2ErrorKind.WAFLogDestinationPermissionIssueException
+    if name == "WAFNonexistentItemException":
+        return WAFV2ErrorKind.WAFNonexistentItemException
+    if name == "WAFOptimisticLockException":
+        return WAFV2ErrorKind.WAFOptimisticLockException
+    if name == "WAFServiceLinkedRoleErrorException":
+        return WAFV2ErrorKind.WAFServiceLinkedRoleErrorException
+    if name == "WAFSubscriptionNotFoundException":
+        return WAFV2ErrorKind.WAFSubscriptionNotFoundException
+    if name == "WAFTagOperationException":
+        return WAFV2ErrorKind.WAFTagOperationException
+    if name == "WAFTagOperationInternalErrorException":
+        return WAFV2ErrorKind.WAFTagOperationInternalErrorException
+    if name == "WAFUnavailableEntityException":
+        return WAFV2ErrorKind.WAFUnavailableEntityException
+    if name == "WAFUnsupportedAggregateKeyTypeException":
+        return WAFV2ErrorKind.WAFUnsupportedAggregateKeyTypeException
+    return WAFV2ErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def wafv2_error_name(WAFV2ErrorKind k) -> str:
+    match k:
+        case WAFV2ErrorKind.WAFAssociatedItemException:
+            return "WAFAssociatedItemException"
+        case WAFV2ErrorKind.WAFConfigurationWarningException:
+            return "WAFConfigurationWarningException"
+        case WAFV2ErrorKind.WAFDuplicateItemException:
+            return "WAFDuplicateItemException"
+        case WAFV2ErrorKind.WAFExpiredManagedRuleGroupVersionException:
+            return "WAFExpiredManagedRuleGroupVersionException"
+        case WAFV2ErrorKind.WAFFeatureNotIncludedInPricingPlanException:
+            return "WAFFeatureNotIncludedInPricingPlanException"
+        case WAFV2ErrorKind.WAFInternalErrorException:
+            return "WAFInternalErrorException"
+        case WAFV2ErrorKind.WAFInvalidOperationException:
+            return "WAFInvalidOperationException"
+        case WAFV2ErrorKind.WAFInvalidParameterException:
+            return "WAFInvalidParameterException"
+        case WAFV2ErrorKind.WAFInvalidPermissionPolicyException:
+            return "WAFInvalidPermissionPolicyException"
+        case WAFV2ErrorKind.WAFInvalidResourceException:
+            return "WAFInvalidResourceException"
+        case WAFV2ErrorKind.WAFLimitsExceededException:
+            return "WAFLimitsExceededException"
+        case WAFV2ErrorKind.WAFLogDestinationPermissionIssueException:
+            return "WAFLogDestinationPermissionIssueException"
+        case WAFV2ErrorKind.WAFNonexistentItemException:
+            return "WAFNonexistentItemException"
+        case WAFV2ErrorKind.WAFOptimisticLockException:
+            return "WAFOptimisticLockException"
+        case WAFV2ErrorKind.WAFServiceLinkedRoleErrorException:
+            return "WAFServiceLinkedRoleErrorException"
+        case WAFV2ErrorKind.WAFSubscriptionNotFoundException:
+            return "WAFSubscriptionNotFoundException"
+        case WAFV2ErrorKind.WAFTagOperationException:
+            return "WAFTagOperationException"
+        case WAFV2ErrorKind.WAFTagOperationInternalErrorException:
+            return "WAFTagOperationInternalErrorException"
+        case WAFV2ErrorKind.WAFUnavailableEntityException:
+            return "WAFUnavailableEntityException"
+        case WAFV2ErrorKind.WAFUnsupportedAggregateKeyTypeException:
+            return "WAFUnsupportedAggregateKeyTypeException"
+        case WAFV2ErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

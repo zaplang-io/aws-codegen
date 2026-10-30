@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service iotdata)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -262,9 +263,16 @@ struct UpdateThingShadowResponse:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by data_ats_iot_error_from_code.
-enum IoT_Data_PlaneError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum IoT_Data_PlaneErrorKind:
     ConflictException
     ForbiddenException
     GatewayTimeoutException
@@ -279,34 +287,71 @@ enum IoT_Data_PlaneError:
     UnsupportedDocumentEncodingException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def data_ats_iot_error_from_code(str code) -> IoT_Data_PlaneError:
-    if code == "ConflictException":
-        return IoT_Data_PlaneError.ConflictException
-    if code == "ForbiddenException":
-        return IoT_Data_PlaneError.ForbiddenException
-    if code == "GatewayTimeoutException":
-        return IoT_Data_PlaneError.GatewayTimeoutException
-    if code == "InternalFailureException":
-        return IoT_Data_PlaneError.InternalFailureException
-    if code == "InvalidRequestException":
-        return IoT_Data_PlaneError.InvalidRequestException
-    if code == "MethodNotAllowedException":
-        return IoT_Data_PlaneError.MethodNotAllowedException
-    if code == "RequestEntityTooLargeException":
-        return IoT_Data_PlaneError.RequestEntityTooLargeException
-    if code == "ResourceNotFoundException":
-        return IoT_Data_PlaneError.ResourceNotFoundException
-    if code == "ServiceUnavailableException":
-        return IoT_Data_PlaneError.ServiceUnavailableException
-    if code == "ThrottlingException":
-        return IoT_Data_PlaneError.ThrottlingException
-    if code == "UnauthorizedException":
-        return IoT_Data_PlaneError.UnauthorizedException
-    if code == "UnsupportedDocumentEncodingException":
-        return IoT_Data_PlaneError.UnsupportedDocumentEncodingException
-    return IoT_Data_PlaneError.Unknown(code=code)
+# Classify an AWS error code into `IoT_Data_PlaneErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def data_ats_iot_error_kind(str code) -> IoT_Data_PlaneErrorKind:
+    auto name = errors.error_code(code)
+    if name == "ConflictException":
+        return IoT_Data_PlaneErrorKind.ConflictException
+    if name == "ForbiddenException":
+        return IoT_Data_PlaneErrorKind.ForbiddenException
+    if name == "GatewayTimeoutException":
+        return IoT_Data_PlaneErrorKind.GatewayTimeoutException
+    if name == "InternalFailureException":
+        return IoT_Data_PlaneErrorKind.InternalFailureException
+    if name == "InvalidRequestException":
+        return IoT_Data_PlaneErrorKind.InvalidRequestException
+    if name == "MethodNotAllowedException":
+        return IoT_Data_PlaneErrorKind.MethodNotAllowedException
+    if name == "RequestEntityTooLargeException":
+        return IoT_Data_PlaneErrorKind.RequestEntityTooLargeException
+    if name == "ResourceNotFoundException":
+        return IoT_Data_PlaneErrorKind.ResourceNotFoundException
+    if name == "ServiceUnavailableException":
+        return IoT_Data_PlaneErrorKind.ServiceUnavailableException
+    if name == "ThrottlingException":
+        return IoT_Data_PlaneErrorKind.ThrottlingException
+    if name == "UnauthorizedException":
+        return IoT_Data_PlaneErrorKind.UnauthorizedException
+    if name == "UnsupportedDocumentEncodingException":
+        return IoT_Data_PlaneErrorKind.UnsupportedDocumentEncodingException
+    return IoT_Data_PlaneErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def data_ats_iot_error_name(IoT_Data_PlaneErrorKind k) -> str:
+    match k:
+        case IoT_Data_PlaneErrorKind.ConflictException:
+            return "ConflictException"
+        case IoT_Data_PlaneErrorKind.ForbiddenException:
+            return "ForbiddenException"
+        case IoT_Data_PlaneErrorKind.GatewayTimeoutException:
+            return "GatewayTimeoutException"
+        case IoT_Data_PlaneErrorKind.InternalFailureException:
+            return "InternalFailureException"
+        case IoT_Data_PlaneErrorKind.InvalidRequestException:
+            return "InvalidRequestException"
+        case IoT_Data_PlaneErrorKind.MethodNotAllowedException:
+            return "MethodNotAllowedException"
+        case IoT_Data_PlaneErrorKind.RequestEntityTooLargeException:
+            return "RequestEntityTooLargeException"
+        case IoT_Data_PlaneErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case IoT_Data_PlaneErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
+        case IoT_Data_PlaneErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case IoT_Data_PlaneErrorKind.UnauthorizedException:
+            return "UnauthorizedException"
+        case IoT_Data_PlaneErrorKind.UnsupportedDocumentEncodingException:
+            return "UnsupportedDocumentEncodingException"
+        case IoT_Data_PlaneErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

@@ -6,7 +6,8 @@
 # Protocol: query (SigV4 service elasticache, Version 2015-02-02)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + query) via #283 module imports — see
+# Imports the aws_core package (core + errors + query) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: the whole input is a flat form-urlencoded POST body
 # (Action + Version + the members), the AWS query wire format.
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.query
 
 # The ElastiCache query protocol: SigV4 service "elasticache" (also the endpoint prefix
@@ -1967,9 +1969,16 @@ struct UserQuotaExceededFault:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# query `<ErrorResponse><Error><Code>` element code by elasticache_error_from_code.
-enum ElastiCacheError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the query `<ErrorResponse><Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum ElastiCacheErrorKind:
     APICallRateForCustomerExceededFault
     AuthorizationAlreadyExistsFault
     AuthorizationNotFoundFault
@@ -2051,168 +2060,339 @@ enum ElastiCacheError:
     UserQuotaExceededFault
     Unknown(str code)
 
-# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's
-# error helpers) to a variant.
-def elasticache_error_from_code(str code) -> ElastiCacheError:
-    if code == "APICallRateForCustomerExceededFault":
-        return ElastiCacheError.APICallRateForCustomerExceededFault
-    if code == "AuthorizationAlreadyExistsFault":
-        return ElastiCacheError.AuthorizationAlreadyExistsFault
-    if code == "AuthorizationNotFoundFault":
-        return ElastiCacheError.AuthorizationNotFoundFault
-    if code == "CacheClusterAlreadyExistsFault":
-        return ElastiCacheError.CacheClusterAlreadyExistsFault
-    if code == "CacheClusterNotFoundFault":
-        return ElastiCacheError.CacheClusterNotFoundFault
-    if code == "CacheParameterGroupAlreadyExistsFault":
-        return ElastiCacheError.CacheParameterGroupAlreadyExistsFault
-    if code == "CacheParameterGroupNotFoundFault":
-        return ElastiCacheError.CacheParameterGroupNotFoundFault
-    if code == "CacheParameterGroupQuotaExceededFault":
-        return ElastiCacheError.CacheParameterGroupQuotaExceededFault
-    if code == "CacheSecurityGroupAlreadyExistsFault":
-        return ElastiCacheError.CacheSecurityGroupAlreadyExistsFault
-    if code == "CacheSecurityGroupNotFoundFault":
-        return ElastiCacheError.CacheSecurityGroupNotFoundFault
-    if code == "CacheSecurityGroupQuotaExceededFault":
-        return ElastiCacheError.CacheSecurityGroupQuotaExceededFault
-    if code == "CacheSubnetGroupAlreadyExistsFault":
-        return ElastiCacheError.CacheSubnetGroupAlreadyExistsFault
-    if code == "CacheSubnetGroupInUse":
-        return ElastiCacheError.CacheSubnetGroupInUse
-    if code == "CacheSubnetGroupNotFoundFault":
-        return ElastiCacheError.CacheSubnetGroupNotFoundFault
-    if code == "CacheSubnetGroupQuotaExceededFault":
-        return ElastiCacheError.CacheSubnetGroupQuotaExceededFault
-    if code == "CacheSubnetQuotaExceededFault":
-        return ElastiCacheError.CacheSubnetQuotaExceededFault
-    if code == "ClusterQuotaForCustomerExceededFault":
-        return ElastiCacheError.ClusterQuotaForCustomerExceededFault
-    if code == "DefaultUserAssociatedToUserGroupFault":
-        return ElastiCacheError.DefaultUserAssociatedToUserGroupFault
-    if code == "DefaultUserRequired":
-        return ElastiCacheError.DefaultUserRequired
-    if code == "DuplicateUserNameFault":
-        return ElastiCacheError.DuplicateUserNameFault
-    if code == "GlobalReplicationGroupAlreadyExistsFault":
-        return ElastiCacheError.GlobalReplicationGroupAlreadyExistsFault
-    if code == "GlobalReplicationGroupNotFoundFault":
-        return ElastiCacheError.GlobalReplicationGroupNotFoundFault
-    if code == "InsufficientCacheClusterCapacityFault":
-        return ElastiCacheError.InsufficientCacheClusterCapacityFault
-    if code == "InvalidARNFault":
-        return ElastiCacheError.InvalidARNFault
-    if code == "InvalidCacheClusterStateFault":
-        return ElastiCacheError.InvalidCacheClusterStateFault
-    if code == "InvalidCacheParameterGroupStateFault":
-        return ElastiCacheError.InvalidCacheParameterGroupStateFault
-    if code == "InvalidCacheSecurityGroupStateFault":
-        return ElastiCacheError.InvalidCacheSecurityGroupStateFault
-    if code == "InvalidCredentialsException":
-        return ElastiCacheError.InvalidCredentialsException
-    if code == "InvalidGlobalReplicationGroupStateFault":
-        return ElastiCacheError.InvalidGlobalReplicationGroupStateFault
-    if code == "InvalidKMSKeyFault":
-        return ElastiCacheError.InvalidKMSKeyFault
-    if code == "InvalidParameterCombinationException":
-        return ElastiCacheError.InvalidParameterCombinationException
-    if code == "InvalidParameterValueException":
-        return ElastiCacheError.InvalidParameterValueException
-    if code == "InvalidReplicationGroupStateFault":
-        return ElastiCacheError.InvalidReplicationGroupStateFault
-    if code == "InvalidServerlessCacheSnapshotStateFault":
-        return ElastiCacheError.InvalidServerlessCacheSnapshotStateFault
-    if code == "InvalidServerlessCacheStateFault":
-        return ElastiCacheError.InvalidServerlessCacheStateFault
-    if code == "InvalidSnapshotStateFault":
-        return ElastiCacheError.InvalidSnapshotStateFault
-    if code == "InvalidSubnet":
-        return ElastiCacheError.InvalidSubnet
-    if code == "InvalidUserGroupStateFault":
-        return ElastiCacheError.InvalidUserGroupStateFault
-    if code == "InvalidUserStateFault":
-        return ElastiCacheError.InvalidUserStateFault
-    if code == "InvalidVPCNetworkStateFault":
-        return ElastiCacheError.InvalidVPCNetworkStateFault
-    if code == "MigrationHealthFault":
-        return ElastiCacheError.MigrationHealthFault
-    if code == "NoOperationFault":
-        return ElastiCacheError.NoOperationFault
-    if code == "NodeGroupNotFoundFault":
-        return ElastiCacheError.NodeGroupNotFoundFault
-    if code == "NodeGroupsPerReplicationGroupQuotaExceededFault":
-        return ElastiCacheError.NodeGroupsPerReplicationGroupQuotaExceededFault
-    if code == "NodeQuotaForClusterExceededFault":
-        return ElastiCacheError.NodeQuotaForClusterExceededFault
-    if code == "NodeQuotaForCustomerExceededFault":
-        return ElastiCacheError.NodeQuotaForCustomerExceededFault
-    if code == "ReplicationGroupAlreadyExistsFault":
-        return ElastiCacheError.ReplicationGroupAlreadyExistsFault
-    if code == "ReplicationGroupAlreadyUnderMigrationFault":
-        return ElastiCacheError.ReplicationGroupAlreadyUnderMigrationFault
-    if code == "ReplicationGroupNotFoundFault":
-        return ElastiCacheError.ReplicationGroupNotFoundFault
-    if code == "ReplicationGroupNotUnderMigrationFault":
-        return ElastiCacheError.ReplicationGroupNotUnderMigrationFault
-    if code == "ReservedCacheNodeAlreadyExistsFault":
-        return ElastiCacheError.ReservedCacheNodeAlreadyExistsFault
-    if code == "ReservedCacheNodeNotFoundFault":
-        return ElastiCacheError.ReservedCacheNodeNotFoundFault
-    if code == "ReservedCacheNodeQuotaExceededFault":
-        return ElastiCacheError.ReservedCacheNodeQuotaExceededFault
-    if code == "ReservedCacheNodesOfferingNotFoundFault":
-        return ElastiCacheError.ReservedCacheNodesOfferingNotFoundFault
-    if code == "ServerlessCacheAlreadyExistsFault":
-        return ElastiCacheError.ServerlessCacheAlreadyExistsFault
-    if code == "ServerlessCacheAlreadyUnderMigrationFault":
-        return ElastiCacheError.ServerlessCacheAlreadyUnderMigrationFault
-    if code == "ServerlessCacheNotFoundFault":
-        return ElastiCacheError.ServerlessCacheNotFoundFault
-    if code == "ServerlessCacheNotUnderMigrationFault":
-        return ElastiCacheError.ServerlessCacheNotUnderMigrationFault
-    if code == "ServerlessCacheQuotaForCustomerExceededFault":
-        return ElastiCacheError.ServerlessCacheQuotaForCustomerExceededFault
-    if code == "ServerlessCacheSnapshotAlreadyExistsFault":
-        return ElastiCacheError.ServerlessCacheSnapshotAlreadyExistsFault
-    if code == "ServerlessCacheSnapshotNotFoundFault":
-        return ElastiCacheError.ServerlessCacheSnapshotNotFoundFault
-    if code == "ServerlessCacheSnapshotQuotaExceededFault":
-        return ElastiCacheError.ServerlessCacheSnapshotQuotaExceededFault
-    if code == "ServiceLinkedRoleNotFoundFault":
-        return ElastiCacheError.ServiceLinkedRoleNotFoundFault
-    if code == "ServiceUpdateNotFoundFault":
-        return ElastiCacheError.ServiceUpdateNotFoundFault
-    if code == "SnapshotAlreadyExistsFault":
-        return ElastiCacheError.SnapshotAlreadyExistsFault
-    if code == "SnapshotFeatureNotSupportedFault":
-        return ElastiCacheError.SnapshotFeatureNotSupportedFault
-    if code == "SnapshotNotFoundFault":
-        return ElastiCacheError.SnapshotNotFoundFault
-    if code == "SnapshotQuotaExceededFault":
-        return ElastiCacheError.SnapshotQuotaExceededFault
-    if code == "SubnetInUse":
-        return ElastiCacheError.SubnetInUse
-    if code == "SubnetNotAllowedFault":
-        return ElastiCacheError.SubnetNotAllowedFault
-    if code == "TagNotFoundFault":
-        return ElastiCacheError.TagNotFoundFault
-    if code == "TagQuotaPerResourceExceeded":
-        return ElastiCacheError.TagQuotaPerResourceExceeded
-    if code == "TestFailoverNotAvailableFault":
-        return ElastiCacheError.TestFailoverNotAvailableFault
-    if code == "UserAlreadyExistsFault":
-        return ElastiCacheError.UserAlreadyExistsFault
-    if code == "UserGroupAlreadyExistsFault":
-        return ElastiCacheError.UserGroupAlreadyExistsFault
-    if code == "UserGroupNotFoundFault":
-        return ElastiCacheError.UserGroupNotFoundFault
-    if code == "UserGroupQuotaExceededFault":
-        return ElastiCacheError.UserGroupQuotaExceededFault
-    if code == "UserNotFoundFault":
-        return ElastiCacheError.UserNotFoundFault
-    if code == "UserQuotaExceededFault":
-        return ElastiCacheError.UserQuotaExceededFault
-    return ElastiCacheError.Unknown(code=code)
+# Classify an AWS error code into `ElastiCacheErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def elasticache_error_kind(str code) -> ElastiCacheErrorKind:
+    auto name = errors.error_code(code)
+    if name == "APICallRateForCustomerExceededFault":
+        return ElastiCacheErrorKind.APICallRateForCustomerExceededFault
+    if name == "AuthorizationAlreadyExistsFault":
+        return ElastiCacheErrorKind.AuthorizationAlreadyExistsFault
+    if name == "AuthorizationNotFoundFault":
+        return ElastiCacheErrorKind.AuthorizationNotFoundFault
+    if name == "CacheClusterAlreadyExistsFault":
+        return ElastiCacheErrorKind.CacheClusterAlreadyExistsFault
+    if name == "CacheClusterNotFoundFault":
+        return ElastiCacheErrorKind.CacheClusterNotFoundFault
+    if name == "CacheParameterGroupAlreadyExistsFault":
+        return ElastiCacheErrorKind.CacheParameterGroupAlreadyExistsFault
+    if name == "CacheParameterGroupNotFoundFault":
+        return ElastiCacheErrorKind.CacheParameterGroupNotFoundFault
+    if name == "CacheParameterGroupQuotaExceededFault":
+        return ElastiCacheErrorKind.CacheParameterGroupQuotaExceededFault
+    if name == "CacheSecurityGroupAlreadyExistsFault":
+        return ElastiCacheErrorKind.CacheSecurityGroupAlreadyExistsFault
+    if name == "CacheSecurityGroupNotFoundFault":
+        return ElastiCacheErrorKind.CacheSecurityGroupNotFoundFault
+    if name == "CacheSecurityGroupQuotaExceededFault":
+        return ElastiCacheErrorKind.CacheSecurityGroupQuotaExceededFault
+    if name == "CacheSubnetGroupAlreadyExistsFault":
+        return ElastiCacheErrorKind.CacheSubnetGroupAlreadyExistsFault
+    if name == "CacheSubnetGroupInUse":
+        return ElastiCacheErrorKind.CacheSubnetGroupInUse
+    if name == "CacheSubnetGroupNotFoundFault":
+        return ElastiCacheErrorKind.CacheSubnetGroupNotFoundFault
+    if name == "CacheSubnetGroupQuotaExceededFault":
+        return ElastiCacheErrorKind.CacheSubnetGroupQuotaExceededFault
+    if name == "CacheSubnetQuotaExceededFault":
+        return ElastiCacheErrorKind.CacheSubnetQuotaExceededFault
+    if name == "ClusterQuotaForCustomerExceededFault":
+        return ElastiCacheErrorKind.ClusterQuotaForCustomerExceededFault
+    if name == "DefaultUserAssociatedToUserGroupFault":
+        return ElastiCacheErrorKind.DefaultUserAssociatedToUserGroupFault
+    if name == "DefaultUserRequired":
+        return ElastiCacheErrorKind.DefaultUserRequired
+    if name == "DuplicateUserNameFault":
+        return ElastiCacheErrorKind.DuplicateUserNameFault
+    if name == "GlobalReplicationGroupAlreadyExistsFault":
+        return ElastiCacheErrorKind.GlobalReplicationGroupAlreadyExistsFault
+    if name == "GlobalReplicationGroupNotFoundFault":
+        return ElastiCacheErrorKind.GlobalReplicationGroupNotFoundFault
+    if name == "InsufficientCacheClusterCapacityFault":
+        return ElastiCacheErrorKind.InsufficientCacheClusterCapacityFault
+    if name == "InvalidARNFault":
+        return ElastiCacheErrorKind.InvalidARNFault
+    if name == "InvalidCacheClusterStateFault":
+        return ElastiCacheErrorKind.InvalidCacheClusterStateFault
+    if name == "InvalidCacheParameterGroupStateFault":
+        return ElastiCacheErrorKind.InvalidCacheParameterGroupStateFault
+    if name == "InvalidCacheSecurityGroupStateFault":
+        return ElastiCacheErrorKind.InvalidCacheSecurityGroupStateFault
+    if name == "InvalidCredentialsException":
+        return ElastiCacheErrorKind.InvalidCredentialsException
+    if name == "InvalidGlobalReplicationGroupStateFault":
+        return ElastiCacheErrorKind.InvalidGlobalReplicationGroupStateFault
+    if name == "InvalidKMSKeyFault":
+        return ElastiCacheErrorKind.InvalidKMSKeyFault
+    if name == "InvalidParameterCombinationException":
+        return ElastiCacheErrorKind.InvalidParameterCombinationException
+    if name == "InvalidParameterValueException":
+        return ElastiCacheErrorKind.InvalidParameterValueException
+    if name == "InvalidReplicationGroupStateFault":
+        return ElastiCacheErrorKind.InvalidReplicationGroupStateFault
+    if name == "InvalidServerlessCacheSnapshotStateFault":
+        return ElastiCacheErrorKind.InvalidServerlessCacheSnapshotStateFault
+    if name == "InvalidServerlessCacheStateFault":
+        return ElastiCacheErrorKind.InvalidServerlessCacheStateFault
+    if name == "InvalidSnapshotStateFault":
+        return ElastiCacheErrorKind.InvalidSnapshotStateFault
+    if name == "InvalidSubnet":
+        return ElastiCacheErrorKind.InvalidSubnet
+    if name == "InvalidUserGroupStateFault":
+        return ElastiCacheErrorKind.InvalidUserGroupStateFault
+    if name == "InvalidUserStateFault":
+        return ElastiCacheErrorKind.InvalidUserStateFault
+    if name == "InvalidVPCNetworkStateFault":
+        return ElastiCacheErrorKind.InvalidVPCNetworkStateFault
+    if name == "MigrationHealthFault":
+        return ElastiCacheErrorKind.MigrationHealthFault
+    if name == "NoOperationFault":
+        return ElastiCacheErrorKind.NoOperationFault
+    if name == "NodeGroupNotFoundFault":
+        return ElastiCacheErrorKind.NodeGroupNotFoundFault
+    if name == "NodeGroupsPerReplicationGroupQuotaExceededFault":
+        return ElastiCacheErrorKind.NodeGroupsPerReplicationGroupQuotaExceededFault
+    if name == "NodeQuotaForClusterExceededFault":
+        return ElastiCacheErrorKind.NodeQuotaForClusterExceededFault
+    if name == "NodeQuotaForCustomerExceededFault":
+        return ElastiCacheErrorKind.NodeQuotaForCustomerExceededFault
+    if name == "ReplicationGroupAlreadyExistsFault":
+        return ElastiCacheErrorKind.ReplicationGroupAlreadyExistsFault
+    if name == "ReplicationGroupAlreadyUnderMigrationFault":
+        return ElastiCacheErrorKind.ReplicationGroupAlreadyUnderMigrationFault
+    if name == "ReplicationGroupNotFoundFault":
+        return ElastiCacheErrorKind.ReplicationGroupNotFoundFault
+    if name == "ReplicationGroupNotUnderMigrationFault":
+        return ElastiCacheErrorKind.ReplicationGroupNotUnderMigrationFault
+    if name == "ReservedCacheNodeAlreadyExistsFault":
+        return ElastiCacheErrorKind.ReservedCacheNodeAlreadyExistsFault
+    if name == "ReservedCacheNodeNotFoundFault":
+        return ElastiCacheErrorKind.ReservedCacheNodeNotFoundFault
+    if name == "ReservedCacheNodeQuotaExceededFault":
+        return ElastiCacheErrorKind.ReservedCacheNodeQuotaExceededFault
+    if name == "ReservedCacheNodesOfferingNotFoundFault":
+        return ElastiCacheErrorKind.ReservedCacheNodesOfferingNotFoundFault
+    if name == "ServerlessCacheAlreadyExistsFault":
+        return ElastiCacheErrorKind.ServerlessCacheAlreadyExistsFault
+    if name == "ServerlessCacheAlreadyUnderMigrationFault":
+        return ElastiCacheErrorKind.ServerlessCacheAlreadyUnderMigrationFault
+    if name == "ServerlessCacheNotFoundFault":
+        return ElastiCacheErrorKind.ServerlessCacheNotFoundFault
+    if name == "ServerlessCacheNotUnderMigrationFault":
+        return ElastiCacheErrorKind.ServerlessCacheNotUnderMigrationFault
+    if name == "ServerlessCacheQuotaForCustomerExceededFault":
+        return ElastiCacheErrorKind.ServerlessCacheQuotaForCustomerExceededFault
+    if name == "ServerlessCacheSnapshotAlreadyExistsFault":
+        return ElastiCacheErrorKind.ServerlessCacheSnapshotAlreadyExistsFault
+    if name == "ServerlessCacheSnapshotNotFoundFault":
+        return ElastiCacheErrorKind.ServerlessCacheSnapshotNotFoundFault
+    if name == "ServerlessCacheSnapshotQuotaExceededFault":
+        return ElastiCacheErrorKind.ServerlessCacheSnapshotQuotaExceededFault
+    if name == "ServiceLinkedRoleNotFoundFault":
+        return ElastiCacheErrorKind.ServiceLinkedRoleNotFoundFault
+    if name == "ServiceUpdateNotFoundFault":
+        return ElastiCacheErrorKind.ServiceUpdateNotFoundFault
+    if name == "SnapshotAlreadyExistsFault":
+        return ElastiCacheErrorKind.SnapshotAlreadyExistsFault
+    if name == "SnapshotFeatureNotSupportedFault":
+        return ElastiCacheErrorKind.SnapshotFeatureNotSupportedFault
+    if name == "SnapshotNotFoundFault":
+        return ElastiCacheErrorKind.SnapshotNotFoundFault
+    if name == "SnapshotQuotaExceededFault":
+        return ElastiCacheErrorKind.SnapshotQuotaExceededFault
+    if name == "SubnetInUse":
+        return ElastiCacheErrorKind.SubnetInUse
+    if name == "SubnetNotAllowedFault":
+        return ElastiCacheErrorKind.SubnetNotAllowedFault
+    if name == "TagNotFoundFault":
+        return ElastiCacheErrorKind.TagNotFoundFault
+    if name == "TagQuotaPerResourceExceeded":
+        return ElastiCacheErrorKind.TagQuotaPerResourceExceeded
+    if name == "TestFailoverNotAvailableFault":
+        return ElastiCacheErrorKind.TestFailoverNotAvailableFault
+    if name == "UserAlreadyExistsFault":
+        return ElastiCacheErrorKind.UserAlreadyExistsFault
+    if name == "UserGroupAlreadyExistsFault":
+        return ElastiCacheErrorKind.UserGroupAlreadyExistsFault
+    if name == "UserGroupNotFoundFault":
+        return ElastiCacheErrorKind.UserGroupNotFoundFault
+    if name == "UserGroupQuotaExceededFault":
+        return ElastiCacheErrorKind.UserGroupQuotaExceededFault
+    if name == "UserNotFoundFault":
+        return ElastiCacheErrorKind.UserNotFoundFault
+    if name == "UserQuotaExceededFault":
+        return ElastiCacheErrorKind.UserQuotaExceededFault
+    return ElastiCacheErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def elasticache_error_name(ElastiCacheErrorKind k) -> str:
+    match k:
+        case ElastiCacheErrorKind.APICallRateForCustomerExceededFault:
+            return "APICallRateForCustomerExceededFault"
+        case ElastiCacheErrorKind.AuthorizationAlreadyExistsFault:
+            return "AuthorizationAlreadyExistsFault"
+        case ElastiCacheErrorKind.AuthorizationNotFoundFault:
+            return "AuthorizationNotFoundFault"
+        case ElastiCacheErrorKind.CacheClusterAlreadyExistsFault:
+            return "CacheClusterAlreadyExistsFault"
+        case ElastiCacheErrorKind.CacheClusterNotFoundFault:
+            return "CacheClusterNotFoundFault"
+        case ElastiCacheErrorKind.CacheParameterGroupAlreadyExistsFault:
+            return "CacheParameterGroupAlreadyExistsFault"
+        case ElastiCacheErrorKind.CacheParameterGroupNotFoundFault:
+            return "CacheParameterGroupNotFoundFault"
+        case ElastiCacheErrorKind.CacheParameterGroupQuotaExceededFault:
+            return "CacheParameterGroupQuotaExceededFault"
+        case ElastiCacheErrorKind.CacheSecurityGroupAlreadyExistsFault:
+            return "CacheSecurityGroupAlreadyExistsFault"
+        case ElastiCacheErrorKind.CacheSecurityGroupNotFoundFault:
+            return "CacheSecurityGroupNotFoundFault"
+        case ElastiCacheErrorKind.CacheSecurityGroupQuotaExceededFault:
+            return "CacheSecurityGroupQuotaExceededFault"
+        case ElastiCacheErrorKind.CacheSubnetGroupAlreadyExistsFault:
+            return "CacheSubnetGroupAlreadyExistsFault"
+        case ElastiCacheErrorKind.CacheSubnetGroupInUse:
+            return "CacheSubnetGroupInUse"
+        case ElastiCacheErrorKind.CacheSubnetGroupNotFoundFault:
+            return "CacheSubnetGroupNotFoundFault"
+        case ElastiCacheErrorKind.CacheSubnetGroupQuotaExceededFault:
+            return "CacheSubnetGroupQuotaExceededFault"
+        case ElastiCacheErrorKind.CacheSubnetQuotaExceededFault:
+            return "CacheSubnetQuotaExceededFault"
+        case ElastiCacheErrorKind.ClusterQuotaForCustomerExceededFault:
+            return "ClusterQuotaForCustomerExceededFault"
+        case ElastiCacheErrorKind.DefaultUserAssociatedToUserGroupFault:
+            return "DefaultUserAssociatedToUserGroupFault"
+        case ElastiCacheErrorKind.DefaultUserRequired:
+            return "DefaultUserRequired"
+        case ElastiCacheErrorKind.DuplicateUserNameFault:
+            return "DuplicateUserNameFault"
+        case ElastiCacheErrorKind.GlobalReplicationGroupAlreadyExistsFault:
+            return "GlobalReplicationGroupAlreadyExistsFault"
+        case ElastiCacheErrorKind.GlobalReplicationGroupNotFoundFault:
+            return "GlobalReplicationGroupNotFoundFault"
+        case ElastiCacheErrorKind.InsufficientCacheClusterCapacityFault:
+            return "InsufficientCacheClusterCapacityFault"
+        case ElastiCacheErrorKind.InvalidARNFault:
+            return "InvalidARNFault"
+        case ElastiCacheErrorKind.InvalidCacheClusterStateFault:
+            return "InvalidCacheClusterStateFault"
+        case ElastiCacheErrorKind.InvalidCacheParameterGroupStateFault:
+            return "InvalidCacheParameterGroupStateFault"
+        case ElastiCacheErrorKind.InvalidCacheSecurityGroupStateFault:
+            return "InvalidCacheSecurityGroupStateFault"
+        case ElastiCacheErrorKind.InvalidCredentialsException:
+            return "InvalidCredentialsException"
+        case ElastiCacheErrorKind.InvalidGlobalReplicationGroupStateFault:
+            return "InvalidGlobalReplicationGroupStateFault"
+        case ElastiCacheErrorKind.InvalidKMSKeyFault:
+            return "InvalidKMSKeyFault"
+        case ElastiCacheErrorKind.InvalidParameterCombinationException:
+            return "InvalidParameterCombinationException"
+        case ElastiCacheErrorKind.InvalidParameterValueException:
+            return "InvalidParameterValueException"
+        case ElastiCacheErrorKind.InvalidReplicationGroupStateFault:
+            return "InvalidReplicationGroupStateFault"
+        case ElastiCacheErrorKind.InvalidServerlessCacheSnapshotStateFault:
+            return "InvalidServerlessCacheSnapshotStateFault"
+        case ElastiCacheErrorKind.InvalidServerlessCacheStateFault:
+            return "InvalidServerlessCacheStateFault"
+        case ElastiCacheErrorKind.InvalidSnapshotStateFault:
+            return "InvalidSnapshotStateFault"
+        case ElastiCacheErrorKind.InvalidSubnet:
+            return "InvalidSubnet"
+        case ElastiCacheErrorKind.InvalidUserGroupStateFault:
+            return "InvalidUserGroupStateFault"
+        case ElastiCacheErrorKind.InvalidUserStateFault:
+            return "InvalidUserStateFault"
+        case ElastiCacheErrorKind.InvalidVPCNetworkStateFault:
+            return "InvalidVPCNetworkStateFault"
+        case ElastiCacheErrorKind.MigrationHealthFault:
+            return "MigrationHealthFault"
+        case ElastiCacheErrorKind.NoOperationFault:
+            return "NoOperationFault"
+        case ElastiCacheErrorKind.NodeGroupNotFoundFault:
+            return "NodeGroupNotFoundFault"
+        case ElastiCacheErrorKind.NodeGroupsPerReplicationGroupQuotaExceededFault:
+            return "NodeGroupsPerReplicationGroupQuotaExceededFault"
+        case ElastiCacheErrorKind.NodeQuotaForClusterExceededFault:
+            return "NodeQuotaForClusterExceededFault"
+        case ElastiCacheErrorKind.NodeQuotaForCustomerExceededFault:
+            return "NodeQuotaForCustomerExceededFault"
+        case ElastiCacheErrorKind.ReplicationGroupAlreadyExistsFault:
+            return "ReplicationGroupAlreadyExistsFault"
+        case ElastiCacheErrorKind.ReplicationGroupAlreadyUnderMigrationFault:
+            return "ReplicationGroupAlreadyUnderMigrationFault"
+        case ElastiCacheErrorKind.ReplicationGroupNotFoundFault:
+            return "ReplicationGroupNotFoundFault"
+        case ElastiCacheErrorKind.ReplicationGroupNotUnderMigrationFault:
+            return "ReplicationGroupNotUnderMigrationFault"
+        case ElastiCacheErrorKind.ReservedCacheNodeAlreadyExistsFault:
+            return "ReservedCacheNodeAlreadyExistsFault"
+        case ElastiCacheErrorKind.ReservedCacheNodeNotFoundFault:
+            return "ReservedCacheNodeNotFoundFault"
+        case ElastiCacheErrorKind.ReservedCacheNodeQuotaExceededFault:
+            return "ReservedCacheNodeQuotaExceededFault"
+        case ElastiCacheErrorKind.ReservedCacheNodesOfferingNotFoundFault:
+            return "ReservedCacheNodesOfferingNotFoundFault"
+        case ElastiCacheErrorKind.ServerlessCacheAlreadyExistsFault:
+            return "ServerlessCacheAlreadyExistsFault"
+        case ElastiCacheErrorKind.ServerlessCacheAlreadyUnderMigrationFault:
+            return "ServerlessCacheAlreadyUnderMigrationFault"
+        case ElastiCacheErrorKind.ServerlessCacheNotFoundFault:
+            return "ServerlessCacheNotFoundFault"
+        case ElastiCacheErrorKind.ServerlessCacheNotUnderMigrationFault:
+            return "ServerlessCacheNotUnderMigrationFault"
+        case ElastiCacheErrorKind.ServerlessCacheQuotaForCustomerExceededFault:
+            return "ServerlessCacheQuotaForCustomerExceededFault"
+        case ElastiCacheErrorKind.ServerlessCacheSnapshotAlreadyExistsFault:
+            return "ServerlessCacheSnapshotAlreadyExistsFault"
+        case ElastiCacheErrorKind.ServerlessCacheSnapshotNotFoundFault:
+            return "ServerlessCacheSnapshotNotFoundFault"
+        case ElastiCacheErrorKind.ServerlessCacheSnapshotQuotaExceededFault:
+            return "ServerlessCacheSnapshotQuotaExceededFault"
+        case ElastiCacheErrorKind.ServiceLinkedRoleNotFoundFault:
+            return "ServiceLinkedRoleNotFoundFault"
+        case ElastiCacheErrorKind.ServiceUpdateNotFoundFault:
+            return "ServiceUpdateNotFoundFault"
+        case ElastiCacheErrorKind.SnapshotAlreadyExistsFault:
+            return "SnapshotAlreadyExistsFault"
+        case ElastiCacheErrorKind.SnapshotFeatureNotSupportedFault:
+            return "SnapshotFeatureNotSupportedFault"
+        case ElastiCacheErrorKind.SnapshotNotFoundFault:
+            return "SnapshotNotFoundFault"
+        case ElastiCacheErrorKind.SnapshotQuotaExceededFault:
+            return "SnapshotQuotaExceededFault"
+        case ElastiCacheErrorKind.SubnetInUse:
+            return "SubnetInUse"
+        case ElastiCacheErrorKind.SubnetNotAllowedFault:
+            return "SubnetNotAllowedFault"
+        case ElastiCacheErrorKind.TagNotFoundFault:
+            return "TagNotFoundFault"
+        case ElastiCacheErrorKind.TagQuotaPerResourceExceeded:
+            return "TagQuotaPerResourceExceeded"
+        case ElastiCacheErrorKind.TestFailoverNotAvailableFault:
+            return "TestFailoverNotAvailableFault"
+        case ElastiCacheErrorKind.UserAlreadyExistsFault:
+            return "UserAlreadyExistsFault"
+        case ElastiCacheErrorKind.UserGroupAlreadyExistsFault:
+            return "UserGroupAlreadyExistsFault"
+        case ElastiCacheErrorKind.UserGroupNotFoundFault:
+            return "UserGroupNotFoundFault"
+        case ElastiCacheErrorKind.UserGroupQuotaExceededFault:
+            return "UserGroupQuotaExceededFault"
+        case ElastiCacheErrorKind.UserNotFoundFault:
+            return "UserNotFoundFault"
+        case ElastiCacheErrorKind.UserQuotaExceededFault:
+            return "UserQuotaExceededFault"
+        case ElastiCacheErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

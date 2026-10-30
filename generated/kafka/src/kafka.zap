@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service kafka)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -2112,9 +2113,16 @@ struct ZookeeperNodeInfo:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by kafka_error_from_code.
-enum KafkaError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum KafkaErrorKind:
     BadRequestException
     ClusterConnectivityException
     ConflictException
@@ -2134,44 +2142,91 @@ enum KafkaError:
     UnknownTopicOrPartitionException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def kafka_error_from_code(str code) -> KafkaError:
-    if code == "BadRequestException":
-        return KafkaError.BadRequestException
-    if code == "ClusterConnectivityException":
-        return KafkaError.ClusterConnectivityException
-    if code == "ConflictException":
-        return KafkaError.ConflictException
-    if code == "ControllerMovedException":
-        return KafkaError.ControllerMovedException
-    if code == "ForbiddenException":
-        return KafkaError.ForbiddenException
-    if code == "GroupSubscribedToTopicException":
-        return KafkaError.GroupSubscribedToTopicException
-    if code == "InternalServerErrorException":
-        return KafkaError.InternalServerErrorException
-    if code == "KafkaRequestException":
-        return KafkaError.KafkaRequestException
-    if code == "KafkaTimeoutException":
-        return KafkaError.KafkaTimeoutException
-    if code == "NotControllerException":
-        return KafkaError.NotControllerException
-    if code == "NotFoundException":
-        return KafkaError.NotFoundException
-    if code == "ReassignmentInProgressException":
-        return KafkaError.ReassignmentInProgressException
-    if code == "ServiceUnavailableException":
-        return KafkaError.ServiceUnavailableException
-    if code == "TooManyRequestsException":
-        return KafkaError.TooManyRequestsException
-    if code == "TopicExistsException":
-        return KafkaError.TopicExistsException
-    if code == "UnauthorizedException":
-        return KafkaError.UnauthorizedException
-    if code == "UnknownTopicOrPartitionException":
-        return KafkaError.UnknownTopicOrPartitionException
-    return KafkaError.Unknown(code=code)
+# Classify an AWS error code into `KafkaErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def kafka_error_kind(str code) -> KafkaErrorKind:
+    auto name = errors.error_code(code)
+    if name == "BadRequestException":
+        return KafkaErrorKind.BadRequestException
+    if name == "ClusterConnectivityException":
+        return KafkaErrorKind.ClusterConnectivityException
+    if name == "ConflictException":
+        return KafkaErrorKind.ConflictException
+    if name == "ControllerMovedException":
+        return KafkaErrorKind.ControllerMovedException
+    if name == "ForbiddenException":
+        return KafkaErrorKind.ForbiddenException
+    if name == "GroupSubscribedToTopicException":
+        return KafkaErrorKind.GroupSubscribedToTopicException
+    if name == "InternalServerErrorException":
+        return KafkaErrorKind.InternalServerErrorException
+    if name == "KafkaRequestException":
+        return KafkaErrorKind.KafkaRequestException
+    if name == "KafkaTimeoutException":
+        return KafkaErrorKind.KafkaTimeoutException
+    if name == "NotControllerException":
+        return KafkaErrorKind.NotControllerException
+    if name == "NotFoundException":
+        return KafkaErrorKind.NotFoundException
+    if name == "ReassignmentInProgressException":
+        return KafkaErrorKind.ReassignmentInProgressException
+    if name == "ServiceUnavailableException":
+        return KafkaErrorKind.ServiceUnavailableException
+    if name == "TooManyRequestsException":
+        return KafkaErrorKind.TooManyRequestsException
+    if name == "TopicExistsException":
+        return KafkaErrorKind.TopicExistsException
+    if name == "UnauthorizedException":
+        return KafkaErrorKind.UnauthorizedException
+    if name == "UnknownTopicOrPartitionException":
+        return KafkaErrorKind.UnknownTopicOrPartitionException
+    return KafkaErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def kafka_error_name(KafkaErrorKind k) -> str:
+    match k:
+        case KafkaErrorKind.BadRequestException:
+            return "BadRequestException"
+        case KafkaErrorKind.ClusterConnectivityException:
+            return "ClusterConnectivityException"
+        case KafkaErrorKind.ConflictException:
+            return "ConflictException"
+        case KafkaErrorKind.ControllerMovedException:
+            return "ControllerMovedException"
+        case KafkaErrorKind.ForbiddenException:
+            return "ForbiddenException"
+        case KafkaErrorKind.GroupSubscribedToTopicException:
+            return "GroupSubscribedToTopicException"
+        case KafkaErrorKind.InternalServerErrorException:
+            return "InternalServerErrorException"
+        case KafkaErrorKind.KafkaRequestException:
+            return "KafkaRequestException"
+        case KafkaErrorKind.KafkaTimeoutException:
+            return "KafkaTimeoutException"
+        case KafkaErrorKind.NotControllerException:
+            return "NotControllerException"
+        case KafkaErrorKind.NotFoundException:
+            return "NotFoundException"
+        case KafkaErrorKind.ReassignmentInProgressException:
+            return "ReassignmentInProgressException"
+        case KafkaErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
+        case KafkaErrorKind.TooManyRequestsException:
+            return "TooManyRequestsException"
+        case KafkaErrorKind.TopicExistsException:
+            return "TopicExistsException"
+        case KafkaErrorKind.UnauthorizedException:
+            return "UnauthorizedException"
+        case KafkaErrorKind.UnknownTopicOrPartitionException:
+            return "UnknownTopicOrPartitionException"
+        case KafkaErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix CodeCommit_20150413)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -2602,9 +2604,16 @@ struct ValidationException:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by codecommit_error_from_code.
-enum CodeCommitError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum CodeCommitErrorKind:
     ActorDoesNotExistException
     ApprovalRuleContentRequiredException
     ApprovalRuleDoesNotExistException
@@ -2797,389 +2806,783 @@ enum CodeCommitError:
     ValidationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def codecommit_error_from_code(str code) -> CodeCommitError:
-    if code == "ActorDoesNotExistException":
-        return CodeCommitError.ActorDoesNotExistException
-    if code == "ApprovalRuleContentRequiredException":
-        return CodeCommitError.ApprovalRuleContentRequiredException
-    if code == "ApprovalRuleDoesNotExistException":
-        return CodeCommitError.ApprovalRuleDoesNotExistException
-    if code == "ApprovalRuleNameAlreadyExistsException":
-        return CodeCommitError.ApprovalRuleNameAlreadyExistsException
-    if code == "ApprovalRuleNameRequiredException":
-        return CodeCommitError.ApprovalRuleNameRequiredException
-    if code == "ApprovalRuleTemplateContentRequiredException":
-        return CodeCommitError.ApprovalRuleTemplateContentRequiredException
-    if code == "ApprovalRuleTemplateDoesNotExistException":
-        return CodeCommitError.ApprovalRuleTemplateDoesNotExistException
-    if code == "ApprovalRuleTemplateInUseException":
-        return CodeCommitError.ApprovalRuleTemplateInUseException
-    if code == "ApprovalRuleTemplateNameAlreadyExistsException":
-        return CodeCommitError.ApprovalRuleTemplateNameAlreadyExistsException
-    if code == "ApprovalRuleTemplateNameRequiredException":
-        return CodeCommitError.ApprovalRuleTemplateNameRequiredException
-    if code == "ApprovalStateRequiredException":
-        return CodeCommitError.ApprovalStateRequiredException
-    if code == "AuthorDoesNotExistException":
-        return CodeCommitError.AuthorDoesNotExistException
-    if code == "BeforeCommitIdAndAfterCommitIdAreSameException":
-        return CodeCommitError.BeforeCommitIdAndAfterCommitIdAreSameException
-    if code == "BlobIdDoesNotExistException":
-        return CodeCommitError.BlobIdDoesNotExistException
-    if code == "BlobIdRequiredException":
-        return CodeCommitError.BlobIdRequiredException
-    if code == "BranchDoesNotExistException":
-        return CodeCommitError.BranchDoesNotExistException
-    if code == "BranchNameExistsException":
-        return CodeCommitError.BranchNameExistsException
-    if code == "BranchNameIsTagNameException":
-        return CodeCommitError.BranchNameIsTagNameException
-    if code == "BranchNameRequiredException":
-        return CodeCommitError.BranchNameRequiredException
-    if code == "CannotDeleteApprovalRuleFromTemplateException":
-        return CodeCommitError.CannotDeleteApprovalRuleFromTemplateException
-    if code == "CannotModifyApprovalRuleFromTemplateException":
-        return CodeCommitError.CannotModifyApprovalRuleFromTemplateException
-    if code == "ClientRequestTokenRequiredException":
-        return CodeCommitError.ClientRequestTokenRequiredException
-    if code == "CommentContentRequiredException":
-        return CodeCommitError.CommentContentRequiredException
-    if code == "CommentContentSizeLimitExceededException":
-        return CodeCommitError.CommentContentSizeLimitExceededException
-    if code == "CommentDeletedException":
-        return CodeCommitError.CommentDeletedException
-    if code == "CommentDoesNotExistException":
-        return CodeCommitError.CommentDoesNotExistException
-    if code == "CommentIdRequiredException":
-        return CodeCommitError.CommentIdRequiredException
-    if code == "CommentNotCreatedByCallerException":
-        return CodeCommitError.CommentNotCreatedByCallerException
-    if code == "CommitDoesNotExistException":
-        return CodeCommitError.CommitDoesNotExistException
-    if code == "CommitIdDoesNotExistException":
-        return CodeCommitError.CommitIdDoesNotExistException
-    if code == "CommitIdRequiredException":
-        return CodeCommitError.CommitIdRequiredException
-    if code == "CommitIdsLimitExceededException":
-        return CodeCommitError.CommitIdsLimitExceededException
-    if code == "CommitIdsListRequiredException":
-        return CodeCommitError.CommitIdsListRequiredException
-    if code == "CommitMessageLengthExceededException":
-        return CodeCommitError.CommitMessageLengthExceededException
-    if code == "CommitRequiredException":
-        return CodeCommitError.CommitRequiredException
-    if code == "ConcurrentReferenceUpdateException":
-        return CodeCommitError.ConcurrentReferenceUpdateException
-    if code == "DefaultBranchCannotBeDeletedException":
-        return CodeCommitError.DefaultBranchCannotBeDeletedException
-    if code == "DirectoryNameConflictsWithFileNameException":
-        return CodeCommitError.DirectoryNameConflictsWithFileNameException
-    if code == "EncryptionIntegrityChecksFailedException":
-        return CodeCommitError.EncryptionIntegrityChecksFailedException
-    if code == "EncryptionKeyAccessDeniedException":
-        return CodeCommitError.EncryptionKeyAccessDeniedException
-    if code == "EncryptionKeyDisabledException":
-        return CodeCommitError.EncryptionKeyDisabledException
-    if code == "EncryptionKeyInvalidIdException":
-        return CodeCommitError.EncryptionKeyInvalidIdException
-    if code == "EncryptionKeyInvalidUsageException":
-        return CodeCommitError.EncryptionKeyInvalidUsageException
-    if code == "EncryptionKeyNotFoundException":
-        return CodeCommitError.EncryptionKeyNotFoundException
-    if code == "EncryptionKeyRequiredException":
-        return CodeCommitError.EncryptionKeyRequiredException
-    if code == "EncryptionKeyUnavailableException":
-        return CodeCommitError.EncryptionKeyUnavailableException
-    if code == "FileContentAndSourceFileSpecifiedException":
-        return CodeCommitError.FileContentAndSourceFileSpecifiedException
-    if code == "FileContentRequiredException":
-        return CodeCommitError.FileContentRequiredException
-    if code == "FileContentSizeLimitExceededException":
-        return CodeCommitError.FileContentSizeLimitExceededException
-    if code == "FileDoesNotExistException":
-        return CodeCommitError.FileDoesNotExistException
-    if code == "FileEntryRequiredException":
-        return CodeCommitError.FileEntryRequiredException
-    if code == "FileModeRequiredException":
-        return CodeCommitError.FileModeRequiredException
-    if code == "FileNameConflictsWithDirectoryNameException":
-        return CodeCommitError.FileNameConflictsWithDirectoryNameException
-    if code == "FilePathConflictsWithSubmodulePathException":
-        return CodeCommitError.FilePathConflictsWithSubmodulePathException
-    if code == "FileTooLargeException":
-        return CodeCommitError.FileTooLargeException
-    if code == "FolderContentSizeLimitExceededException":
-        return CodeCommitError.FolderContentSizeLimitExceededException
-    if code == "FolderDoesNotExistException":
-        return CodeCommitError.FolderDoesNotExistException
-    if code == "IdempotencyParameterMismatchException":
-        return CodeCommitError.IdempotencyParameterMismatchException
-    if code == "InvalidActorArnException":
-        return CodeCommitError.InvalidActorArnException
-    if code == "InvalidApprovalRuleContentException":
-        return CodeCommitError.InvalidApprovalRuleContentException
-    if code == "InvalidApprovalRuleNameException":
-        return CodeCommitError.InvalidApprovalRuleNameException
-    if code == "InvalidApprovalRuleTemplateContentException":
-        return CodeCommitError.InvalidApprovalRuleTemplateContentException
-    if code == "InvalidApprovalRuleTemplateDescriptionException":
-        return CodeCommitError.InvalidApprovalRuleTemplateDescriptionException
-    if code == "InvalidApprovalRuleTemplateNameException":
-        return CodeCommitError.InvalidApprovalRuleTemplateNameException
-    if code == "InvalidApprovalStateException":
-        return CodeCommitError.InvalidApprovalStateException
-    if code == "InvalidAuthorArnException":
-        return CodeCommitError.InvalidAuthorArnException
-    if code == "InvalidBlobIdException":
-        return CodeCommitError.InvalidBlobIdException
-    if code == "InvalidBranchNameException":
-        return CodeCommitError.InvalidBranchNameException
-    if code == "InvalidClientRequestTokenException":
-        return CodeCommitError.InvalidClientRequestTokenException
-    if code == "InvalidCommentIdException":
-        return CodeCommitError.InvalidCommentIdException
-    if code == "InvalidCommitException":
-        return CodeCommitError.InvalidCommitException
-    if code == "InvalidCommitIdException":
-        return CodeCommitError.InvalidCommitIdException
-    if code == "InvalidConflictDetailLevelException":
-        return CodeCommitError.InvalidConflictDetailLevelException
-    if code == "InvalidConflictResolutionException":
-        return CodeCommitError.InvalidConflictResolutionException
-    if code == "InvalidConflictResolutionStrategyException":
-        return CodeCommitError.InvalidConflictResolutionStrategyException
-    if code == "InvalidContinuationTokenException":
-        return CodeCommitError.InvalidContinuationTokenException
-    if code == "InvalidDeletionParameterException":
-        return CodeCommitError.InvalidDeletionParameterException
-    if code == "InvalidDescriptionException":
-        return CodeCommitError.InvalidDescriptionException
-    if code == "InvalidDestinationCommitSpecifierException":
-        return CodeCommitError.InvalidDestinationCommitSpecifierException
-    if code == "InvalidEmailException":
-        return CodeCommitError.InvalidEmailException
-    if code == "InvalidFileLocationException":
-        return CodeCommitError.InvalidFileLocationException
-    if code == "InvalidFileModeException":
-        return CodeCommitError.InvalidFileModeException
-    if code == "InvalidFilePositionException":
-        return CodeCommitError.InvalidFilePositionException
-    if code == "InvalidMaxConflictFilesException":
-        return CodeCommitError.InvalidMaxConflictFilesException
-    if code == "InvalidMaxMergeHunksException":
-        return CodeCommitError.InvalidMaxMergeHunksException
-    if code == "InvalidMaxResultsException":
-        return CodeCommitError.InvalidMaxResultsException
-    if code == "InvalidMergeOptionException":
-        return CodeCommitError.InvalidMergeOptionException
-    if code == "InvalidOrderException":
-        return CodeCommitError.InvalidOrderException
-    if code == "InvalidOverrideStatusException":
-        return CodeCommitError.InvalidOverrideStatusException
-    if code == "InvalidParentCommitIdException":
-        return CodeCommitError.InvalidParentCommitIdException
-    if code == "InvalidPathException":
-        return CodeCommitError.InvalidPathException
-    if code == "InvalidPullRequestEventTypeException":
-        return CodeCommitError.InvalidPullRequestEventTypeException
-    if code == "InvalidPullRequestIdException":
-        return CodeCommitError.InvalidPullRequestIdException
-    if code == "InvalidPullRequestStatusException":
-        return CodeCommitError.InvalidPullRequestStatusException
-    if code == "InvalidPullRequestStatusUpdateException":
-        return CodeCommitError.InvalidPullRequestStatusUpdateException
-    if code == "InvalidReactionUserArnException":
-        return CodeCommitError.InvalidReactionUserArnException
-    if code == "InvalidReactionValueException":
-        return CodeCommitError.InvalidReactionValueException
-    if code == "InvalidReferenceNameException":
-        return CodeCommitError.InvalidReferenceNameException
-    if code == "InvalidRelativeFileVersionEnumException":
-        return CodeCommitError.InvalidRelativeFileVersionEnumException
-    if code == "InvalidReplacementContentException":
-        return CodeCommitError.InvalidReplacementContentException
-    if code == "InvalidReplacementTypeException":
-        return CodeCommitError.InvalidReplacementTypeException
-    if code == "InvalidRepositoryDescriptionException":
-        return CodeCommitError.InvalidRepositoryDescriptionException
-    if code == "InvalidRepositoryNameException":
-        return CodeCommitError.InvalidRepositoryNameException
-    if code == "InvalidRepositoryTriggerBranchNameException":
-        return CodeCommitError.InvalidRepositoryTriggerBranchNameException
-    if code == "InvalidRepositoryTriggerCustomDataException":
-        return CodeCommitError.InvalidRepositoryTriggerCustomDataException
-    if code == "InvalidRepositoryTriggerDestinationArnException":
-        return CodeCommitError.InvalidRepositoryTriggerDestinationArnException
-    if code == "InvalidRepositoryTriggerEventsException":
-        return CodeCommitError.InvalidRepositoryTriggerEventsException
-    if code == "InvalidRepositoryTriggerNameException":
-        return CodeCommitError.InvalidRepositoryTriggerNameException
-    if code == "InvalidRepositoryTriggerRegionException":
-        return CodeCommitError.InvalidRepositoryTriggerRegionException
-    if code == "InvalidResourceArnException":
-        return CodeCommitError.InvalidResourceArnException
-    if code == "InvalidRevisionIdException":
-        return CodeCommitError.InvalidRevisionIdException
-    if code == "InvalidRuleContentSha256Exception":
-        return CodeCommitError.InvalidRuleContentSha256Exception
-    if code == "InvalidSortByException":
-        return CodeCommitError.InvalidSortByException
-    if code == "InvalidSourceCommitSpecifierException":
-        return CodeCommitError.InvalidSourceCommitSpecifierException
-    if code == "InvalidSystemTagUsageException":
-        return CodeCommitError.InvalidSystemTagUsageException
-    if code == "InvalidTagKeysListException":
-        return CodeCommitError.InvalidTagKeysListException
-    if code == "InvalidTagsMapException":
-        return CodeCommitError.InvalidTagsMapException
-    if code == "InvalidTargetBranchException":
-        return CodeCommitError.InvalidTargetBranchException
-    if code == "InvalidTargetException":
-        return CodeCommitError.InvalidTargetException
-    if code == "InvalidTargetsException":
-        return CodeCommitError.InvalidTargetsException
-    if code == "InvalidTitleException":
-        return CodeCommitError.InvalidTitleException
-    if code == "ManualMergeRequiredException":
-        return CodeCommitError.ManualMergeRequiredException
-    if code == "MaximumBranchesExceededException":
-        return CodeCommitError.MaximumBranchesExceededException
-    if code == "MaximumConflictResolutionEntriesExceededException":
-        return CodeCommitError.MaximumConflictResolutionEntriesExceededException
-    if code == "MaximumFileContentToLoadExceededException":
-        return CodeCommitError.MaximumFileContentToLoadExceededException
-    if code == "MaximumFileEntriesExceededException":
-        return CodeCommitError.MaximumFileEntriesExceededException
-    if code == "MaximumItemsToCompareExceededException":
-        return CodeCommitError.MaximumItemsToCompareExceededException
-    if code == "MaximumNumberOfApprovalsExceededException":
-        return CodeCommitError.MaximumNumberOfApprovalsExceededException
-    if code == "MaximumOpenPullRequestsExceededException":
-        return CodeCommitError.MaximumOpenPullRequestsExceededException
-    if code == "MaximumRepositoryNamesExceededException":
-        return CodeCommitError.MaximumRepositoryNamesExceededException
-    if code == "MaximumRepositoryTriggersExceededException":
-        return CodeCommitError.MaximumRepositoryTriggersExceededException
-    if code == "MaximumRuleTemplatesAssociatedWithRepositoryException":
-        return CodeCommitError.MaximumRuleTemplatesAssociatedWithRepositoryException
-    if code == "MergeOptionRequiredException":
-        return CodeCommitError.MergeOptionRequiredException
-    if code == "MultipleConflictResolutionEntriesException":
-        return CodeCommitError.MultipleConflictResolutionEntriesException
-    if code == "MultipleRepositoriesInPullRequestException":
-        return CodeCommitError.MultipleRepositoriesInPullRequestException
-    if code == "NameLengthExceededException":
-        return CodeCommitError.NameLengthExceededException
-    if code == "NoChangeException":
-        return CodeCommitError.NoChangeException
-    if code == "NumberOfRuleTemplatesExceededException":
-        return CodeCommitError.NumberOfRuleTemplatesExceededException
-    if code == "NumberOfRulesExceededException":
-        return CodeCommitError.NumberOfRulesExceededException
-    if code == "OperationNotAllowedException":
-        return CodeCommitError.OperationNotAllowedException
-    if code == "OverrideAlreadySetException":
-        return CodeCommitError.OverrideAlreadySetException
-    if code == "OverrideStatusRequiredException":
-        return CodeCommitError.OverrideStatusRequiredException
-    if code == "ParentCommitDoesNotExistException":
-        return CodeCommitError.ParentCommitDoesNotExistException
-    if code == "ParentCommitIdOutdatedException":
-        return CodeCommitError.ParentCommitIdOutdatedException
-    if code == "ParentCommitIdRequiredException":
-        return CodeCommitError.ParentCommitIdRequiredException
-    if code == "PathDoesNotExistException":
-        return CodeCommitError.PathDoesNotExistException
-    if code == "PathRequiredException":
-        return CodeCommitError.PathRequiredException
-    if code == "PullRequestAlreadyClosedException":
-        return CodeCommitError.PullRequestAlreadyClosedException
-    if code == "PullRequestApprovalRulesNotSatisfiedException":
-        return CodeCommitError.PullRequestApprovalRulesNotSatisfiedException
-    if code == "PullRequestCannotBeApprovedByAuthorException":
-        return CodeCommitError.PullRequestCannotBeApprovedByAuthorException
-    if code == "PullRequestDoesNotExistException":
-        return CodeCommitError.PullRequestDoesNotExistException
-    if code == "PullRequestIdRequiredException":
-        return CodeCommitError.PullRequestIdRequiredException
-    if code == "PullRequestStatusRequiredException":
-        return CodeCommitError.PullRequestStatusRequiredException
-    if code == "PutFileEntryConflictException":
-        return CodeCommitError.PutFileEntryConflictException
-    if code == "ReactionLimitExceededException":
-        return CodeCommitError.ReactionLimitExceededException
-    if code == "ReactionValueRequiredException":
-        return CodeCommitError.ReactionValueRequiredException
-    if code == "ReferenceDoesNotExistException":
-        return CodeCommitError.ReferenceDoesNotExistException
-    if code == "ReferenceNameRequiredException":
-        return CodeCommitError.ReferenceNameRequiredException
-    if code == "ReferenceTypeNotSupportedException":
-        return CodeCommitError.ReferenceTypeNotSupportedException
-    if code == "ReplacementContentRequiredException":
-        return CodeCommitError.ReplacementContentRequiredException
-    if code == "ReplacementTypeRequiredException":
-        return CodeCommitError.ReplacementTypeRequiredException
-    if code == "RepositoryDoesNotExistException":
-        return CodeCommitError.RepositoryDoesNotExistException
-    if code == "RepositoryLimitExceededException":
-        return CodeCommitError.RepositoryLimitExceededException
-    if code == "RepositoryNameExistsException":
-        return CodeCommitError.RepositoryNameExistsException
-    if code == "RepositoryNameRequiredException":
-        return CodeCommitError.RepositoryNameRequiredException
-    if code == "RepositoryNamesRequiredException":
-        return CodeCommitError.RepositoryNamesRequiredException
-    if code == "RepositoryNotAssociatedWithPullRequestException":
-        return CodeCommitError.RepositoryNotAssociatedWithPullRequestException
-    if code == "RepositoryTriggerBranchNameListRequiredException":
-        return CodeCommitError.RepositoryTriggerBranchNameListRequiredException
-    if code == "RepositoryTriggerDestinationArnRequiredException":
-        return CodeCommitError.RepositoryTriggerDestinationArnRequiredException
-    if code == "RepositoryTriggerEventsListRequiredException":
-        return CodeCommitError.RepositoryTriggerEventsListRequiredException
-    if code == "RepositoryTriggerNameRequiredException":
-        return CodeCommitError.RepositoryTriggerNameRequiredException
-    if code == "RepositoryTriggersListRequiredException":
-        return CodeCommitError.RepositoryTriggersListRequiredException
-    if code == "ResourceArnRequiredException":
-        return CodeCommitError.ResourceArnRequiredException
-    if code == "RestrictedSourceFileException":
-        return CodeCommitError.RestrictedSourceFileException
-    if code == "RevisionIdRequiredException":
-        return CodeCommitError.RevisionIdRequiredException
-    if code == "RevisionNotCurrentException":
-        return CodeCommitError.RevisionNotCurrentException
-    if code == "SameFileContentException":
-        return CodeCommitError.SameFileContentException
-    if code == "SamePathRequestException":
-        return CodeCommitError.SamePathRequestException
-    if code == "SourceAndDestinationAreSameException":
-        return CodeCommitError.SourceAndDestinationAreSameException
-    if code == "SourceFileOrContentRequiredException":
-        return CodeCommitError.SourceFileOrContentRequiredException
-    if code == "TagKeysListRequiredException":
-        return CodeCommitError.TagKeysListRequiredException
-    if code == "TagPolicyException":
-        return CodeCommitError.TagPolicyException
-    if code == "TagsMapRequiredException":
-        return CodeCommitError.TagsMapRequiredException
-    if code == "TargetRequiredException":
-        return CodeCommitError.TargetRequiredException
-    if code == "TargetsRequiredException":
-        return CodeCommitError.TargetsRequiredException
-    if code == "TipOfSourceReferenceIsDifferentException":
-        return CodeCommitError.TipOfSourceReferenceIsDifferentException
-    if code == "TipsDivergenceExceededException":
-        return CodeCommitError.TipsDivergenceExceededException
-    if code == "TitleRequiredException":
-        return CodeCommitError.TitleRequiredException
-    if code == "TooManyTagsException":
-        return CodeCommitError.TooManyTagsException
-    if code == "ValidationException":
-        return CodeCommitError.ValidationException
-    return CodeCommitError.Unknown(code=code)
+# Classify an AWS error code into `CodeCommitErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def codecommit_error_kind(str code) -> CodeCommitErrorKind:
+    auto name = errors.error_code(code)
+    if name == "ActorDoesNotExistException":
+        return CodeCommitErrorKind.ActorDoesNotExistException
+    if name == "ApprovalRuleContentRequiredException":
+        return CodeCommitErrorKind.ApprovalRuleContentRequiredException
+    if name == "ApprovalRuleDoesNotExistException":
+        return CodeCommitErrorKind.ApprovalRuleDoesNotExistException
+    if name == "ApprovalRuleNameAlreadyExistsException":
+        return CodeCommitErrorKind.ApprovalRuleNameAlreadyExistsException
+    if name == "ApprovalRuleNameRequiredException":
+        return CodeCommitErrorKind.ApprovalRuleNameRequiredException
+    if name == "ApprovalRuleTemplateContentRequiredException":
+        return CodeCommitErrorKind.ApprovalRuleTemplateContentRequiredException
+    if name == "ApprovalRuleTemplateDoesNotExistException":
+        return CodeCommitErrorKind.ApprovalRuleTemplateDoesNotExistException
+    if name == "ApprovalRuleTemplateInUseException":
+        return CodeCommitErrorKind.ApprovalRuleTemplateInUseException
+    if name == "ApprovalRuleTemplateNameAlreadyExistsException":
+        return CodeCommitErrorKind.ApprovalRuleTemplateNameAlreadyExistsException
+    if name == "ApprovalRuleTemplateNameRequiredException":
+        return CodeCommitErrorKind.ApprovalRuleTemplateNameRequiredException
+    if name == "ApprovalStateRequiredException":
+        return CodeCommitErrorKind.ApprovalStateRequiredException
+    if name == "AuthorDoesNotExistException":
+        return CodeCommitErrorKind.AuthorDoesNotExistException
+    if name == "BeforeCommitIdAndAfterCommitIdAreSameException":
+        return CodeCommitErrorKind.BeforeCommitIdAndAfterCommitIdAreSameException
+    if name == "BlobIdDoesNotExistException":
+        return CodeCommitErrorKind.BlobIdDoesNotExistException
+    if name == "BlobIdRequiredException":
+        return CodeCommitErrorKind.BlobIdRequiredException
+    if name == "BranchDoesNotExistException":
+        return CodeCommitErrorKind.BranchDoesNotExistException
+    if name == "BranchNameExistsException":
+        return CodeCommitErrorKind.BranchNameExistsException
+    if name == "BranchNameIsTagNameException":
+        return CodeCommitErrorKind.BranchNameIsTagNameException
+    if name == "BranchNameRequiredException":
+        return CodeCommitErrorKind.BranchNameRequiredException
+    if name == "CannotDeleteApprovalRuleFromTemplateException":
+        return CodeCommitErrorKind.CannotDeleteApprovalRuleFromTemplateException
+    if name == "CannotModifyApprovalRuleFromTemplateException":
+        return CodeCommitErrorKind.CannotModifyApprovalRuleFromTemplateException
+    if name == "ClientRequestTokenRequiredException":
+        return CodeCommitErrorKind.ClientRequestTokenRequiredException
+    if name == "CommentContentRequiredException":
+        return CodeCommitErrorKind.CommentContentRequiredException
+    if name == "CommentContentSizeLimitExceededException":
+        return CodeCommitErrorKind.CommentContentSizeLimitExceededException
+    if name == "CommentDeletedException":
+        return CodeCommitErrorKind.CommentDeletedException
+    if name == "CommentDoesNotExistException":
+        return CodeCommitErrorKind.CommentDoesNotExistException
+    if name == "CommentIdRequiredException":
+        return CodeCommitErrorKind.CommentIdRequiredException
+    if name == "CommentNotCreatedByCallerException":
+        return CodeCommitErrorKind.CommentNotCreatedByCallerException
+    if name == "CommitDoesNotExistException":
+        return CodeCommitErrorKind.CommitDoesNotExistException
+    if name == "CommitIdDoesNotExistException":
+        return CodeCommitErrorKind.CommitIdDoesNotExistException
+    if name == "CommitIdRequiredException":
+        return CodeCommitErrorKind.CommitIdRequiredException
+    if name == "CommitIdsLimitExceededException":
+        return CodeCommitErrorKind.CommitIdsLimitExceededException
+    if name == "CommitIdsListRequiredException":
+        return CodeCommitErrorKind.CommitIdsListRequiredException
+    if name == "CommitMessageLengthExceededException":
+        return CodeCommitErrorKind.CommitMessageLengthExceededException
+    if name == "CommitRequiredException":
+        return CodeCommitErrorKind.CommitRequiredException
+    if name == "ConcurrentReferenceUpdateException":
+        return CodeCommitErrorKind.ConcurrentReferenceUpdateException
+    if name == "DefaultBranchCannotBeDeletedException":
+        return CodeCommitErrorKind.DefaultBranchCannotBeDeletedException
+    if name == "DirectoryNameConflictsWithFileNameException":
+        return CodeCommitErrorKind.DirectoryNameConflictsWithFileNameException
+    if name == "EncryptionIntegrityChecksFailedException":
+        return CodeCommitErrorKind.EncryptionIntegrityChecksFailedException
+    if name == "EncryptionKeyAccessDeniedException":
+        return CodeCommitErrorKind.EncryptionKeyAccessDeniedException
+    if name == "EncryptionKeyDisabledException":
+        return CodeCommitErrorKind.EncryptionKeyDisabledException
+    if name == "EncryptionKeyInvalidIdException":
+        return CodeCommitErrorKind.EncryptionKeyInvalidIdException
+    if name == "EncryptionKeyInvalidUsageException":
+        return CodeCommitErrorKind.EncryptionKeyInvalidUsageException
+    if name == "EncryptionKeyNotFoundException":
+        return CodeCommitErrorKind.EncryptionKeyNotFoundException
+    if name == "EncryptionKeyRequiredException":
+        return CodeCommitErrorKind.EncryptionKeyRequiredException
+    if name == "EncryptionKeyUnavailableException":
+        return CodeCommitErrorKind.EncryptionKeyUnavailableException
+    if name == "FileContentAndSourceFileSpecifiedException":
+        return CodeCommitErrorKind.FileContentAndSourceFileSpecifiedException
+    if name == "FileContentRequiredException":
+        return CodeCommitErrorKind.FileContentRequiredException
+    if name == "FileContentSizeLimitExceededException":
+        return CodeCommitErrorKind.FileContentSizeLimitExceededException
+    if name == "FileDoesNotExistException":
+        return CodeCommitErrorKind.FileDoesNotExistException
+    if name == "FileEntryRequiredException":
+        return CodeCommitErrorKind.FileEntryRequiredException
+    if name == "FileModeRequiredException":
+        return CodeCommitErrorKind.FileModeRequiredException
+    if name == "FileNameConflictsWithDirectoryNameException":
+        return CodeCommitErrorKind.FileNameConflictsWithDirectoryNameException
+    if name == "FilePathConflictsWithSubmodulePathException":
+        return CodeCommitErrorKind.FilePathConflictsWithSubmodulePathException
+    if name == "FileTooLargeException":
+        return CodeCommitErrorKind.FileTooLargeException
+    if name == "FolderContentSizeLimitExceededException":
+        return CodeCommitErrorKind.FolderContentSizeLimitExceededException
+    if name == "FolderDoesNotExistException":
+        return CodeCommitErrorKind.FolderDoesNotExistException
+    if name == "IdempotencyParameterMismatchException":
+        return CodeCommitErrorKind.IdempotencyParameterMismatchException
+    if name == "InvalidActorArnException":
+        return CodeCommitErrorKind.InvalidActorArnException
+    if name == "InvalidApprovalRuleContentException":
+        return CodeCommitErrorKind.InvalidApprovalRuleContentException
+    if name == "InvalidApprovalRuleNameException":
+        return CodeCommitErrorKind.InvalidApprovalRuleNameException
+    if name == "InvalidApprovalRuleTemplateContentException":
+        return CodeCommitErrorKind.InvalidApprovalRuleTemplateContentException
+    if name == "InvalidApprovalRuleTemplateDescriptionException":
+        return CodeCommitErrorKind.InvalidApprovalRuleTemplateDescriptionException
+    if name == "InvalidApprovalRuleTemplateNameException":
+        return CodeCommitErrorKind.InvalidApprovalRuleTemplateNameException
+    if name == "InvalidApprovalStateException":
+        return CodeCommitErrorKind.InvalidApprovalStateException
+    if name == "InvalidAuthorArnException":
+        return CodeCommitErrorKind.InvalidAuthorArnException
+    if name == "InvalidBlobIdException":
+        return CodeCommitErrorKind.InvalidBlobIdException
+    if name == "InvalidBranchNameException":
+        return CodeCommitErrorKind.InvalidBranchNameException
+    if name == "InvalidClientRequestTokenException":
+        return CodeCommitErrorKind.InvalidClientRequestTokenException
+    if name == "InvalidCommentIdException":
+        return CodeCommitErrorKind.InvalidCommentIdException
+    if name == "InvalidCommitException":
+        return CodeCommitErrorKind.InvalidCommitException
+    if name == "InvalidCommitIdException":
+        return CodeCommitErrorKind.InvalidCommitIdException
+    if name == "InvalidConflictDetailLevelException":
+        return CodeCommitErrorKind.InvalidConflictDetailLevelException
+    if name == "InvalidConflictResolutionException":
+        return CodeCommitErrorKind.InvalidConflictResolutionException
+    if name == "InvalidConflictResolutionStrategyException":
+        return CodeCommitErrorKind.InvalidConflictResolutionStrategyException
+    if name == "InvalidContinuationTokenException":
+        return CodeCommitErrorKind.InvalidContinuationTokenException
+    if name == "InvalidDeletionParameterException":
+        return CodeCommitErrorKind.InvalidDeletionParameterException
+    if name == "InvalidDescriptionException":
+        return CodeCommitErrorKind.InvalidDescriptionException
+    if name == "InvalidDestinationCommitSpecifierException":
+        return CodeCommitErrorKind.InvalidDestinationCommitSpecifierException
+    if name == "InvalidEmailException":
+        return CodeCommitErrorKind.InvalidEmailException
+    if name == "InvalidFileLocationException":
+        return CodeCommitErrorKind.InvalidFileLocationException
+    if name == "InvalidFileModeException":
+        return CodeCommitErrorKind.InvalidFileModeException
+    if name == "InvalidFilePositionException":
+        return CodeCommitErrorKind.InvalidFilePositionException
+    if name == "InvalidMaxConflictFilesException":
+        return CodeCommitErrorKind.InvalidMaxConflictFilesException
+    if name == "InvalidMaxMergeHunksException":
+        return CodeCommitErrorKind.InvalidMaxMergeHunksException
+    if name == "InvalidMaxResultsException":
+        return CodeCommitErrorKind.InvalidMaxResultsException
+    if name == "InvalidMergeOptionException":
+        return CodeCommitErrorKind.InvalidMergeOptionException
+    if name == "InvalidOrderException":
+        return CodeCommitErrorKind.InvalidOrderException
+    if name == "InvalidOverrideStatusException":
+        return CodeCommitErrorKind.InvalidOverrideStatusException
+    if name == "InvalidParentCommitIdException":
+        return CodeCommitErrorKind.InvalidParentCommitIdException
+    if name == "InvalidPathException":
+        return CodeCommitErrorKind.InvalidPathException
+    if name == "InvalidPullRequestEventTypeException":
+        return CodeCommitErrorKind.InvalidPullRequestEventTypeException
+    if name == "InvalidPullRequestIdException":
+        return CodeCommitErrorKind.InvalidPullRequestIdException
+    if name == "InvalidPullRequestStatusException":
+        return CodeCommitErrorKind.InvalidPullRequestStatusException
+    if name == "InvalidPullRequestStatusUpdateException":
+        return CodeCommitErrorKind.InvalidPullRequestStatusUpdateException
+    if name == "InvalidReactionUserArnException":
+        return CodeCommitErrorKind.InvalidReactionUserArnException
+    if name == "InvalidReactionValueException":
+        return CodeCommitErrorKind.InvalidReactionValueException
+    if name == "InvalidReferenceNameException":
+        return CodeCommitErrorKind.InvalidReferenceNameException
+    if name == "InvalidRelativeFileVersionEnumException":
+        return CodeCommitErrorKind.InvalidRelativeFileVersionEnumException
+    if name == "InvalidReplacementContentException":
+        return CodeCommitErrorKind.InvalidReplacementContentException
+    if name == "InvalidReplacementTypeException":
+        return CodeCommitErrorKind.InvalidReplacementTypeException
+    if name == "InvalidRepositoryDescriptionException":
+        return CodeCommitErrorKind.InvalidRepositoryDescriptionException
+    if name == "InvalidRepositoryNameException":
+        return CodeCommitErrorKind.InvalidRepositoryNameException
+    if name == "InvalidRepositoryTriggerBranchNameException":
+        return CodeCommitErrorKind.InvalidRepositoryTriggerBranchNameException
+    if name == "InvalidRepositoryTriggerCustomDataException":
+        return CodeCommitErrorKind.InvalidRepositoryTriggerCustomDataException
+    if name == "InvalidRepositoryTriggerDestinationArnException":
+        return CodeCommitErrorKind.InvalidRepositoryTriggerDestinationArnException
+    if name == "InvalidRepositoryTriggerEventsException":
+        return CodeCommitErrorKind.InvalidRepositoryTriggerEventsException
+    if name == "InvalidRepositoryTriggerNameException":
+        return CodeCommitErrorKind.InvalidRepositoryTriggerNameException
+    if name == "InvalidRepositoryTriggerRegionException":
+        return CodeCommitErrorKind.InvalidRepositoryTriggerRegionException
+    if name == "InvalidResourceArnException":
+        return CodeCommitErrorKind.InvalidResourceArnException
+    if name == "InvalidRevisionIdException":
+        return CodeCommitErrorKind.InvalidRevisionIdException
+    if name == "InvalidRuleContentSha256Exception":
+        return CodeCommitErrorKind.InvalidRuleContentSha256Exception
+    if name == "InvalidSortByException":
+        return CodeCommitErrorKind.InvalidSortByException
+    if name == "InvalidSourceCommitSpecifierException":
+        return CodeCommitErrorKind.InvalidSourceCommitSpecifierException
+    if name == "InvalidSystemTagUsageException":
+        return CodeCommitErrorKind.InvalidSystemTagUsageException
+    if name == "InvalidTagKeysListException":
+        return CodeCommitErrorKind.InvalidTagKeysListException
+    if name == "InvalidTagsMapException":
+        return CodeCommitErrorKind.InvalidTagsMapException
+    if name == "InvalidTargetBranchException":
+        return CodeCommitErrorKind.InvalidTargetBranchException
+    if name == "InvalidTargetException":
+        return CodeCommitErrorKind.InvalidTargetException
+    if name == "InvalidTargetsException":
+        return CodeCommitErrorKind.InvalidTargetsException
+    if name == "InvalidTitleException":
+        return CodeCommitErrorKind.InvalidTitleException
+    if name == "ManualMergeRequiredException":
+        return CodeCommitErrorKind.ManualMergeRequiredException
+    if name == "MaximumBranchesExceededException":
+        return CodeCommitErrorKind.MaximumBranchesExceededException
+    if name == "MaximumConflictResolutionEntriesExceededException":
+        return CodeCommitErrorKind.MaximumConflictResolutionEntriesExceededException
+    if name == "MaximumFileContentToLoadExceededException":
+        return CodeCommitErrorKind.MaximumFileContentToLoadExceededException
+    if name == "MaximumFileEntriesExceededException":
+        return CodeCommitErrorKind.MaximumFileEntriesExceededException
+    if name == "MaximumItemsToCompareExceededException":
+        return CodeCommitErrorKind.MaximumItemsToCompareExceededException
+    if name == "MaximumNumberOfApprovalsExceededException":
+        return CodeCommitErrorKind.MaximumNumberOfApprovalsExceededException
+    if name == "MaximumOpenPullRequestsExceededException":
+        return CodeCommitErrorKind.MaximumOpenPullRequestsExceededException
+    if name == "MaximumRepositoryNamesExceededException":
+        return CodeCommitErrorKind.MaximumRepositoryNamesExceededException
+    if name == "MaximumRepositoryTriggersExceededException":
+        return CodeCommitErrorKind.MaximumRepositoryTriggersExceededException
+    if name == "MaximumRuleTemplatesAssociatedWithRepositoryException":
+        return CodeCommitErrorKind.MaximumRuleTemplatesAssociatedWithRepositoryException
+    if name == "MergeOptionRequiredException":
+        return CodeCommitErrorKind.MergeOptionRequiredException
+    if name == "MultipleConflictResolutionEntriesException":
+        return CodeCommitErrorKind.MultipleConflictResolutionEntriesException
+    if name == "MultipleRepositoriesInPullRequestException":
+        return CodeCommitErrorKind.MultipleRepositoriesInPullRequestException
+    if name == "NameLengthExceededException":
+        return CodeCommitErrorKind.NameLengthExceededException
+    if name == "NoChangeException":
+        return CodeCommitErrorKind.NoChangeException
+    if name == "NumberOfRuleTemplatesExceededException":
+        return CodeCommitErrorKind.NumberOfRuleTemplatesExceededException
+    if name == "NumberOfRulesExceededException":
+        return CodeCommitErrorKind.NumberOfRulesExceededException
+    if name == "OperationNotAllowedException":
+        return CodeCommitErrorKind.OperationNotAllowedException
+    if name == "OverrideAlreadySetException":
+        return CodeCommitErrorKind.OverrideAlreadySetException
+    if name == "OverrideStatusRequiredException":
+        return CodeCommitErrorKind.OverrideStatusRequiredException
+    if name == "ParentCommitDoesNotExistException":
+        return CodeCommitErrorKind.ParentCommitDoesNotExistException
+    if name == "ParentCommitIdOutdatedException":
+        return CodeCommitErrorKind.ParentCommitIdOutdatedException
+    if name == "ParentCommitIdRequiredException":
+        return CodeCommitErrorKind.ParentCommitIdRequiredException
+    if name == "PathDoesNotExistException":
+        return CodeCommitErrorKind.PathDoesNotExistException
+    if name == "PathRequiredException":
+        return CodeCommitErrorKind.PathRequiredException
+    if name == "PullRequestAlreadyClosedException":
+        return CodeCommitErrorKind.PullRequestAlreadyClosedException
+    if name == "PullRequestApprovalRulesNotSatisfiedException":
+        return CodeCommitErrorKind.PullRequestApprovalRulesNotSatisfiedException
+    if name == "PullRequestCannotBeApprovedByAuthorException":
+        return CodeCommitErrorKind.PullRequestCannotBeApprovedByAuthorException
+    if name == "PullRequestDoesNotExistException":
+        return CodeCommitErrorKind.PullRequestDoesNotExistException
+    if name == "PullRequestIdRequiredException":
+        return CodeCommitErrorKind.PullRequestIdRequiredException
+    if name == "PullRequestStatusRequiredException":
+        return CodeCommitErrorKind.PullRequestStatusRequiredException
+    if name == "PutFileEntryConflictException":
+        return CodeCommitErrorKind.PutFileEntryConflictException
+    if name == "ReactionLimitExceededException":
+        return CodeCommitErrorKind.ReactionLimitExceededException
+    if name == "ReactionValueRequiredException":
+        return CodeCommitErrorKind.ReactionValueRequiredException
+    if name == "ReferenceDoesNotExistException":
+        return CodeCommitErrorKind.ReferenceDoesNotExistException
+    if name == "ReferenceNameRequiredException":
+        return CodeCommitErrorKind.ReferenceNameRequiredException
+    if name == "ReferenceTypeNotSupportedException":
+        return CodeCommitErrorKind.ReferenceTypeNotSupportedException
+    if name == "ReplacementContentRequiredException":
+        return CodeCommitErrorKind.ReplacementContentRequiredException
+    if name == "ReplacementTypeRequiredException":
+        return CodeCommitErrorKind.ReplacementTypeRequiredException
+    if name == "RepositoryDoesNotExistException":
+        return CodeCommitErrorKind.RepositoryDoesNotExistException
+    if name == "RepositoryLimitExceededException":
+        return CodeCommitErrorKind.RepositoryLimitExceededException
+    if name == "RepositoryNameExistsException":
+        return CodeCommitErrorKind.RepositoryNameExistsException
+    if name == "RepositoryNameRequiredException":
+        return CodeCommitErrorKind.RepositoryNameRequiredException
+    if name == "RepositoryNamesRequiredException":
+        return CodeCommitErrorKind.RepositoryNamesRequiredException
+    if name == "RepositoryNotAssociatedWithPullRequestException":
+        return CodeCommitErrorKind.RepositoryNotAssociatedWithPullRequestException
+    if name == "RepositoryTriggerBranchNameListRequiredException":
+        return CodeCommitErrorKind.RepositoryTriggerBranchNameListRequiredException
+    if name == "RepositoryTriggerDestinationArnRequiredException":
+        return CodeCommitErrorKind.RepositoryTriggerDestinationArnRequiredException
+    if name == "RepositoryTriggerEventsListRequiredException":
+        return CodeCommitErrorKind.RepositoryTriggerEventsListRequiredException
+    if name == "RepositoryTriggerNameRequiredException":
+        return CodeCommitErrorKind.RepositoryTriggerNameRequiredException
+    if name == "RepositoryTriggersListRequiredException":
+        return CodeCommitErrorKind.RepositoryTriggersListRequiredException
+    if name == "ResourceArnRequiredException":
+        return CodeCommitErrorKind.ResourceArnRequiredException
+    if name == "RestrictedSourceFileException":
+        return CodeCommitErrorKind.RestrictedSourceFileException
+    if name == "RevisionIdRequiredException":
+        return CodeCommitErrorKind.RevisionIdRequiredException
+    if name == "RevisionNotCurrentException":
+        return CodeCommitErrorKind.RevisionNotCurrentException
+    if name == "SameFileContentException":
+        return CodeCommitErrorKind.SameFileContentException
+    if name == "SamePathRequestException":
+        return CodeCommitErrorKind.SamePathRequestException
+    if name == "SourceAndDestinationAreSameException":
+        return CodeCommitErrorKind.SourceAndDestinationAreSameException
+    if name == "SourceFileOrContentRequiredException":
+        return CodeCommitErrorKind.SourceFileOrContentRequiredException
+    if name == "TagKeysListRequiredException":
+        return CodeCommitErrorKind.TagKeysListRequiredException
+    if name == "TagPolicyException":
+        return CodeCommitErrorKind.TagPolicyException
+    if name == "TagsMapRequiredException":
+        return CodeCommitErrorKind.TagsMapRequiredException
+    if name == "TargetRequiredException":
+        return CodeCommitErrorKind.TargetRequiredException
+    if name == "TargetsRequiredException":
+        return CodeCommitErrorKind.TargetsRequiredException
+    if name == "TipOfSourceReferenceIsDifferentException":
+        return CodeCommitErrorKind.TipOfSourceReferenceIsDifferentException
+    if name == "TipsDivergenceExceededException":
+        return CodeCommitErrorKind.TipsDivergenceExceededException
+    if name == "TitleRequiredException":
+        return CodeCommitErrorKind.TitleRequiredException
+    if name == "TooManyTagsException":
+        return CodeCommitErrorKind.TooManyTagsException
+    if name == "ValidationException":
+        return CodeCommitErrorKind.ValidationException
+    return CodeCommitErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def codecommit_error_name(CodeCommitErrorKind k) -> str:
+    match k:
+        case CodeCommitErrorKind.ActorDoesNotExistException:
+            return "ActorDoesNotExistException"
+        case CodeCommitErrorKind.ApprovalRuleContentRequiredException:
+            return "ApprovalRuleContentRequiredException"
+        case CodeCommitErrorKind.ApprovalRuleDoesNotExistException:
+            return "ApprovalRuleDoesNotExistException"
+        case CodeCommitErrorKind.ApprovalRuleNameAlreadyExistsException:
+            return "ApprovalRuleNameAlreadyExistsException"
+        case CodeCommitErrorKind.ApprovalRuleNameRequiredException:
+            return "ApprovalRuleNameRequiredException"
+        case CodeCommitErrorKind.ApprovalRuleTemplateContentRequiredException:
+            return "ApprovalRuleTemplateContentRequiredException"
+        case CodeCommitErrorKind.ApprovalRuleTemplateDoesNotExistException:
+            return "ApprovalRuleTemplateDoesNotExistException"
+        case CodeCommitErrorKind.ApprovalRuleTemplateInUseException:
+            return "ApprovalRuleTemplateInUseException"
+        case CodeCommitErrorKind.ApprovalRuleTemplateNameAlreadyExistsException:
+            return "ApprovalRuleTemplateNameAlreadyExistsException"
+        case CodeCommitErrorKind.ApprovalRuleTemplateNameRequiredException:
+            return "ApprovalRuleTemplateNameRequiredException"
+        case CodeCommitErrorKind.ApprovalStateRequiredException:
+            return "ApprovalStateRequiredException"
+        case CodeCommitErrorKind.AuthorDoesNotExistException:
+            return "AuthorDoesNotExistException"
+        case CodeCommitErrorKind.BeforeCommitIdAndAfterCommitIdAreSameException:
+            return "BeforeCommitIdAndAfterCommitIdAreSameException"
+        case CodeCommitErrorKind.BlobIdDoesNotExistException:
+            return "BlobIdDoesNotExistException"
+        case CodeCommitErrorKind.BlobIdRequiredException:
+            return "BlobIdRequiredException"
+        case CodeCommitErrorKind.BranchDoesNotExistException:
+            return "BranchDoesNotExistException"
+        case CodeCommitErrorKind.BranchNameExistsException:
+            return "BranchNameExistsException"
+        case CodeCommitErrorKind.BranchNameIsTagNameException:
+            return "BranchNameIsTagNameException"
+        case CodeCommitErrorKind.BranchNameRequiredException:
+            return "BranchNameRequiredException"
+        case CodeCommitErrorKind.CannotDeleteApprovalRuleFromTemplateException:
+            return "CannotDeleteApprovalRuleFromTemplateException"
+        case CodeCommitErrorKind.CannotModifyApprovalRuleFromTemplateException:
+            return "CannotModifyApprovalRuleFromTemplateException"
+        case CodeCommitErrorKind.ClientRequestTokenRequiredException:
+            return "ClientRequestTokenRequiredException"
+        case CodeCommitErrorKind.CommentContentRequiredException:
+            return "CommentContentRequiredException"
+        case CodeCommitErrorKind.CommentContentSizeLimitExceededException:
+            return "CommentContentSizeLimitExceededException"
+        case CodeCommitErrorKind.CommentDeletedException:
+            return "CommentDeletedException"
+        case CodeCommitErrorKind.CommentDoesNotExistException:
+            return "CommentDoesNotExistException"
+        case CodeCommitErrorKind.CommentIdRequiredException:
+            return "CommentIdRequiredException"
+        case CodeCommitErrorKind.CommentNotCreatedByCallerException:
+            return "CommentNotCreatedByCallerException"
+        case CodeCommitErrorKind.CommitDoesNotExistException:
+            return "CommitDoesNotExistException"
+        case CodeCommitErrorKind.CommitIdDoesNotExistException:
+            return "CommitIdDoesNotExistException"
+        case CodeCommitErrorKind.CommitIdRequiredException:
+            return "CommitIdRequiredException"
+        case CodeCommitErrorKind.CommitIdsLimitExceededException:
+            return "CommitIdsLimitExceededException"
+        case CodeCommitErrorKind.CommitIdsListRequiredException:
+            return "CommitIdsListRequiredException"
+        case CodeCommitErrorKind.CommitMessageLengthExceededException:
+            return "CommitMessageLengthExceededException"
+        case CodeCommitErrorKind.CommitRequiredException:
+            return "CommitRequiredException"
+        case CodeCommitErrorKind.ConcurrentReferenceUpdateException:
+            return "ConcurrentReferenceUpdateException"
+        case CodeCommitErrorKind.DefaultBranchCannotBeDeletedException:
+            return "DefaultBranchCannotBeDeletedException"
+        case CodeCommitErrorKind.DirectoryNameConflictsWithFileNameException:
+            return "DirectoryNameConflictsWithFileNameException"
+        case CodeCommitErrorKind.EncryptionIntegrityChecksFailedException:
+            return "EncryptionIntegrityChecksFailedException"
+        case CodeCommitErrorKind.EncryptionKeyAccessDeniedException:
+            return "EncryptionKeyAccessDeniedException"
+        case CodeCommitErrorKind.EncryptionKeyDisabledException:
+            return "EncryptionKeyDisabledException"
+        case CodeCommitErrorKind.EncryptionKeyInvalidIdException:
+            return "EncryptionKeyInvalidIdException"
+        case CodeCommitErrorKind.EncryptionKeyInvalidUsageException:
+            return "EncryptionKeyInvalidUsageException"
+        case CodeCommitErrorKind.EncryptionKeyNotFoundException:
+            return "EncryptionKeyNotFoundException"
+        case CodeCommitErrorKind.EncryptionKeyRequiredException:
+            return "EncryptionKeyRequiredException"
+        case CodeCommitErrorKind.EncryptionKeyUnavailableException:
+            return "EncryptionKeyUnavailableException"
+        case CodeCommitErrorKind.FileContentAndSourceFileSpecifiedException:
+            return "FileContentAndSourceFileSpecifiedException"
+        case CodeCommitErrorKind.FileContentRequiredException:
+            return "FileContentRequiredException"
+        case CodeCommitErrorKind.FileContentSizeLimitExceededException:
+            return "FileContentSizeLimitExceededException"
+        case CodeCommitErrorKind.FileDoesNotExistException:
+            return "FileDoesNotExistException"
+        case CodeCommitErrorKind.FileEntryRequiredException:
+            return "FileEntryRequiredException"
+        case CodeCommitErrorKind.FileModeRequiredException:
+            return "FileModeRequiredException"
+        case CodeCommitErrorKind.FileNameConflictsWithDirectoryNameException:
+            return "FileNameConflictsWithDirectoryNameException"
+        case CodeCommitErrorKind.FilePathConflictsWithSubmodulePathException:
+            return "FilePathConflictsWithSubmodulePathException"
+        case CodeCommitErrorKind.FileTooLargeException:
+            return "FileTooLargeException"
+        case CodeCommitErrorKind.FolderContentSizeLimitExceededException:
+            return "FolderContentSizeLimitExceededException"
+        case CodeCommitErrorKind.FolderDoesNotExistException:
+            return "FolderDoesNotExistException"
+        case CodeCommitErrorKind.IdempotencyParameterMismatchException:
+            return "IdempotencyParameterMismatchException"
+        case CodeCommitErrorKind.InvalidActorArnException:
+            return "InvalidActorArnException"
+        case CodeCommitErrorKind.InvalidApprovalRuleContentException:
+            return "InvalidApprovalRuleContentException"
+        case CodeCommitErrorKind.InvalidApprovalRuleNameException:
+            return "InvalidApprovalRuleNameException"
+        case CodeCommitErrorKind.InvalidApprovalRuleTemplateContentException:
+            return "InvalidApprovalRuleTemplateContentException"
+        case CodeCommitErrorKind.InvalidApprovalRuleTemplateDescriptionException:
+            return "InvalidApprovalRuleTemplateDescriptionException"
+        case CodeCommitErrorKind.InvalidApprovalRuleTemplateNameException:
+            return "InvalidApprovalRuleTemplateNameException"
+        case CodeCommitErrorKind.InvalidApprovalStateException:
+            return "InvalidApprovalStateException"
+        case CodeCommitErrorKind.InvalidAuthorArnException:
+            return "InvalidAuthorArnException"
+        case CodeCommitErrorKind.InvalidBlobIdException:
+            return "InvalidBlobIdException"
+        case CodeCommitErrorKind.InvalidBranchNameException:
+            return "InvalidBranchNameException"
+        case CodeCommitErrorKind.InvalidClientRequestTokenException:
+            return "InvalidClientRequestTokenException"
+        case CodeCommitErrorKind.InvalidCommentIdException:
+            return "InvalidCommentIdException"
+        case CodeCommitErrorKind.InvalidCommitException:
+            return "InvalidCommitException"
+        case CodeCommitErrorKind.InvalidCommitIdException:
+            return "InvalidCommitIdException"
+        case CodeCommitErrorKind.InvalidConflictDetailLevelException:
+            return "InvalidConflictDetailLevelException"
+        case CodeCommitErrorKind.InvalidConflictResolutionException:
+            return "InvalidConflictResolutionException"
+        case CodeCommitErrorKind.InvalidConflictResolutionStrategyException:
+            return "InvalidConflictResolutionStrategyException"
+        case CodeCommitErrorKind.InvalidContinuationTokenException:
+            return "InvalidContinuationTokenException"
+        case CodeCommitErrorKind.InvalidDeletionParameterException:
+            return "InvalidDeletionParameterException"
+        case CodeCommitErrorKind.InvalidDescriptionException:
+            return "InvalidDescriptionException"
+        case CodeCommitErrorKind.InvalidDestinationCommitSpecifierException:
+            return "InvalidDestinationCommitSpecifierException"
+        case CodeCommitErrorKind.InvalidEmailException:
+            return "InvalidEmailException"
+        case CodeCommitErrorKind.InvalidFileLocationException:
+            return "InvalidFileLocationException"
+        case CodeCommitErrorKind.InvalidFileModeException:
+            return "InvalidFileModeException"
+        case CodeCommitErrorKind.InvalidFilePositionException:
+            return "InvalidFilePositionException"
+        case CodeCommitErrorKind.InvalidMaxConflictFilesException:
+            return "InvalidMaxConflictFilesException"
+        case CodeCommitErrorKind.InvalidMaxMergeHunksException:
+            return "InvalidMaxMergeHunksException"
+        case CodeCommitErrorKind.InvalidMaxResultsException:
+            return "InvalidMaxResultsException"
+        case CodeCommitErrorKind.InvalidMergeOptionException:
+            return "InvalidMergeOptionException"
+        case CodeCommitErrorKind.InvalidOrderException:
+            return "InvalidOrderException"
+        case CodeCommitErrorKind.InvalidOverrideStatusException:
+            return "InvalidOverrideStatusException"
+        case CodeCommitErrorKind.InvalidParentCommitIdException:
+            return "InvalidParentCommitIdException"
+        case CodeCommitErrorKind.InvalidPathException:
+            return "InvalidPathException"
+        case CodeCommitErrorKind.InvalidPullRequestEventTypeException:
+            return "InvalidPullRequestEventTypeException"
+        case CodeCommitErrorKind.InvalidPullRequestIdException:
+            return "InvalidPullRequestIdException"
+        case CodeCommitErrorKind.InvalidPullRequestStatusException:
+            return "InvalidPullRequestStatusException"
+        case CodeCommitErrorKind.InvalidPullRequestStatusUpdateException:
+            return "InvalidPullRequestStatusUpdateException"
+        case CodeCommitErrorKind.InvalidReactionUserArnException:
+            return "InvalidReactionUserArnException"
+        case CodeCommitErrorKind.InvalidReactionValueException:
+            return "InvalidReactionValueException"
+        case CodeCommitErrorKind.InvalidReferenceNameException:
+            return "InvalidReferenceNameException"
+        case CodeCommitErrorKind.InvalidRelativeFileVersionEnumException:
+            return "InvalidRelativeFileVersionEnumException"
+        case CodeCommitErrorKind.InvalidReplacementContentException:
+            return "InvalidReplacementContentException"
+        case CodeCommitErrorKind.InvalidReplacementTypeException:
+            return "InvalidReplacementTypeException"
+        case CodeCommitErrorKind.InvalidRepositoryDescriptionException:
+            return "InvalidRepositoryDescriptionException"
+        case CodeCommitErrorKind.InvalidRepositoryNameException:
+            return "InvalidRepositoryNameException"
+        case CodeCommitErrorKind.InvalidRepositoryTriggerBranchNameException:
+            return "InvalidRepositoryTriggerBranchNameException"
+        case CodeCommitErrorKind.InvalidRepositoryTriggerCustomDataException:
+            return "InvalidRepositoryTriggerCustomDataException"
+        case CodeCommitErrorKind.InvalidRepositoryTriggerDestinationArnException:
+            return "InvalidRepositoryTriggerDestinationArnException"
+        case CodeCommitErrorKind.InvalidRepositoryTriggerEventsException:
+            return "InvalidRepositoryTriggerEventsException"
+        case CodeCommitErrorKind.InvalidRepositoryTriggerNameException:
+            return "InvalidRepositoryTriggerNameException"
+        case CodeCommitErrorKind.InvalidRepositoryTriggerRegionException:
+            return "InvalidRepositoryTriggerRegionException"
+        case CodeCommitErrorKind.InvalidResourceArnException:
+            return "InvalidResourceArnException"
+        case CodeCommitErrorKind.InvalidRevisionIdException:
+            return "InvalidRevisionIdException"
+        case CodeCommitErrorKind.InvalidRuleContentSha256Exception:
+            return "InvalidRuleContentSha256Exception"
+        case CodeCommitErrorKind.InvalidSortByException:
+            return "InvalidSortByException"
+        case CodeCommitErrorKind.InvalidSourceCommitSpecifierException:
+            return "InvalidSourceCommitSpecifierException"
+        case CodeCommitErrorKind.InvalidSystemTagUsageException:
+            return "InvalidSystemTagUsageException"
+        case CodeCommitErrorKind.InvalidTagKeysListException:
+            return "InvalidTagKeysListException"
+        case CodeCommitErrorKind.InvalidTagsMapException:
+            return "InvalidTagsMapException"
+        case CodeCommitErrorKind.InvalidTargetBranchException:
+            return "InvalidTargetBranchException"
+        case CodeCommitErrorKind.InvalidTargetException:
+            return "InvalidTargetException"
+        case CodeCommitErrorKind.InvalidTargetsException:
+            return "InvalidTargetsException"
+        case CodeCommitErrorKind.InvalidTitleException:
+            return "InvalidTitleException"
+        case CodeCommitErrorKind.ManualMergeRequiredException:
+            return "ManualMergeRequiredException"
+        case CodeCommitErrorKind.MaximumBranchesExceededException:
+            return "MaximumBranchesExceededException"
+        case CodeCommitErrorKind.MaximumConflictResolutionEntriesExceededException:
+            return "MaximumConflictResolutionEntriesExceededException"
+        case CodeCommitErrorKind.MaximumFileContentToLoadExceededException:
+            return "MaximumFileContentToLoadExceededException"
+        case CodeCommitErrorKind.MaximumFileEntriesExceededException:
+            return "MaximumFileEntriesExceededException"
+        case CodeCommitErrorKind.MaximumItemsToCompareExceededException:
+            return "MaximumItemsToCompareExceededException"
+        case CodeCommitErrorKind.MaximumNumberOfApprovalsExceededException:
+            return "MaximumNumberOfApprovalsExceededException"
+        case CodeCommitErrorKind.MaximumOpenPullRequestsExceededException:
+            return "MaximumOpenPullRequestsExceededException"
+        case CodeCommitErrorKind.MaximumRepositoryNamesExceededException:
+            return "MaximumRepositoryNamesExceededException"
+        case CodeCommitErrorKind.MaximumRepositoryTriggersExceededException:
+            return "MaximumRepositoryTriggersExceededException"
+        case CodeCommitErrorKind.MaximumRuleTemplatesAssociatedWithRepositoryException:
+            return "MaximumRuleTemplatesAssociatedWithRepositoryException"
+        case CodeCommitErrorKind.MergeOptionRequiredException:
+            return "MergeOptionRequiredException"
+        case CodeCommitErrorKind.MultipleConflictResolutionEntriesException:
+            return "MultipleConflictResolutionEntriesException"
+        case CodeCommitErrorKind.MultipleRepositoriesInPullRequestException:
+            return "MultipleRepositoriesInPullRequestException"
+        case CodeCommitErrorKind.NameLengthExceededException:
+            return "NameLengthExceededException"
+        case CodeCommitErrorKind.NoChangeException:
+            return "NoChangeException"
+        case CodeCommitErrorKind.NumberOfRuleTemplatesExceededException:
+            return "NumberOfRuleTemplatesExceededException"
+        case CodeCommitErrorKind.NumberOfRulesExceededException:
+            return "NumberOfRulesExceededException"
+        case CodeCommitErrorKind.OperationNotAllowedException:
+            return "OperationNotAllowedException"
+        case CodeCommitErrorKind.OverrideAlreadySetException:
+            return "OverrideAlreadySetException"
+        case CodeCommitErrorKind.OverrideStatusRequiredException:
+            return "OverrideStatusRequiredException"
+        case CodeCommitErrorKind.ParentCommitDoesNotExistException:
+            return "ParentCommitDoesNotExistException"
+        case CodeCommitErrorKind.ParentCommitIdOutdatedException:
+            return "ParentCommitIdOutdatedException"
+        case CodeCommitErrorKind.ParentCommitIdRequiredException:
+            return "ParentCommitIdRequiredException"
+        case CodeCommitErrorKind.PathDoesNotExistException:
+            return "PathDoesNotExistException"
+        case CodeCommitErrorKind.PathRequiredException:
+            return "PathRequiredException"
+        case CodeCommitErrorKind.PullRequestAlreadyClosedException:
+            return "PullRequestAlreadyClosedException"
+        case CodeCommitErrorKind.PullRequestApprovalRulesNotSatisfiedException:
+            return "PullRequestApprovalRulesNotSatisfiedException"
+        case CodeCommitErrorKind.PullRequestCannotBeApprovedByAuthorException:
+            return "PullRequestCannotBeApprovedByAuthorException"
+        case CodeCommitErrorKind.PullRequestDoesNotExistException:
+            return "PullRequestDoesNotExistException"
+        case CodeCommitErrorKind.PullRequestIdRequiredException:
+            return "PullRequestIdRequiredException"
+        case CodeCommitErrorKind.PullRequestStatusRequiredException:
+            return "PullRequestStatusRequiredException"
+        case CodeCommitErrorKind.PutFileEntryConflictException:
+            return "PutFileEntryConflictException"
+        case CodeCommitErrorKind.ReactionLimitExceededException:
+            return "ReactionLimitExceededException"
+        case CodeCommitErrorKind.ReactionValueRequiredException:
+            return "ReactionValueRequiredException"
+        case CodeCommitErrorKind.ReferenceDoesNotExistException:
+            return "ReferenceDoesNotExistException"
+        case CodeCommitErrorKind.ReferenceNameRequiredException:
+            return "ReferenceNameRequiredException"
+        case CodeCommitErrorKind.ReferenceTypeNotSupportedException:
+            return "ReferenceTypeNotSupportedException"
+        case CodeCommitErrorKind.ReplacementContentRequiredException:
+            return "ReplacementContentRequiredException"
+        case CodeCommitErrorKind.ReplacementTypeRequiredException:
+            return "ReplacementTypeRequiredException"
+        case CodeCommitErrorKind.RepositoryDoesNotExistException:
+            return "RepositoryDoesNotExistException"
+        case CodeCommitErrorKind.RepositoryLimitExceededException:
+            return "RepositoryLimitExceededException"
+        case CodeCommitErrorKind.RepositoryNameExistsException:
+            return "RepositoryNameExistsException"
+        case CodeCommitErrorKind.RepositoryNameRequiredException:
+            return "RepositoryNameRequiredException"
+        case CodeCommitErrorKind.RepositoryNamesRequiredException:
+            return "RepositoryNamesRequiredException"
+        case CodeCommitErrorKind.RepositoryNotAssociatedWithPullRequestException:
+            return "RepositoryNotAssociatedWithPullRequestException"
+        case CodeCommitErrorKind.RepositoryTriggerBranchNameListRequiredException:
+            return "RepositoryTriggerBranchNameListRequiredException"
+        case CodeCommitErrorKind.RepositoryTriggerDestinationArnRequiredException:
+            return "RepositoryTriggerDestinationArnRequiredException"
+        case CodeCommitErrorKind.RepositoryTriggerEventsListRequiredException:
+            return "RepositoryTriggerEventsListRequiredException"
+        case CodeCommitErrorKind.RepositoryTriggerNameRequiredException:
+            return "RepositoryTriggerNameRequiredException"
+        case CodeCommitErrorKind.RepositoryTriggersListRequiredException:
+            return "RepositoryTriggersListRequiredException"
+        case CodeCommitErrorKind.ResourceArnRequiredException:
+            return "ResourceArnRequiredException"
+        case CodeCommitErrorKind.RestrictedSourceFileException:
+            return "RestrictedSourceFileException"
+        case CodeCommitErrorKind.RevisionIdRequiredException:
+            return "RevisionIdRequiredException"
+        case CodeCommitErrorKind.RevisionNotCurrentException:
+            return "RevisionNotCurrentException"
+        case CodeCommitErrorKind.SameFileContentException:
+            return "SameFileContentException"
+        case CodeCommitErrorKind.SamePathRequestException:
+            return "SamePathRequestException"
+        case CodeCommitErrorKind.SourceAndDestinationAreSameException:
+            return "SourceAndDestinationAreSameException"
+        case CodeCommitErrorKind.SourceFileOrContentRequiredException:
+            return "SourceFileOrContentRequiredException"
+        case CodeCommitErrorKind.TagKeysListRequiredException:
+            return "TagKeysListRequiredException"
+        case CodeCommitErrorKind.TagPolicyException:
+            return "TagPolicyException"
+        case CodeCommitErrorKind.TagsMapRequiredException:
+            return "TagsMapRequiredException"
+        case CodeCommitErrorKind.TargetRequiredException:
+            return "TargetRequiredException"
+        case CodeCommitErrorKind.TargetsRequiredException:
+            return "TargetsRequiredException"
+        case CodeCommitErrorKind.TipOfSourceReferenceIsDifferentException:
+            return "TipOfSourceReferenceIsDifferentException"
+        case CodeCommitErrorKind.TipsDivergenceExceededException:
+            return "TipsDivergenceExceededException"
+        case CodeCommitErrorKind.TitleRequiredException:
+            return "TitleRequiredException"
+        case CodeCommitErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case CodeCommitErrorKind.ValidationException:
+            return "ValidationException"
+        case CodeCommitErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

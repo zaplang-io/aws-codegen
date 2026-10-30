@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix AWSSupport_20130415)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 
@@ -540,9 +542,16 @@ struct UploadUrl:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by support_error_from_code.
-enum SupportError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum SupportErrorKind:
     AttachmentIdNotFound
     AttachmentLimitExceeded
     AttachmentSetExpired
@@ -557,33 +566,71 @@ enum SupportError:
     UploadIdNotFound
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def support_error_from_code(str code) -> SupportError:
-    if code == "AttachmentIdNotFound":
-        return SupportError.AttachmentIdNotFound
-    if code == "AttachmentLimitExceeded":
-        return SupportError.AttachmentLimitExceeded
-    if code == "AttachmentSetExpired":
-        return SupportError.AttachmentSetExpired
-    if code == "AttachmentSetIdNotFound":
-        return SupportError.AttachmentSetIdNotFound
-    if code == "AttachmentSetSizeLimitExceeded":
-        return SupportError.AttachmentSetSizeLimitExceeded
-    if code == "CaseCreationLimitExceeded":
-        return SupportError.CaseCreationLimitExceeded
-    if code == "CaseIdNotFound":
-        return SupportError.CaseIdNotFound
-    if code == "DescribeAttachmentLimitExceeded":
-        return SupportError.DescribeAttachmentLimitExceeded
-    if code == "DryRunOperationException":
-        return SupportError.DryRunOperationException
-    if code == "InternalServerError":
-        return SupportError.InternalServerError
-    if code == "ThrottlingException":
-        return SupportError.ThrottlingException
-    if code == "UploadIdNotFound":
-        return SupportError.UploadIdNotFound
-    return SupportError.Unknown(code=code)
+# Classify an AWS error code into `SupportErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def support_error_kind(str code) -> SupportErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AttachmentIdNotFound":
+        return SupportErrorKind.AttachmentIdNotFound
+    if name == "AttachmentLimitExceeded":
+        return SupportErrorKind.AttachmentLimitExceeded
+    if name == "AttachmentSetExpired":
+        return SupportErrorKind.AttachmentSetExpired
+    if name == "AttachmentSetIdNotFound":
+        return SupportErrorKind.AttachmentSetIdNotFound
+    if name == "AttachmentSetSizeLimitExceeded":
+        return SupportErrorKind.AttachmentSetSizeLimitExceeded
+    if name == "CaseCreationLimitExceeded":
+        return SupportErrorKind.CaseCreationLimitExceeded
+    if name == "CaseIdNotFound":
+        return SupportErrorKind.CaseIdNotFound
+    if name == "DescribeAttachmentLimitExceeded":
+        return SupportErrorKind.DescribeAttachmentLimitExceeded
+    if name == "DryRunOperationException":
+        return SupportErrorKind.DryRunOperationException
+    if name == "InternalServerError":
+        return SupportErrorKind.InternalServerError
+    if name == "ThrottlingException":
+        return SupportErrorKind.ThrottlingException
+    if name == "UploadIdNotFound":
+        return SupportErrorKind.UploadIdNotFound
+    return SupportErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def support_error_name(SupportErrorKind k) -> str:
+    match k:
+        case SupportErrorKind.AttachmentIdNotFound:
+            return "AttachmentIdNotFound"
+        case SupportErrorKind.AttachmentLimitExceeded:
+            return "AttachmentLimitExceeded"
+        case SupportErrorKind.AttachmentSetExpired:
+            return "AttachmentSetExpired"
+        case SupportErrorKind.AttachmentSetIdNotFound:
+            return "AttachmentSetIdNotFound"
+        case SupportErrorKind.AttachmentSetSizeLimitExceeded:
+            return "AttachmentSetSizeLimitExceeded"
+        case SupportErrorKind.CaseCreationLimitExceeded:
+            return "CaseCreationLimitExceeded"
+        case SupportErrorKind.CaseIdNotFound:
+            return "CaseIdNotFound"
+        case SupportErrorKind.DescribeAttachmentLimitExceeded:
+            return "DescribeAttachmentLimitExceeded"
+        case SupportErrorKind.DryRunOperationException:
+            return "DryRunOperationException"
+        case SupportErrorKind.InternalServerError:
+            return "InternalServerError"
+        case SupportErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case SupportErrorKind.UploadIdNotFound:
+            return "UploadIdNotFound"
+        case SupportErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

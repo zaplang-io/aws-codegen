@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix CertificateManager)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import base64
@@ -1250,9 +1252,16 @@ struct X509Attributes:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by acm_error_from_code.
-enum ACMError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum ACMErrorKind:
     AccessDeniedException
     ConflictException
     InternalServerException
@@ -1273,45 +1282,95 @@ enum ACMError:
     ValidationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def acm_error_from_code(str code) -> ACMError:
-    if code == "AccessDeniedException":
-        return ACMError.AccessDeniedException
-    if code == "ConflictException":
-        return ACMError.ConflictException
-    if code == "InternalServerException":
-        return ACMError.InternalServerException
-    if code == "InvalidArgsException":
-        return ACMError.InvalidArgsException
-    if code == "InvalidArnException":
-        return ACMError.InvalidArnException
-    if code == "InvalidDomainValidationOptionsException":
-        return ACMError.InvalidDomainValidationOptionsException
-    if code == "InvalidParameterException":
-        return ACMError.InvalidParameterException
-    if code == "InvalidStateException":
-        return ACMError.InvalidStateException
-    if code == "InvalidTagException":
-        return ACMError.InvalidTagException
-    if code == "LimitExceededException":
-        return ACMError.LimitExceededException
-    if code == "RequestInProgressException":
-        return ACMError.RequestInProgressException
-    if code == "ResourceInUseException":
-        return ACMError.ResourceInUseException
-    if code == "ResourceNotFoundException":
-        return ACMError.ResourceNotFoundException
-    if code == "ServiceQuotaExceededException":
-        return ACMError.ServiceQuotaExceededException
-    if code == "TagPolicyException":
-        return ACMError.TagPolicyException
-    if code == "ThrottlingException":
-        return ACMError.ThrottlingException
-    if code == "TooManyTagsException":
-        return ACMError.TooManyTagsException
-    if code == "ValidationException":
-        return ACMError.ValidationException
-    return ACMError.Unknown(code=code)
+# Classify an AWS error code into `ACMErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def acm_error_kind(str code) -> ACMErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return ACMErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return ACMErrorKind.ConflictException
+    if name == "InternalServerException":
+        return ACMErrorKind.InternalServerException
+    if name == "InvalidArgsException":
+        return ACMErrorKind.InvalidArgsException
+    if name == "InvalidArnException":
+        return ACMErrorKind.InvalidArnException
+    if name == "InvalidDomainValidationOptionsException":
+        return ACMErrorKind.InvalidDomainValidationOptionsException
+    if name == "InvalidParameterException":
+        return ACMErrorKind.InvalidParameterException
+    if name == "InvalidStateException":
+        return ACMErrorKind.InvalidStateException
+    if name == "InvalidTagException":
+        return ACMErrorKind.InvalidTagException
+    if name == "LimitExceededException":
+        return ACMErrorKind.LimitExceededException
+    if name == "RequestInProgressException":
+        return ACMErrorKind.RequestInProgressException
+    if name == "ResourceInUseException":
+        return ACMErrorKind.ResourceInUseException
+    if name == "ResourceNotFoundException":
+        return ACMErrorKind.ResourceNotFoundException
+    if name == "ServiceQuotaExceededException":
+        return ACMErrorKind.ServiceQuotaExceededException
+    if name == "TagPolicyException":
+        return ACMErrorKind.TagPolicyException
+    if name == "ThrottlingException":
+        return ACMErrorKind.ThrottlingException
+    if name == "TooManyTagsException":
+        return ACMErrorKind.TooManyTagsException
+    if name == "ValidationException":
+        return ACMErrorKind.ValidationException
+    return ACMErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def acm_error_name(ACMErrorKind k) -> str:
+    match k:
+        case ACMErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case ACMErrorKind.ConflictException:
+            return "ConflictException"
+        case ACMErrorKind.InternalServerException:
+            return "InternalServerException"
+        case ACMErrorKind.InvalidArgsException:
+            return "InvalidArgsException"
+        case ACMErrorKind.InvalidArnException:
+            return "InvalidArnException"
+        case ACMErrorKind.InvalidDomainValidationOptionsException:
+            return "InvalidDomainValidationOptionsException"
+        case ACMErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case ACMErrorKind.InvalidStateException:
+            return "InvalidStateException"
+        case ACMErrorKind.InvalidTagException:
+            return "InvalidTagException"
+        case ACMErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case ACMErrorKind.RequestInProgressException:
+            return "RequestInProgressException"
+        case ACMErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case ACMErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case ACMErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case ACMErrorKind.TagPolicyException:
+            return "TagPolicyException"
+        case ACMErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case ACMErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case ACMErrorKind.ValidationException:
+            return "ValidationException"
+        case ACMErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

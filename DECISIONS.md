@@ -269,3 +269,83 @@ Translate client cleanly; CloudWatch's only diagnostic is the pre-existing
 with every map-bearing generated client (e.g. Lambda), not a cbor regression.
 Generated clients are not `zap fmt`-clean (none ever have been — CI does not gate
 on it); the vendored hand-written `cbor.zap` *is* fmt-clean.
+
+## D-0007 — typed service errors: the generator half emits the per-service enum + classifier + name dispatcher (2026-10-30)
+
+**Status:** accepted. Implements #430 (the aws-codegen half of #361) on top of the
+`aws_core.errors` foundation (zaplang-io/aws#16) and D-0004 (the broad rollout the
+#361 contract was gated on). Governed by the aws repo's `DECISIONS.md` **D-0006**,
+which records the generator contract and its hand-wired `S3ErrorKind` reference.
+
+**Context.** #361 landed the service-agnostic base in `aws_core.errors` — the
+`AwsServiceError` carrier, `error_code` code normalization, the `x-amzn-errortype`
+header fallback, and the `raise_error`/`check_response` bridge — plus a hand-wired
+`S3ErrorKind` enum + classifier in `aws-core/src/s3.zap` as the *reference pattern*,
+and deferred the generator half to a follow-up gated on the broad codegen rollout
+(so the emitter change would not collide with the in-flight regeneration). Until
+now the generator emitted a provisional `enum <Svc>Error` + `<svc>_error_from_code`
+that predated that foundation: it matched the raw wire code directly (no
+normalization), did not depend on `aws_core.errors`, and had no exhaustive name
+dispatcher.
+
+**Decision.** The generator emits, per service, exactly the three-item D-0006
+contract into the service module, from the union of every operation's modeled
+`errors` refs (deduplicated, sorted for deterministic output):
+
+1. `enum <Svc>ErrorKind:` — one bare variant per modeled error shape (variant name
+   = the shape name, which is the on-the-wire code botocore keys on), plus a final
+   `Unknown(str code)` open-enum catch-all.
+2. `def <svc>_error_kind(str code) -> <Svc>ErrorKind:` — `auto name =
+   errors.error_code(code)` (normalize first — strip any namespace/suffix), an
+   `if name == "<Shape>": return <Svc>ErrorKind.<Shape>` per modeled shape, else
+   `return <Svc>ErrorKind.Unknown(name)`.
+3. `def <svc>_error_name(<Svc>ErrorKind) -> str:` — an exhaustive, module-local
+   `match` rendering each variant's name (`Unknown` as `"Unknown(" + c + ")"`).
+   Module-local so the pattern is two-segment `Enum.Variant`, the portable form
+   until the compiler resolves module-qualified variant patterns in a caller's own
+   `match` (the deferred compiler feature D-0006 records; the SAME generated enum
+   is its substrate).
+
+Everything else — the `AwsServiceError` carrier, normalization, the
+`x-amzn-errortype` fallback, the `raise`/`check_response` bridge — is inherited
+from `aws_core.errors` and NOT re-emitted. Every client now `import aws_core.errors`
+(the classifier calls `errors.error_code` even when the service models no errors,
+so the import and the three-item surface are emitted unconditionally; 2 services
+model zero errors and get an enum of just `Unknown`). `aws_core.errors` is vendored
+into `vendor/aws_core/src/errors.zap`, byte-identical to aws `main` (D-0005's
+vendoring rule; the vendored copy *is* the pin).
+
+**Additive; no serialization change.** Errors are new surface — the byte-diff
+oracle (Rust reconstructions + the independent Python SigV4 oracles) is untouched
+and still passes for every service. The only wire-adjacent effect is the extra
+`import aws_core.errors` line and the reshaped error section in every client.
+
+**Matches the reference, derived from botocore.** Generated `S3ErrorKind` is
+structurally identical to the hand-wired reference (same enum name, same
+`errors.error_code` normalization, same positional `Unknown(name)`, same exhaustive
+module-local `match`) and agrees with it on every code both model. It is not
+variant-for-variant identical, by design: the reference is an explicit
+"representative subset" (9 hand-picked codes, 2 of which — `EntityTooLarge`,
+`SignatureDoesNotMatch` — botocore does not model as S3 operation errors), whereas
+the generated enum is the full 20-shape set botocore models (D-0001: botocore is
+the source of truth). The 7 codes both model classify identically; the 13
+generated-only land in `Unknown` under the reference and the 2 reference-only land
+in `Unknown` under the generated classifier — all non-breaking by the open-enum
+contract. The rollout emits **5,696 named error variants across 433 services** (2
+services model zero); all 435 generated clients are self-consistent (enum ≡
+classifier if-chain ≡ exhaustive dispatcher cases).
+
+**Validation (host-only; Docker not run — it kernel-panics the maintainer's host,
+so the local LLVM-18 compile gate is skipped and CI is the sole authoritative
+gate).** `cargo fmt --check`, `cargo clippy -D warnings`, `cargo test` (incl. the
+byte-diff reconstructions and the all-packages determinism test over all 435
+packages), the Python SigV4 oracles, and the model-drift check all pass. A current
+`zap` front-end (`zap ir`) type-checks inlined, dequalified probes of the generated
+S3 (rest-xml) and DynamoDB (awsJson) error surfaces — the enum + classifier + the
+newly-emitted exhaustive `match` with the `Unknown(c)` payload-binding case all
+lower cleanly (the import-based package files still cannot be parsed directly by
+the local build, so this follows the D-0005/D-0006 inlined-probe precedent).
+Generated clients remain not `zap fmt`-clean (none ever have been — CI does not gate
+on it): the emitted comments are 88-column canonical, and the only wide lines are
+long AWS error-shape identifiers on `return`/`case` lines, in the same vein as the
+rest of the generated output; the `<Svc>ErrorKind` suffix is contract-mandated.

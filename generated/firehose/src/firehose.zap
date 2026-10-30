@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix Firehose_20150804)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.awsjson
 
 # The Firehose awsJson protocol: version 1.1, API id "Firehose_20150804".
@@ -1494,9 +1496,16 @@ struct VpcConfigurationDescription:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by firehose_error_from_code.
-enum FirehoseError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum FirehoseErrorKind:
     ConcurrentModificationException
     InvalidArgumentException
     InvalidKMSResourceException
@@ -1507,25 +1516,55 @@ enum FirehoseError:
     ServiceUnavailableException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def firehose_error_from_code(str code) -> FirehoseError:
-    if code == "ConcurrentModificationException":
-        return FirehoseError.ConcurrentModificationException
-    if code == "InvalidArgumentException":
-        return FirehoseError.InvalidArgumentException
-    if code == "InvalidKMSResourceException":
-        return FirehoseError.InvalidKMSResourceException
-    if code == "InvalidSourceException":
-        return FirehoseError.InvalidSourceException
-    if code == "LimitExceededException":
-        return FirehoseError.LimitExceededException
-    if code == "ResourceInUseException":
-        return FirehoseError.ResourceInUseException
-    if code == "ResourceNotFoundException":
-        return FirehoseError.ResourceNotFoundException
-    if code == "ServiceUnavailableException":
-        return FirehoseError.ServiceUnavailableException
-    return FirehoseError.Unknown(code=code)
+# Classify an AWS error code into `FirehoseErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def firehose_error_kind(str code) -> FirehoseErrorKind:
+    auto name = errors.error_code(code)
+    if name == "ConcurrentModificationException":
+        return FirehoseErrorKind.ConcurrentModificationException
+    if name == "InvalidArgumentException":
+        return FirehoseErrorKind.InvalidArgumentException
+    if name == "InvalidKMSResourceException":
+        return FirehoseErrorKind.InvalidKMSResourceException
+    if name == "InvalidSourceException":
+        return FirehoseErrorKind.InvalidSourceException
+    if name == "LimitExceededException":
+        return FirehoseErrorKind.LimitExceededException
+    if name == "ResourceInUseException":
+        return FirehoseErrorKind.ResourceInUseException
+    if name == "ResourceNotFoundException":
+        return FirehoseErrorKind.ResourceNotFoundException
+    if name == "ServiceUnavailableException":
+        return FirehoseErrorKind.ServiceUnavailableException
+    return FirehoseErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def firehose_error_name(FirehoseErrorKind k) -> str:
+    match k:
+        case FirehoseErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case FirehoseErrorKind.InvalidArgumentException:
+            return "InvalidArgumentException"
+        case FirehoseErrorKind.InvalidKMSResourceException:
+            return "InvalidKMSResourceException"
+        case FirehoseErrorKind.InvalidSourceException:
+            return "InvalidSourceException"
+        case FirehoseErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case FirehoseErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case FirehoseErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case FirehoseErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
+        case FirehoseErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

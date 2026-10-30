@@ -6,7 +6,8 @@
 # Protocol: query (SigV4 service importexport, Version 2010-06-01)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + query) via #283 module imports — see
+# Imports the aws_core package (core + errors + query) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: the whole input is a flat form-urlencoded POST body
 # (Action + Version + the members), the AWS query wire format.
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.query
 
 # The ImportExport query protocol: SigV4 service "importexport" (also the endpoint prefix
@@ -200,9 +202,16 @@ struct UpdateJobOutput:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# query `<ErrorResponse><Error><Code>` element code by importexport_error_from_code.
-enum ImportExportError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the query `<ErrorResponse><Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum ImportExportErrorKind:
     BucketPermissionException
     CanceledJobIdException
     CreateJobQuotaExceededException
@@ -225,50 +234,103 @@ enum ImportExportError:
     UnableToUpdateJobIdException
     Unknown(str code)
 
-# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's
-# error helpers) to a variant.
-def importexport_error_from_code(str code) -> ImportExportError:
-    if code == "BucketPermissionException":
-        return ImportExportError.BucketPermissionException
-    if code == "CanceledJobIdException":
-        return ImportExportError.CanceledJobIdException
-    if code == "CreateJobQuotaExceededException":
-        return ImportExportError.CreateJobQuotaExceededException
-    if code == "ExpiredJobIdException":
-        return ImportExportError.ExpiredJobIdException
-    if code == "InvalidAccessKeyIdException":
-        return ImportExportError.InvalidAccessKeyIdException
-    if code == "InvalidAddressException":
-        return ImportExportError.InvalidAddressException
-    if code == "InvalidCustomsException":
-        return ImportExportError.InvalidCustomsException
-    if code == "InvalidFileSystemException":
-        return ImportExportError.InvalidFileSystemException
-    if code == "InvalidJobIdException":
-        return ImportExportError.InvalidJobIdException
-    if code == "InvalidManifestFieldException":
-        return ImportExportError.InvalidManifestFieldException
-    if code == "InvalidParameterException":
-        return ImportExportError.InvalidParameterException
-    if code == "InvalidVersionException":
-        return ImportExportError.InvalidVersionException
-    if code == "MalformedManifestException":
-        return ImportExportError.MalformedManifestException
-    if code == "MissingCustomsException":
-        return ImportExportError.MissingCustomsException
-    if code == "MissingManifestFieldException":
-        return ImportExportError.MissingManifestFieldException
-    if code == "MissingParameterException":
-        return ImportExportError.MissingParameterException
-    if code == "MultipleRegionsException":
-        return ImportExportError.MultipleRegionsException
-    if code == "NoSuchBucketException":
-        return ImportExportError.NoSuchBucketException
-    if code == "UnableToCancelJobIdException":
-        return ImportExportError.UnableToCancelJobIdException
-    if code == "UnableToUpdateJobIdException":
-        return ImportExportError.UnableToUpdateJobIdException
-    return ImportExportError.Unknown(code=code)
+# Classify an AWS error code into `ImportExportErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def importexport_error_kind(str code) -> ImportExportErrorKind:
+    auto name = errors.error_code(code)
+    if name == "BucketPermissionException":
+        return ImportExportErrorKind.BucketPermissionException
+    if name == "CanceledJobIdException":
+        return ImportExportErrorKind.CanceledJobIdException
+    if name == "CreateJobQuotaExceededException":
+        return ImportExportErrorKind.CreateJobQuotaExceededException
+    if name == "ExpiredJobIdException":
+        return ImportExportErrorKind.ExpiredJobIdException
+    if name == "InvalidAccessKeyIdException":
+        return ImportExportErrorKind.InvalidAccessKeyIdException
+    if name == "InvalidAddressException":
+        return ImportExportErrorKind.InvalidAddressException
+    if name == "InvalidCustomsException":
+        return ImportExportErrorKind.InvalidCustomsException
+    if name == "InvalidFileSystemException":
+        return ImportExportErrorKind.InvalidFileSystemException
+    if name == "InvalidJobIdException":
+        return ImportExportErrorKind.InvalidJobIdException
+    if name == "InvalidManifestFieldException":
+        return ImportExportErrorKind.InvalidManifestFieldException
+    if name == "InvalidParameterException":
+        return ImportExportErrorKind.InvalidParameterException
+    if name == "InvalidVersionException":
+        return ImportExportErrorKind.InvalidVersionException
+    if name == "MalformedManifestException":
+        return ImportExportErrorKind.MalformedManifestException
+    if name == "MissingCustomsException":
+        return ImportExportErrorKind.MissingCustomsException
+    if name == "MissingManifestFieldException":
+        return ImportExportErrorKind.MissingManifestFieldException
+    if name == "MissingParameterException":
+        return ImportExportErrorKind.MissingParameterException
+    if name == "MultipleRegionsException":
+        return ImportExportErrorKind.MultipleRegionsException
+    if name == "NoSuchBucketException":
+        return ImportExportErrorKind.NoSuchBucketException
+    if name == "UnableToCancelJobIdException":
+        return ImportExportErrorKind.UnableToCancelJobIdException
+    if name == "UnableToUpdateJobIdException":
+        return ImportExportErrorKind.UnableToUpdateJobIdException
+    return ImportExportErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def importexport_error_name(ImportExportErrorKind k) -> str:
+    match k:
+        case ImportExportErrorKind.BucketPermissionException:
+            return "BucketPermissionException"
+        case ImportExportErrorKind.CanceledJobIdException:
+            return "CanceledJobIdException"
+        case ImportExportErrorKind.CreateJobQuotaExceededException:
+            return "CreateJobQuotaExceededException"
+        case ImportExportErrorKind.ExpiredJobIdException:
+            return "ExpiredJobIdException"
+        case ImportExportErrorKind.InvalidAccessKeyIdException:
+            return "InvalidAccessKeyIdException"
+        case ImportExportErrorKind.InvalidAddressException:
+            return "InvalidAddressException"
+        case ImportExportErrorKind.InvalidCustomsException:
+            return "InvalidCustomsException"
+        case ImportExportErrorKind.InvalidFileSystemException:
+            return "InvalidFileSystemException"
+        case ImportExportErrorKind.InvalidJobIdException:
+            return "InvalidJobIdException"
+        case ImportExportErrorKind.InvalidManifestFieldException:
+            return "InvalidManifestFieldException"
+        case ImportExportErrorKind.InvalidParameterException:
+            return "InvalidParameterException"
+        case ImportExportErrorKind.InvalidVersionException:
+            return "InvalidVersionException"
+        case ImportExportErrorKind.MalformedManifestException:
+            return "MalformedManifestException"
+        case ImportExportErrorKind.MissingCustomsException:
+            return "MissingCustomsException"
+        case ImportExportErrorKind.MissingManifestFieldException:
+            return "MissingManifestFieldException"
+        case ImportExportErrorKind.MissingParameterException:
+            return "MissingParameterException"
+        case ImportExportErrorKind.MultipleRegionsException:
+            return "MultipleRegionsException"
+        case ImportExportErrorKind.NoSuchBucketException:
+            return "NoSuchBucketException"
+        case ImportExportErrorKind.UnableToCancelJobIdException:
+            return "UnableToCancelJobIdException"
+        case ImportExportErrorKind.UnableToUpdateJobIdException:
+            return "UnableToUpdateJobIdException"
+        case ImportExportErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

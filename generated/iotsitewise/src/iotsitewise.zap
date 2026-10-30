@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service iotsitewise)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -4568,9 +4569,16 @@ struct WorkspaceSummary:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by iotsitewise_error_from_code.
-enum IoTSiteWiseError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum IoTSiteWiseErrorKind:
     AccessDeniedException
     ConflictingOperationException
     InternalFailureException
@@ -4587,38 +4595,79 @@ enum IoTSiteWiseError:
     ValidationException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def iotsitewise_error_from_code(str code) -> IoTSiteWiseError:
-    if code == "AccessDeniedException":
-        return IoTSiteWiseError.AccessDeniedException
-    if code == "ConflictingOperationException":
-        return IoTSiteWiseError.ConflictingOperationException
-    if code == "InternalFailureException":
-        return IoTSiteWiseError.InternalFailureException
-    if code == "InvalidRequestException":
-        return IoTSiteWiseError.InvalidRequestException
-    if code == "LimitExceededException":
-        return IoTSiteWiseError.LimitExceededException
-    if code == "PreconditionFailedException":
-        return IoTSiteWiseError.PreconditionFailedException
-    if code == "QueryTimeoutException":
-        return IoTSiteWiseError.QueryTimeoutException
-    if code == "ResourceAlreadyExistsException":
-        return IoTSiteWiseError.ResourceAlreadyExistsException
-    if code == "ResourceNotFoundException":
-        return IoTSiteWiseError.ResourceNotFoundException
-    if code == "ServiceUnavailableException":
-        return IoTSiteWiseError.ServiceUnavailableException
-    if code == "ThrottlingException":
-        return IoTSiteWiseError.ThrottlingException
-    if code == "TooManyTagsException":
-        return IoTSiteWiseError.TooManyTagsException
-    if code == "UnauthorizedException":
-        return IoTSiteWiseError.UnauthorizedException
-    if code == "ValidationException":
-        return IoTSiteWiseError.ValidationException
-    return IoTSiteWiseError.Unknown(code=code)
+# Classify an AWS error code into `IoTSiteWiseErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def iotsitewise_error_kind(str code) -> IoTSiteWiseErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return IoTSiteWiseErrorKind.AccessDeniedException
+    if name == "ConflictingOperationException":
+        return IoTSiteWiseErrorKind.ConflictingOperationException
+    if name == "InternalFailureException":
+        return IoTSiteWiseErrorKind.InternalFailureException
+    if name == "InvalidRequestException":
+        return IoTSiteWiseErrorKind.InvalidRequestException
+    if name == "LimitExceededException":
+        return IoTSiteWiseErrorKind.LimitExceededException
+    if name == "PreconditionFailedException":
+        return IoTSiteWiseErrorKind.PreconditionFailedException
+    if name == "QueryTimeoutException":
+        return IoTSiteWiseErrorKind.QueryTimeoutException
+    if name == "ResourceAlreadyExistsException":
+        return IoTSiteWiseErrorKind.ResourceAlreadyExistsException
+    if name == "ResourceNotFoundException":
+        return IoTSiteWiseErrorKind.ResourceNotFoundException
+    if name == "ServiceUnavailableException":
+        return IoTSiteWiseErrorKind.ServiceUnavailableException
+    if name == "ThrottlingException":
+        return IoTSiteWiseErrorKind.ThrottlingException
+    if name == "TooManyTagsException":
+        return IoTSiteWiseErrorKind.TooManyTagsException
+    if name == "UnauthorizedException":
+        return IoTSiteWiseErrorKind.UnauthorizedException
+    if name == "ValidationException":
+        return IoTSiteWiseErrorKind.ValidationException
+    return IoTSiteWiseErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def iotsitewise_error_name(IoTSiteWiseErrorKind k) -> str:
+    match k:
+        case IoTSiteWiseErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case IoTSiteWiseErrorKind.ConflictingOperationException:
+            return "ConflictingOperationException"
+        case IoTSiteWiseErrorKind.InternalFailureException:
+            return "InternalFailureException"
+        case IoTSiteWiseErrorKind.InvalidRequestException:
+            return "InvalidRequestException"
+        case IoTSiteWiseErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case IoTSiteWiseErrorKind.PreconditionFailedException:
+            return "PreconditionFailedException"
+        case IoTSiteWiseErrorKind.QueryTimeoutException:
+            return "QueryTimeoutException"
+        case IoTSiteWiseErrorKind.ResourceAlreadyExistsException:
+            return "ResourceAlreadyExistsException"
+        case IoTSiteWiseErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case IoTSiteWiseErrorKind.ServiceUnavailableException:
+            return "ServiceUnavailableException"
+        case IoTSiteWiseErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case IoTSiteWiseErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case IoTSiteWiseErrorKind.UnauthorizedException:
+            return "UnauthorizedException"
+        case IoTSiteWiseErrorKind.ValidationException:
+            return "ValidationException"
+        case IoTSiteWiseErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

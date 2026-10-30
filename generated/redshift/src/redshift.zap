@@ -6,7 +6,8 @@
 # Protocol: query (SigV4 service redshift, Version 2012-12-01)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + query) via #283 module imports — see
+# Imports the aws_core package (core + errors + query) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: the whole input is a flat form-urlencoded POST body
 # (Action + Version + the members), the AWS query wire format.
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.query
 
 # The Redshift query protocol: SigV4 service "redshift" (also the endpoint prefix
@@ -2900,9 +2902,16 @@ struct VpcSecurityGroupMembership:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# query `<ErrorResponse><Error><Code>` element code by redshift_error_from_code.
-enum RedshiftError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the query `<ErrorResponse><Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum RedshiftErrorKind:
     AccessToClusterDeniedFault
     AccessToSnapshotDeniedFault
     AuthenticationProfileAlreadyExistsFault
@@ -3050,300 +3059,603 @@ enum RedshiftError:
     UsageLimitNotFoundFault
     Unknown(str code)
 
-# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's
-# error helpers) to a variant.
-def redshift_error_from_code(str code) -> RedshiftError:
-    if code == "AccessToClusterDeniedFault":
-        return RedshiftError.AccessToClusterDeniedFault
-    if code == "AccessToSnapshotDeniedFault":
-        return RedshiftError.AccessToSnapshotDeniedFault
-    if code == "AuthenticationProfileAlreadyExistsFault":
-        return RedshiftError.AuthenticationProfileAlreadyExistsFault
-    if code == "AuthenticationProfileNotFoundFault":
-        return RedshiftError.AuthenticationProfileNotFoundFault
-    if code == "AuthenticationProfileQuotaExceededFault":
-        return RedshiftError.AuthenticationProfileQuotaExceededFault
-    if code == "AuthorizationAlreadyExistsFault":
-        return RedshiftError.AuthorizationAlreadyExistsFault
-    if code == "AuthorizationNotFoundFault":
-        return RedshiftError.AuthorizationNotFoundFault
-    if code == "AuthorizationQuotaExceededFault":
-        return RedshiftError.AuthorizationQuotaExceededFault
-    if code == "BatchDeleteRequestSizeExceededFault":
-        return RedshiftError.BatchDeleteRequestSizeExceededFault
-    if code == "BatchModifyClusterSnapshotsLimitExceededFault":
-        return RedshiftError.BatchModifyClusterSnapshotsLimitExceededFault
-    if code == "BucketNotFoundFault":
-        return RedshiftError.BucketNotFoundFault
-    if code == "ClusterAlreadyExistsFault":
-        return RedshiftError.ClusterAlreadyExistsFault
-    if code == "ClusterNotFoundFault":
-        return RedshiftError.ClusterNotFoundFault
-    if code == "ClusterOnLatestRevisionFault":
-        return RedshiftError.ClusterOnLatestRevisionFault
-    if code == "ClusterParameterGroupAlreadyExistsFault":
-        return RedshiftError.ClusterParameterGroupAlreadyExistsFault
-    if code == "ClusterParameterGroupNotFoundFault":
-        return RedshiftError.ClusterParameterGroupNotFoundFault
-    if code == "ClusterParameterGroupQuotaExceededFault":
-        return RedshiftError.ClusterParameterGroupQuotaExceededFault
-    if code == "ClusterQuotaExceededFault":
-        return RedshiftError.ClusterQuotaExceededFault
-    if code == "ClusterSecurityGroupAlreadyExistsFault":
-        return RedshiftError.ClusterSecurityGroupAlreadyExistsFault
-    if code == "ClusterSecurityGroupNotFoundFault":
-        return RedshiftError.ClusterSecurityGroupNotFoundFault
-    if code == "ClusterSecurityGroupQuotaExceededFault":
-        return RedshiftError.ClusterSecurityGroupQuotaExceededFault
-    if code == "ClusterSnapshotAlreadyExistsFault":
-        return RedshiftError.ClusterSnapshotAlreadyExistsFault
-    if code == "ClusterSnapshotNotFoundFault":
-        return RedshiftError.ClusterSnapshotNotFoundFault
-    if code == "ClusterSnapshotQuotaExceededFault":
-        return RedshiftError.ClusterSnapshotQuotaExceededFault
-    if code == "ClusterSubnetGroupAlreadyExistsFault":
-        return RedshiftError.ClusterSubnetGroupAlreadyExistsFault
-    if code == "ClusterSubnetGroupNotFoundFault":
-        return RedshiftError.ClusterSubnetGroupNotFoundFault
-    if code == "ClusterSubnetGroupQuotaExceededFault":
-        return RedshiftError.ClusterSubnetGroupQuotaExceededFault
-    if code == "ClusterSubnetQuotaExceededFault":
-        return RedshiftError.ClusterSubnetQuotaExceededFault
-    if code == "ConflictPolicyUpdateFault":
-        return RedshiftError.ConflictPolicyUpdateFault
-    if code == "CopyToRegionDisabledFault":
-        return RedshiftError.CopyToRegionDisabledFault
-    if code == "CustomCnameAssociationFault":
-        return RedshiftError.CustomCnameAssociationFault
-    if code == "CustomDomainAssociationNotFoundFault":
-        return RedshiftError.CustomDomainAssociationNotFoundFault
-    if code == "DependentServiceAccessDeniedFault":
-        return RedshiftError.DependentServiceAccessDeniedFault
-    if code == "DependentServiceRequestThrottlingFault":
-        return RedshiftError.DependentServiceRequestThrottlingFault
-    if code == "DependentServiceUnavailableFault":
-        return RedshiftError.DependentServiceUnavailableFault
-    if code == "EndpointAlreadyExistsFault":
-        return RedshiftError.EndpointAlreadyExistsFault
-    if code == "EndpointAuthorizationAlreadyExistsFault":
-        return RedshiftError.EndpointAuthorizationAlreadyExistsFault
-    if code == "EndpointAuthorizationNotFoundFault":
-        return RedshiftError.EndpointAuthorizationNotFoundFault
-    if code == "EndpointAuthorizationsPerClusterLimitExceededFault":
-        return RedshiftError.EndpointAuthorizationsPerClusterLimitExceededFault
-    if code == "EndpointNotFoundFault":
-        return RedshiftError.EndpointNotFoundFault
-    if code == "EndpointsPerAuthorizationLimitExceededFault":
-        return RedshiftError.EndpointsPerAuthorizationLimitExceededFault
-    if code == "EndpointsPerClusterLimitExceededFault":
-        return RedshiftError.EndpointsPerClusterLimitExceededFault
-    if code == "EventSubscriptionQuotaExceededFault":
-        return RedshiftError.EventSubscriptionQuotaExceededFault
-    if code == "HsmClientCertificateAlreadyExistsFault":
-        return RedshiftError.HsmClientCertificateAlreadyExistsFault
-    if code == "HsmClientCertificateNotFoundFault":
-        return RedshiftError.HsmClientCertificateNotFoundFault
-    if code == "HsmClientCertificateQuotaExceededFault":
-        return RedshiftError.HsmClientCertificateQuotaExceededFault
-    if code == "HsmConfigurationAlreadyExistsFault":
-        return RedshiftError.HsmConfigurationAlreadyExistsFault
-    if code == "HsmConfigurationNotFoundFault":
-        return RedshiftError.HsmConfigurationNotFoundFault
-    if code == "HsmConfigurationQuotaExceededFault":
-        return RedshiftError.HsmConfigurationQuotaExceededFault
-    if code == "InProgressTableRestoreQuotaExceededFault":
-        return RedshiftError.InProgressTableRestoreQuotaExceededFault
-    if code == "IncompatibleOrderableOptions":
-        return RedshiftError.IncompatibleOrderableOptions
-    if code == "InsufficientClusterCapacityFault":
-        return RedshiftError.InsufficientClusterCapacityFault
-    if code == "InsufficientS3BucketPolicyFault":
-        return RedshiftError.InsufficientS3BucketPolicyFault
-    if code == "IntegrationAlreadyExistsFault":
-        return RedshiftError.IntegrationAlreadyExistsFault
-    if code == "IntegrationConflictOperationFault":
-        return RedshiftError.IntegrationConflictOperationFault
-    if code == "IntegrationConflictStateFault":
-        return RedshiftError.IntegrationConflictStateFault
-    if code == "IntegrationNotFoundFault":
-        return RedshiftError.IntegrationNotFoundFault
-    if code == "IntegrationQuotaExceededFault":
-        return RedshiftError.IntegrationQuotaExceededFault
-    if code == "IntegrationSourceNotFoundFault":
-        return RedshiftError.IntegrationSourceNotFoundFault
-    if code == "IntegrationTargetNotFoundFault":
-        return RedshiftError.IntegrationTargetNotFoundFault
-    if code == "InvalidAuthenticationProfileRequestFault":
-        return RedshiftError.InvalidAuthenticationProfileRequestFault
-    if code == "InvalidAuthorizationStateFault":
-        return RedshiftError.InvalidAuthorizationStateFault
-    if code == "InvalidClusterParameterGroupStateFault":
-        return RedshiftError.InvalidClusterParameterGroupStateFault
-    if code == "InvalidClusterSecurityGroupStateFault":
-        return RedshiftError.InvalidClusterSecurityGroupStateFault
-    if code == "InvalidClusterSnapshotScheduleStateFault":
-        return RedshiftError.InvalidClusterSnapshotScheduleStateFault
-    if code == "InvalidClusterSnapshotStateFault":
-        return RedshiftError.InvalidClusterSnapshotStateFault
-    if code == "InvalidClusterStateFault":
-        return RedshiftError.InvalidClusterStateFault
-    if code == "InvalidClusterSubnetGroupStateFault":
-        return RedshiftError.InvalidClusterSubnetGroupStateFault
-    if code == "InvalidClusterSubnetStateFault":
-        return RedshiftError.InvalidClusterSubnetStateFault
-    if code == "InvalidClusterTrackFault":
-        return RedshiftError.InvalidClusterTrackFault
-    if code == "InvalidDataShareFault":
-        return RedshiftError.InvalidDataShareFault
-    if code == "InvalidElasticIpFault":
-        return RedshiftError.InvalidElasticIpFault
-    if code == "InvalidEndpointStateFault":
-        return RedshiftError.InvalidEndpointStateFault
-    if code == "InvalidHsmClientCertificateStateFault":
-        return RedshiftError.InvalidHsmClientCertificateStateFault
-    if code == "InvalidHsmConfigurationStateFault":
-        return RedshiftError.InvalidHsmConfigurationStateFault
-    if code == "InvalidNamespaceFault":
-        return RedshiftError.InvalidNamespaceFault
-    if code == "InvalidPolicyFault":
-        return RedshiftError.InvalidPolicyFault
-    if code == "InvalidReservedNodeStateFault":
-        return RedshiftError.InvalidReservedNodeStateFault
-    if code == "InvalidRestoreFault":
-        return RedshiftError.InvalidRestoreFault
-    if code == "InvalidRetentionPeriodFault":
-        return RedshiftError.InvalidRetentionPeriodFault
-    if code == "InvalidS3BucketNameFault":
-        return RedshiftError.InvalidS3BucketNameFault
-    if code == "InvalidS3KeyPrefixFault":
-        return RedshiftError.InvalidS3KeyPrefixFault
-    if code == "InvalidScheduleFault":
-        return RedshiftError.InvalidScheduleFault
-    if code == "InvalidScheduledActionFault":
-        return RedshiftError.InvalidScheduledActionFault
-    if code == "InvalidSnapshotCopyGrantStateFault":
-        return RedshiftError.InvalidSnapshotCopyGrantStateFault
-    if code == "InvalidSubnet":
-        return RedshiftError.InvalidSubnet
-    if code == "InvalidSubscriptionStateFault":
-        return RedshiftError.InvalidSubscriptionStateFault
-    if code == "InvalidTableRestoreArgumentFault":
-        return RedshiftError.InvalidTableRestoreArgumentFault
-    if code == "InvalidTagFault":
-        return RedshiftError.InvalidTagFault
-    if code == "InvalidUsageLimitFault":
-        return RedshiftError.InvalidUsageLimitFault
-    if code == "InvalidVPCNetworkStateFault":
-        return RedshiftError.InvalidVPCNetworkStateFault
-    if code == "Ipv6CidrBlockNotFoundFault":
-        return RedshiftError.Ipv6CidrBlockNotFoundFault
-    if code == "LimitExceededFault":
-        return RedshiftError.LimitExceededFault
-    if code == "NumberOfNodesPerClusterLimitExceededFault":
-        return RedshiftError.NumberOfNodesPerClusterLimitExceededFault
-    if code == "NumberOfNodesQuotaExceededFault":
-        return RedshiftError.NumberOfNodesQuotaExceededFault
-    if code == "PartnerNotFoundFault":
-        return RedshiftError.PartnerNotFoundFault
-    if code == "Qev2IdcApplicationAlreadyExistsFault":
-        return RedshiftError.Qev2IdcApplicationAlreadyExistsFault
-    if code == "Qev2IdcApplicationNotExistsFault":
-        return RedshiftError.Qev2IdcApplicationNotExistsFault
-    if code == "RedshiftIdcApplicationAlreadyExistsFault":
-        return RedshiftError.RedshiftIdcApplicationAlreadyExistsFault
-    if code == "RedshiftIdcApplicationNotExistsFault":
-        return RedshiftError.RedshiftIdcApplicationNotExistsFault
-    if code == "RedshiftIdcApplicationQuotaExceededFault":
-        return RedshiftError.RedshiftIdcApplicationQuotaExceededFault
-    if code == "RedshiftInvalidParameterFault":
-        return RedshiftError.RedshiftInvalidParameterFault
-    if code == "ReservedNodeAlreadyExistsFault":
-        return RedshiftError.ReservedNodeAlreadyExistsFault
-    if code == "ReservedNodeAlreadyMigratedFault":
-        return RedshiftError.ReservedNodeAlreadyMigratedFault
-    if code == "ReservedNodeExchangeNotFoundFault":
-        return RedshiftError.ReservedNodeExchangeNotFoundFault
-    if code == "ReservedNodeNotFoundFault":
-        return RedshiftError.ReservedNodeNotFoundFault
-    if code == "ReservedNodeOfferingNotFoundFault":
-        return RedshiftError.ReservedNodeOfferingNotFoundFault
-    if code == "ReservedNodeQuotaExceededFault":
-        return RedshiftError.ReservedNodeQuotaExceededFault
-    if code == "ResizeNotFoundFault":
-        return RedshiftError.ResizeNotFoundFault
-    if code == "ResourceNotFoundFault":
-        return RedshiftError.ResourceNotFoundFault
-    if code == "SNSInvalidTopicFault":
-        return RedshiftError.SNSInvalidTopicFault
-    if code == "SNSNoAuthorizationFault":
-        return RedshiftError.SNSNoAuthorizationFault
-    if code == "SNSTopicArnNotFoundFault":
-        return RedshiftError.SNSTopicArnNotFoundFault
-    if code == "ScheduleDefinitionTypeUnsupportedFault":
-        return RedshiftError.ScheduleDefinitionTypeUnsupportedFault
-    if code == "ScheduledActionAlreadyExistsFault":
-        return RedshiftError.ScheduledActionAlreadyExistsFault
-    if code == "ScheduledActionNotFoundFault":
-        return RedshiftError.ScheduledActionNotFoundFault
-    if code == "ScheduledActionQuotaExceededFault":
-        return RedshiftError.ScheduledActionQuotaExceededFault
-    if code == "ScheduledActionTypeUnsupportedFault":
-        return RedshiftError.ScheduledActionTypeUnsupportedFault
-    if code == "SnapshotCopyAlreadyDisabledFault":
-        return RedshiftError.SnapshotCopyAlreadyDisabledFault
-    if code == "SnapshotCopyAlreadyEnabledFault":
-        return RedshiftError.SnapshotCopyAlreadyEnabledFault
-    if code == "SnapshotCopyDisabledFault":
-        return RedshiftError.SnapshotCopyDisabledFault
-    if code == "SnapshotCopyGrantAlreadyExistsFault":
-        return RedshiftError.SnapshotCopyGrantAlreadyExistsFault
-    if code == "SnapshotCopyGrantNotFoundFault":
-        return RedshiftError.SnapshotCopyGrantNotFoundFault
-    if code == "SnapshotCopyGrantQuotaExceededFault":
-        return RedshiftError.SnapshotCopyGrantQuotaExceededFault
-    if code == "SnapshotScheduleAlreadyExistsFault":
-        return RedshiftError.SnapshotScheduleAlreadyExistsFault
-    if code == "SnapshotScheduleNotFoundFault":
-        return RedshiftError.SnapshotScheduleNotFoundFault
-    if code == "SnapshotScheduleQuotaExceededFault":
-        return RedshiftError.SnapshotScheduleQuotaExceededFault
-    if code == "SnapshotScheduleUpdateInProgressFault":
-        return RedshiftError.SnapshotScheduleUpdateInProgressFault
-    if code == "SourceNotFoundFault":
-        return RedshiftError.SourceNotFoundFault
-    if code == "SubnetAlreadyInUse":
-        return RedshiftError.SubnetAlreadyInUse
-    if code == "SubscriptionAlreadyExistFault":
-        return RedshiftError.SubscriptionAlreadyExistFault
-    if code == "SubscriptionCategoryNotFoundFault":
-        return RedshiftError.SubscriptionCategoryNotFoundFault
-    if code == "SubscriptionEventIdNotFoundFault":
-        return RedshiftError.SubscriptionEventIdNotFoundFault
-    if code == "SubscriptionNotFoundFault":
-        return RedshiftError.SubscriptionNotFoundFault
-    if code == "SubscriptionSeverityNotFoundFault":
-        return RedshiftError.SubscriptionSeverityNotFoundFault
-    if code == "TableLimitExceededFault":
-        return RedshiftError.TableLimitExceededFault
-    if code == "TableRestoreNotFoundFault":
-        return RedshiftError.TableRestoreNotFoundFault
-    if code == "TagLimitExceededFault":
-        return RedshiftError.TagLimitExceededFault
-    if code == "UnauthorizedOperation":
-        return RedshiftError.UnauthorizedOperation
-    if code == "UnauthorizedPartnerIntegrationFault":
-        return RedshiftError.UnauthorizedPartnerIntegrationFault
-    if code == "UnknownSnapshotCopyRegionFault":
-        return RedshiftError.UnknownSnapshotCopyRegionFault
-    if code == "UnsupportedOperationFault":
-        return RedshiftError.UnsupportedOperationFault
-    if code == "UnsupportedOptionFault":
-        return RedshiftError.UnsupportedOptionFault
-    if code == "UsageLimitAlreadyExistsFault":
-        return RedshiftError.UsageLimitAlreadyExistsFault
-    if code == "UsageLimitNotFoundFault":
-        return RedshiftError.UsageLimitNotFoundFault
-    return RedshiftError.Unknown(code=code)
+# Classify an AWS error code into `RedshiftErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def redshift_error_kind(str code) -> RedshiftErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessToClusterDeniedFault":
+        return RedshiftErrorKind.AccessToClusterDeniedFault
+    if name == "AccessToSnapshotDeniedFault":
+        return RedshiftErrorKind.AccessToSnapshotDeniedFault
+    if name == "AuthenticationProfileAlreadyExistsFault":
+        return RedshiftErrorKind.AuthenticationProfileAlreadyExistsFault
+    if name == "AuthenticationProfileNotFoundFault":
+        return RedshiftErrorKind.AuthenticationProfileNotFoundFault
+    if name == "AuthenticationProfileQuotaExceededFault":
+        return RedshiftErrorKind.AuthenticationProfileQuotaExceededFault
+    if name == "AuthorizationAlreadyExistsFault":
+        return RedshiftErrorKind.AuthorizationAlreadyExistsFault
+    if name == "AuthorizationNotFoundFault":
+        return RedshiftErrorKind.AuthorizationNotFoundFault
+    if name == "AuthorizationQuotaExceededFault":
+        return RedshiftErrorKind.AuthorizationQuotaExceededFault
+    if name == "BatchDeleteRequestSizeExceededFault":
+        return RedshiftErrorKind.BatchDeleteRequestSizeExceededFault
+    if name == "BatchModifyClusterSnapshotsLimitExceededFault":
+        return RedshiftErrorKind.BatchModifyClusterSnapshotsLimitExceededFault
+    if name == "BucketNotFoundFault":
+        return RedshiftErrorKind.BucketNotFoundFault
+    if name == "ClusterAlreadyExistsFault":
+        return RedshiftErrorKind.ClusterAlreadyExistsFault
+    if name == "ClusterNotFoundFault":
+        return RedshiftErrorKind.ClusterNotFoundFault
+    if name == "ClusterOnLatestRevisionFault":
+        return RedshiftErrorKind.ClusterOnLatestRevisionFault
+    if name == "ClusterParameterGroupAlreadyExistsFault":
+        return RedshiftErrorKind.ClusterParameterGroupAlreadyExistsFault
+    if name == "ClusterParameterGroupNotFoundFault":
+        return RedshiftErrorKind.ClusterParameterGroupNotFoundFault
+    if name == "ClusterParameterGroupQuotaExceededFault":
+        return RedshiftErrorKind.ClusterParameterGroupQuotaExceededFault
+    if name == "ClusterQuotaExceededFault":
+        return RedshiftErrorKind.ClusterQuotaExceededFault
+    if name == "ClusterSecurityGroupAlreadyExistsFault":
+        return RedshiftErrorKind.ClusterSecurityGroupAlreadyExistsFault
+    if name == "ClusterSecurityGroupNotFoundFault":
+        return RedshiftErrorKind.ClusterSecurityGroupNotFoundFault
+    if name == "ClusterSecurityGroupQuotaExceededFault":
+        return RedshiftErrorKind.ClusterSecurityGroupQuotaExceededFault
+    if name == "ClusterSnapshotAlreadyExistsFault":
+        return RedshiftErrorKind.ClusterSnapshotAlreadyExistsFault
+    if name == "ClusterSnapshotNotFoundFault":
+        return RedshiftErrorKind.ClusterSnapshotNotFoundFault
+    if name == "ClusterSnapshotQuotaExceededFault":
+        return RedshiftErrorKind.ClusterSnapshotQuotaExceededFault
+    if name == "ClusterSubnetGroupAlreadyExistsFault":
+        return RedshiftErrorKind.ClusterSubnetGroupAlreadyExistsFault
+    if name == "ClusterSubnetGroupNotFoundFault":
+        return RedshiftErrorKind.ClusterSubnetGroupNotFoundFault
+    if name == "ClusterSubnetGroupQuotaExceededFault":
+        return RedshiftErrorKind.ClusterSubnetGroupQuotaExceededFault
+    if name == "ClusterSubnetQuotaExceededFault":
+        return RedshiftErrorKind.ClusterSubnetQuotaExceededFault
+    if name == "ConflictPolicyUpdateFault":
+        return RedshiftErrorKind.ConflictPolicyUpdateFault
+    if name == "CopyToRegionDisabledFault":
+        return RedshiftErrorKind.CopyToRegionDisabledFault
+    if name == "CustomCnameAssociationFault":
+        return RedshiftErrorKind.CustomCnameAssociationFault
+    if name == "CustomDomainAssociationNotFoundFault":
+        return RedshiftErrorKind.CustomDomainAssociationNotFoundFault
+    if name == "DependentServiceAccessDeniedFault":
+        return RedshiftErrorKind.DependentServiceAccessDeniedFault
+    if name == "DependentServiceRequestThrottlingFault":
+        return RedshiftErrorKind.DependentServiceRequestThrottlingFault
+    if name == "DependentServiceUnavailableFault":
+        return RedshiftErrorKind.DependentServiceUnavailableFault
+    if name == "EndpointAlreadyExistsFault":
+        return RedshiftErrorKind.EndpointAlreadyExistsFault
+    if name == "EndpointAuthorizationAlreadyExistsFault":
+        return RedshiftErrorKind.EndpointAuthorizationAlreadyExistsFault
+    if name == "EndpointAuthorizationNotFoundFault":
+        return RedshiftErrorKind.EndpointAuthorizationNotFoundFault
+    if name == "EndpointAuthorizationsPerClusterLimitExceededFault":
+        return RedshiftErrorKind.EndpointAuthorizationsPerClusterLimitExceededFault
+    if name == "EndpointNotFoundFault":
+        return RedshiftErrorKind.EndpointNotFoundFault
+    if name == "EndpointsPerAuthorizationLimitExceededFault":
+        return RedshiftErrorKind.EndpointsPerAuthorizationLimitExceededFault
+    if name == "EndpointsPerClusterLimitExceededFault":
+        return RedshiftErrorKind.EndpointsPerClusterLimitExceededFault
+    if name == "EventSubscriptionQuotaExceededFault":
+        return RedshiftErrorKind.EventSubscriptionQuotaExceededFault
+    if name == "HsmClientCertificateAlreadyExistsFault":
+        return RedshiftErrorKind.HsmClientCertificateAlreadyExistsFault
+    if name == "HsmClientCertificateNotFoundFault":
+        return RedshiftErrorKind.HsmClientCertificateNotFoundFault
+    if name == "HsmClientCertificateQuotaExceededFault":
+        return RedshiftErrorKind.HsmClientCertificateQuotaExceededFault
+    if name == "HsmConfigurationAlreadyExistsFault":
+        return RedshiftErrorKind.HsmConfigurationAlreadyExistsFault
+    if name == "HsmConfigurationNotFoundFault":
+        return RedshiftErrorKind.HsmConfigurationNotFoundFault
+    if name == "HsmConfigurationQuotaExceededFault":
+        return RedshiftErrorKind.HsmConfigurationQuotaExceededFault
+    if name == "InProgressTableRestoreQuotaExceededFault":
+        return RedshiftErrorKind.InProgressTableRestoreQuotaExceededFault
+    if name == "IncompatibleOrderableOptions":
+        return RedshiftErrorKind.IncompatibleOrderableOptions
+    if name == "InsufficientClusterCapacityFault":
+        return RedshiftErrorKind.InsufficientClusterCapacityFault
+    if name == "InsufficientS3BucketPolicyFault":
+        return RedshiftErrorKind.InsufficientS3BucketPolicyFault
+    if name == "IntegrationAlreadyExistsFault":
+        return RedshiftErrorKind.IntegrationAlreadyExistsFault
+    if name == "IntegrationConflictOperationFault":
+        return RedshiftErrorKind.IntegrationConflictOperationFault
+    if name == "IntegrationConflictStateFault":
+        return RedshiftErrorKind.IntegrationConflictStateFault
+    if name == "IntegrationNotFoundFault":
+        return RedshiftErrorKind.IntegrationNotFoundFault
+    if name == "IntegrationQuotaExceededFault":
+        return RedshiftErrorKind.IntegrationQuotaExceededFault
+    if name == "IntegrationSourceNotFoundFault":
+        return RedshiftErrorKind.IntegrationSourceNotFoundFault
+    if name == "IntegrationTargetNotFoundFault":
+        return RedshiftErrorKind.IntegrationTargetNotFoundFault
+    if name == "InvalidAuthenticationProfileRequestFault":
+        return RedshiftErrorKind.InvalidAuthenticationProfileRequestFault
+    if name == "InvalidAuthorizationStateFault":
+        return RedshiftErrorKind.InvalidAuthorizationStateFault
+    if name == "InvalidClusterParameterGroupStateFault":
+        return RedshiftErrorKind.InvalidClusterParameterGroupStateFault
+    if name == "InvalidClusterSecurityGroupStateFault":
+        return RedshiftErrorKind.InvalidClusterSecurityGroupStateFault
+    if name == "InvalidClusterSnapshotScheduleStateFault":
+        return RedshiftErrorKind.InvalidClusterSnapshotScheduleStateFault
+    if name == "InvalidClusterSnapshotStateFault":
+        return RedshiftErrorKind.InvalidClusterSnapshotStateFault
+    if name == "InvalidClusterStateFault":
+        return RedshiftErrorKind.InvalidClusterStateFault
+    if name == "InvalidClusterSubnetGroupStateFault":
+        return RedshiftErrorKind.InvalidClusterSubnetGroupStateFault
+    if name == "InvalidClusterSubnetStateFault":
+        return RedshiftErrorKind.InvalidClusterSubnetStateFault
+    if name == "InvalidClusterTrackFault":
+        return RedshiftErrorKind.InvalidClusterTrackFault
+    if name == "InvalidDataShareFault":
+        return RedshiftErrorKind.InvalidDataShareFault
+    if name == "InvalidElasticIpFault":
+        return RedshiftErrorKind.InvalidElasticIpFault
+    if name == "InvalidEndpointStateFault":
+        return RedshiftErrorKind.InvalidEndpointStateFault
+    if name == "InvalidHsmClientCertificateStateFault":
+        return RedshiftErrorKind.InvalidHsmClientCertificateStateFault
+    if name == "InvalidHsmConfigurationStateFault":
+        return RedshiftErrorKind.InvalidHsmConfigurationStateFault
+    if name == "InvalidNamespaceFault":
+        return RedshiftErrorKind.InvalidNamespaceFault
+    if name == "InvalidPolicyFault":
+        return RedshiftErrorKind.InvalidPolicyFault
+    if name == "InvalidReservedNodeStateFault":
+        return RedshiftErrorKind.InvalidReservedNodeStateFault
+    if name == "InvalidRestoreFault":
+        return RedshiftErrorKind.InvalidRestoreFault
+    if name == "InvalidRetentionPeriodFault":
+        return RedshiftErrorKind.InvalidRetentionPeriodFault
+    if name == "InvalidS3BucketNameFault":
+        return RedshiftErrorKind.InvalidS3BucketNameFault
+    if name == "InvalidS3KeyPrefixFault":
+        return RedshiftErrorKind.InvalidS3KeyPrefixFault
+    if name == "InvalidScheduleFault":
+        return RedshiftErrorKind.InvalidScheduleFault
+    if name == "InvalidScheduledActionFault":
+        return RedshiftErrorKind.InvalidScheduledActionFault
+    if name == "InvalidSnapshotCopyGrantStateFault":
+        return RedshiftErrorKind.InvalidSnapshotCopyGrantStateFault
+    if name == "InvalidSubnet":
+        return RedshiftErrorKind.InvalidSubnet
+    if name == "InvalidSubscriptionStateFault":
+        return RedshiftErrorKind.InvalidSubscriptionStateFault
+    if name == "InvalidTableRestoreArgumentFault":
+        return RedshiftErrorKind.InvalidTableRestoreArgumentFault
+    if name == "InvalidTagFault":
+        return RedshiftErrorKind.InvalidTagFault
+    if name == "InvalidUsageLimitFault":
+        return RedshiftErrorKind.InvalidUsageLimitFault
+    if name == "InvalidVPCNetworkStateFault":
+        return RedshiftErrorKind.InvalidVPCNetworkStateFault
+    if name == "Ipv6CidrBlockNotFoundFault":
+        return RedshiftErrorKind.Ipv6CidrBlockNotFoundFault
+    if name == "LimitExceededFault":
+        return RedshiftErrorKind.LimitExceededFault
+    if name == "NumberOfNodesPerClusterLimitExceededFault":
+        return RedshiftErrorKind.NumberOfNodesPerClusterLimitExceededFault
+    if name == "NumberOfNodesQuotaExceededFault":
+        return RedshiftErrorKind.NumberOfNodesQuotaExceededFault
+    if name == "PartnerNotFoundFault":
+        return RedshiftErrorKind.PartnerNotFoundFault
+    if name == "Qev2IdcApplicationAlreadyExistsFault":
+        return RedshiftErrorKind.Qev2IdcApplicationAlreadyExistsFault
+    if name == "Qev2IdcApplicationNotExistsFault":
+        return RedshiftErrorKind.Qev2IdcApplicationNotExistsFault
+    if name == "RedshiftIdcApplicationAlreadyExistsFault":
+        return RedshiftErrorKind.RedshiftIdcApplicationAlreadyExistsFault
+    if name == "RedshiftIdcApplicationNotExistsFault":
+        return RedshiftErrorKind.RedshiftIdcApplicationNotExistsFault
+    if name == "RedshiftIdcApplicationQuotaExceededFault":
+        return RedshiftErrorKind.RedshiftIdcApplicationQuotaExceededFault
+    if name == "RedshiftInvalidParameterFault":
+        return RedshiftErrorKind.RedshiftInvalidParameterFault
+    if name == "ReservedNodeAlreadyExistsFault":
+        return RedshiftErrorKind.ReservedNodeAlreadyExistsFault
+    if name == "ReservedNodeAlreadyMigratedFault":
+        return RedshiftErrorKind.ReservedNodeAlreadyMigratedFault
+    if name == "ReservedNodeExchangeNotFoundFault":
+        return RedshiftErrorKind.ReservedNodeExchangeNotFoundFault
+    if name == "ReservedNodeNotFoundFault":
+        return RedshiftErrorKind.ReservedNodeNotFoundFault
+    if name == "ReservedNodeOfferingNotFoundFault":
+        return RedshiftErrorKind.ReservedNodeOfferingNotFoundFault
+    if name == "ReservedNodeQuotaExceededFault":
+        return RedshiftErrorKind.ReservedNodeQuotaExceededFault
+    if name == "ResizeNotFoundFault":
+        return RedshiftErrorKind.ResizeNotFoundFault
+    if name == "ResourceNotFoundFault":
+        return RedshiftErrorKind.ResourceNotFoundFault
+    if name == "SNSInvalidTopicFault":
+        return RedshiftErrorKind.SNSInvalidTopicFault
+    if name == "SNSNoAuthorizationFault":
+        return RedshiftErrorKind.SNSNoAuthorizationFault
+    if name == "SNSTopicArnNotFoundFault":
+        return RedshiftErrorKind.SNSTopicArnNotFoundFault
+    if name == "ScheduleDefinitionTypeUnsupportedFault":
+        return RedshiftErrorKind.ScheduleDefinitionTypeUnsupportedFault
+    if name == "ScheduledActionAlreadyExistsFault":
+        return RedshiftErrorKind.ScheduledActionAlreadyExistsFault
+    if name == "ScheduledActionNotFoundFault":
+        return RedshiftErrorKind.ScheduledActionNotFoundFault
+    if name == "ScheduledActionQuotaExceededFault":
+        return RedshiftErrorKind.ScheduledActionQuotaExceededFault
+    if name == "ScheduledActionTypeUnsupportedFault":
+        return RedshiftErrorKind.ScheduledActionTypeUnsupportedFault
+    if name == "SnapshotCopyAlreadyDisabledFault":
+        return RedshiftErrorKind.SnapshotCopyAlreadyDisabledFault
+    if name == "SnapshotCopyAlreadyEnabledFault":
+        return RedshiftErrorKind.SnapshotCopyAlreadyEnabledFault
+    if name == "SnapshotCopyDisabledFault":
+        return RedshiftErrorKind.SnapshotCopyDisabledFault
+    if name == "SnapshotCopyGrantAlreadyExistsFault":
+        return RedshiftErrorKind.SnapshotCopyGrantAlreadyExistsFault
+    if name == "SnapshotCopyGrantNotFoundFault":
+        return RedshiftErrorKind.SnapshotCopyGrantNotFoundFault
+    if name == "SnapshotCopyGrantQuotaExceededFault":
+        return RedshiftErrorKind.SnapshotCopyGrantQuotaExceededFault
+    if name == "SnapshotScheduleAlreadyExistsFault":
+        return RedshiftErrorKind.SnapshotScheduleAlreadyExistsFault
+    if name == "SnapshotScheduleNotFoundFault":
+        return RedshiftErrorKind.SnapshotScheduleNotFoundFault
+    if name == "SnapshotScheduleQuotaExceededFault":
+        return RedshiftErrorKind.SnapshotScheduleQuotaExceededFault
+    if name == "SnapshotScheduleUpdateInProgressFault":
+        return RedshiftErrorKind.SnapshotScheduleUpdateInProgressFault
+    if name == "SourceNotFoundFault":
+        return RedshiftErrorKind.SourceNotFoundFault
+    if name == "SubnetAlreadyInUse":
+        return RedshiftErrorKind.SubnetAlreadyInUse
+    if name == "SubscriptionAlreadyExistFault":
+        return RedshiftErrorKind.SubscriptionAlreadyExistFault
+    if name == "SubscriptionCategoryNotFoundFault":
+        return RedshiftErrorKind.SubscriptionCategoryNotFoundFault
+    if name == "SubscriptionEventIdNotFoundFault":
+        return RedshiftErrorKind.SubscriptionEventIdNotFoundFault
+    if name == "SubscriptionNotFoundFault":
+        return RedshiftErrorKind.SubscriptionNotFoundFault
+    if name == "SubscriptionSeverityNotFoundFault":
+        return RedshiftErrorKind.SubscriptionSeverityNotFoundFault
+    if name == "TableLimitExceededFault":
+        return RedshiftErrorKind.TableLimitExceededFault
+    if name == "TableRestoreNotFoundFault":
+        return RedshiftErrorKind.TableRestoreNotFoundFault
+    if name == "TagLimitExceededFault":
+        return RedshiftErrorKind.TagLimitExceededFault
+    if name == "UnauthorizedOperation":
+        return RedshiftErrorKind.UnauthorizedOperation
+    if name == "UnauthorizedPartnerIntegrationFault":
+        return RedshiftErrorKind.UnauthorizedPartnerIntegrationFault
+    if name == "UnknownSnapshotCopyRegionFault":
+        return RedshiftErrorKind.UnknownSnapshotCopyRegionFault
+    if name == "UnsupportedOperationFault":
+        return RedshiftErrorKind.UnsupportedOperationFault
+    if name == "UnsupportedOptionFault":
+        return RedshiftErrorKind.UnsupportedOptionFault
+    if name == "UsageLimitAlreadyExistsFault":
+        return RedshiftErrorKind.UsageLimitAlreadyExistsFault
+    if name == "UsageLimitNotFoundFault":
+        return RedshiftErrorKind.UsageLimitNotFoundFault
+    return RedshiftErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def redshift_error_name(RedshiftErrorKind k) -> str:
+    match k:
+        case RedshiftErrorKind.AccessToClusterDeniedFault:
+            return "AccessToClusterDeniedFault"
+        case RedshiftErrorKind.AccessToSnapshotDeniedFault:
+            return "AccessToSnapshotDeniedFault"
+        case RedshiftErrorKind.AuthenticationProfileAlreadyExistsFault:
+            return "AuthenticationProfileAlreadyExistsFault"
+        case RedshiftErrorKind.AuthenticationProfileNotFoundFault:
+            return "AuthenticationProfileNotFoundFault"
+        case RedshiftErrorKind.AuthenticationProfileQuotaExceededFault:
+            return "AuthenticationProfileQuotaExceededFault"
+        case RedshiftErrorKind.AuthorizationAlreadyExistsFault:
+            return "AuthorizationAlreadyExistsFault"
+        case RedshiftErrorKind.AuthorizationNotFoundFault:
+            return "AuthorizationNotFoundFault"
+        case RedshiftErrorKind.AuthorizationQuotaExceededFault:
+            return "AuthorizationQuotaExceededFault"
+        case RedshiftErrorKind.BatchDeleteRequestSizeExceededFault:
+            return "BatchDeleteRequestSizeExceededFault"
+        case RedshiftErrorKind.BatchModifyClusterSnapshotsLimitExceededFault:
+            return "BatchModifyClusterSnapshotsLimitExceededFault"
+        case RedshiftErrorKind.BucketNotFoundFault:
+            return "BucketNotFoundFault"
+        case RedshiftErrorKind.ClusterAlreadyExistsFault:
+            return "ClusterAlreadyExistsFault"
+        case RedshiftErrorKind.ClusterNotFoundFault:
+            return "ClusterNotFoundFault"
+        case RedshiftErrorKind.ClusterOnLatestRevisionFault:
+            return "ClusterOnLatestRevisionFault"
+        case RedshiftErrorKind.ClusterParameterGroupAlreadyExistsFault:
+            return "ClusterParameterGroupAlreadyExistsFault"
+        case RedshiftErrorKind.ClusterParameterGroupNotFoundFault:
+            return "ClusterParameterGroupNotFoundFault"
+        case RedshiftErrorKind.ClusterParameterGroupQuotaExceededFault:
+            return "ClusterParameterGroupQuotaExceededFault"
+        case RedshiftErrorKind.ClusterQuotaExceededFault:
+            return "ClusterQuotaExceededFault"
+        case RedshiftErrorKind.ClusterSecurityGroupAlreadyExistsFault:
+            return "ClusterSecurityGroupAlreadyExistsFault"
+        case RedshiftErrorKind.ClusterSecurityGroupNotFoundFault:
+            return "ClusterSecurityGroupNotFoundFault"
+        case RedshiftErrorKind.ClusterSecurityGroupQuotaExceededFault:
+            return "ClusterSecurityGroupQuotaExceededFault"
+        case RedshiftErrorKind.ClusterSnapshotAlreadyExistsFault:
+            return "ClusterSnapshotAlreadyExistsFault"
+        case RedshiftErrorKind.ClusterSnapshotNotFoundFault:
+            return "ClusterSnapshotNotFoundFault"
+        case RedshiftErrorKind.ClusterSnapshotQuotaExceededFault:
+            return "ClusterSnapshotQuotaExceededFault"
+        case RedshiftErrorKind.ClusterSubnetGroupAlreadyExistsFault:
+            return "ClusterSubnetGroupAlreadyExistsFault"
+        case RedshiftErrorKind.ClusterSubnetGroupNotFoundFault:
+            return "ClusterSubnetGroupNotFoundFault"
+        case RedshiftErrorKind.ClusterSubnetGroupQuotaExceededFault:
+            return "ClusterSubnetGroupQuotaExceededFault"
+        case RedshiftErrorKind.ClusterSubnetQuotaExceededFault:
+            return "ClusterSubnetQuotaExceededFault"
+        case RedshiftErrorKind.ConflictPolicyUpdateFault:
+            return "ConflictPolicyUpdateFault"
+        case RedshiftErrorKind.CopyToRegionDisabledFault:
+            return "CopyToRegionDisabledFault"
+        case RedshiftErrorKind.CustomCnameAssociationFault:
+            return "CustomCnameAssociationFault"
+        case RedshiftErrorKind.CustomDomainAssociationNotFoundFault:
+            return "CustomDomainAssociationNotFoundFault"
+        case RedshiftErrorKind.DependentServiceAccessDeniedFault:
+            return "DependentServiceAccessDeniedFault"
+        case RedshiftErrorKind.DependentServiceRequestThrottlingFault:
+            return "DependentServiceRequestThrottlingFault"
+        case RedshiftErrorKind.DependentServiceUnavailableFault:
+            return "DependentServiceUnavailableFault"
+        case RedshiftErrorKind.EndpointAlreadyExistsFault:
+            return "EndpointAlreadyExistsFault"
+        case RedshiftErrorKind.EndpointAuthorizationAlreadyExistsFault:
+            return "EndpointAuthorizationAlreadyExistsFault"
+        case RedshiftErrorKind.EndpointAuthorizationNotFoundFault:
+            return "EndpointAuthorizationNotFoundFault"
+        case RedshiftErrorKind.EndpointAuthorizationsPerClusterLimitExceededFault:
+            return "EndpointAuthorizationsPerClusterLimitExceededFault"
+        case RedshiftErrorKind.EndpointNotFoundFault:
+            return "EndpointNotFoundFault"
+        case RedshiftErrorKind.EndpointsPerAuthorizationLimitExceededFault:
+            return "EndpointsPerAuthorizationLimitExceededFault"
+        case RedshiftErrorKind.EndpointsPerClusterLimitExceededFault:
+            return "EndpointsPerClusterLimitExceededFault"
+        case RedshiftErrorKind.EventSubscriptionQuotaExceededFault:
+            return "EventSubscriptionQuotaExceededFault"
+        case RedshiftErrorKind.HsmClientCertificateAlreadyExistsFault:
+            return "HsmClientCertificateAlreadyExistsFault"
+        case RedshiftErrorKind.HsmClientCertificateNotFoundFault:
+            return "HsmClientCertificateNotFoundFault"
+        case RedshiftErrorKind.HsmClientCertificateQuotaExceededFault:
+            return "HsmClientCertificateQuotaExceededFault"
+        case RedshiftErrorKind.HsmConfigurationAlreadyExistsFault:
+            return "HsmConfigurationAlreadyExistsFault"
+        case RedshiftErrorKind.HsmConfigurationNotFoundFault:
+            return "HsmConfigurationNotFoundFault"
+        case RedshiftErrorKind.HsmConfigurationQuotaExceededFault:
+            return "HsmConfigurationQuotaExceededFault"
+        case RedshiftErrorKind.InProgressTableRestoreQuotaExceededFault:
+            return "InProgressTableRestoreQuotaExceededFault"
+        case RedshiftErrorKind.IncompatibleOrderableOptions:
+            return "IncompatibleOrderableOptions"
+        case RedshiftErrorKind.InsufficientClusterCapacityFault:
+            return "InsufficientClusterCapacityFault"
+        case RedshiftErrorKind.InsufficientS3BucketPolicyFault:
+            return "InsufficientS3BucketPolicyFault"
+        case RedshiftErrorKind.IntegrationAlreadyExistsFault:
+            return "IntegrationAlreadyExistsFault"
+        case RedshiftErrorKind.IntegrationConflictOperationFault:
+            return "IntegrationConflictOperationFault"
+        case RedshiftErrorKind.IntegrationConflictStateFault:
+            return "IntegrationConflictStateFault"
+        case RedshiftErrorKind.IntegrationNotFoundFault:
+            return "IntegrationNotFoundFault"
+        case RedshiftErrorKind.IntegrationQuotaExceededFault:
+            return "IntegrationQuotaExceededFault"
+        case RedshiftErrorKind.IntegrationSourceNotFoundFault:
+            return "IntegrationSourceNotFoundFault"
+        case RedshiftErrorKind.IntegrationTargetNotFoundFault:
+            return "IntegrationTargetNotFoundFault"
+        case RedshiftErrorKind.InvalidAuthenticationProfileRequestFault:
+            return "InvalidAuthenticationProfileRequestFault"
+        case RedshiftErrorKind.InvalidAuthorizationStateFault:
+            return "InvalidAuthorizationStateFault"
+        case RedshiftErrorKind.InvalidClusterParameterGroupStateFault:
+            return "InvalidClusterParameterGroupStateFault"
+        case RedshiftErrorKind.InvalidClusterSecurityGroupStateFault:
+            return "InvalidClusterSecurityGroupStateFault"
+        case RedshiftErrorKind.InvalidClusterSnapshotScheduleStateFault:
+            return "InvalidClusterSnapshotScheduleStateFault"
+        case RedshiftErrorKind.InvalidClusterSnapshotStateFault:
+            return "InvalidClusterSnapshotStateFault"
+        case RedshiftErrorKind.InvalidClusterStateFault:
+            return "InvalidClusterStateFault"
+        case RedshiftErrorKind.InvalidClusterSubnetGroupStateFault:
+            return "InvalidClusterSubnetGroupStateFault"
+        case RedshiftErrorKind.InvalidClusterSubnetStateFault:
+            return "InvalidClusterSubnetStateFault"
+        case RedshiftErrorKind.InvalidClusterTrackFault:
+            return "InvalidClusterTrackFault"
+        case RedshiftErrorKind.InvalidDataShareFault:
+            return "InvalidDataShareFault"
+        case RedshiftErrorKind.InvalidElasticIpFault:
+            return "InvalidElasticIpFault"
+        case RedshiftErrorKind.InvalidEndpointStateFault:
+            return "InvalidEndpointStateFault"
+        case RedshiftErrorKind.InvalidHsmClientCertificateStateFault:
+            return "InvalidHsmClientCertificateStateFault"
+        case RedshiftErrorKind.InvalidHsmConfigurationStateFault:
+            return "InvalidHsmConfigurationStateFault"
+        case RedshiftErrorKind.InvalidNamespaceFault:
+            return "InvalidNamespaceFault"
+        case RedshiftErrorKind.InvalidPolicyFault:
+            return "InvalidPolicyFault"
+        case RedshiftErrorKind.InvalidReservedNodeStateFault:
+            return "InvalidReservedNodeStateFault"
+        case RedshiftErrorKind.InvalidRestoreFault:
+            return "InvalidRestoreFault"
+        case RedshiftErrorKind.InvalidRetentionPeriodFault:
+            return "InvalidRetentionPeriodFault"
+        case RedshiftErrorKind.InvalidS3BucketNameFault:
+            return "InvalidS3BucketNameFault"
+        case RedshiftErrorKind.InvalidS3KeyPrefixFault:
+            return "InvalidS3KeyPrefixFault"
+        case RedshiftErrorKind.InvalidScheduleFault:
+            return "InvalidScheduleFault"
+        case RedshiftErrorKind.InvalidScheduledActionFault:
+            return "InvalidScheduledActionFault"
+        case RedshiftErrorKind.InvalidSnapshotCopyGrantStateFault:
+            return "InvalidSnapshotCopyGrantStateFault"
+        case RedshiftErrorKind.InvalidSubnet:
+            return "InvalidSubnet"
+        case RedshiftErrorKind.InvalidSubscriptionStateFault:
+            return "InvalidSubscriptionStateFault"
+        case RedshiftErrorKind.InvalidTableRestoreArgumentFault:
+            return "InvalidTableRestoreArgumentFault"
+        case RedshiftErrorKind.InvalidTagFault:
+            return "InvalidTagFault"
+        case RedshiftErrorKind.InvalidUsageLimitFault:
+            return "InvalidUsageLimitFault"
+        case RedshiftErrorKind.InvalidVPCNetworkStateFault:
+            return "InvalidVPCNetworkStateFault"
+        case RedshiftErrorKind.Ipv6CidrBlockNotFoundFault:
+            return "Ipv6CidrBlockNotFoundFault"
+        case RedshiftErrorKind.LimitExceededFault:
+            return "LimitExceededFault"
+        case RedshiftErrorKind.NumberOfNodesPerClusterLimitExceededFault:
+            return "NumberOfNodesPerClusterLimitExceededFault"
+        case RedshiftErrorKind.NumberOfNodesQuotaExceededFault:
+            return "NumberOfNodesQuotaExceededFault"
+        case RedshiftErrorKind.PartnerNotFoundFault:
+            return "PartnerNotFoundFault"
+        case RedshiftErrorKind.Qev2IdcApplicationAlreadyExistsFault:
+            return "Qev2IdcApplicationAlreadyExistsFault"
+        case RedshiftErrorKind.Qev2IdcApplicationNotExistsFault:
+            return "Qev2IdcApplicationNotExistsFault"
+        case RedshiftErrorKind.RedshiftIdcApplicationAlreadyExistsFault:
+            return "RedshiftIdcApplicationAlreadyExistsFault"
+        case RedshiftErrorKind.RedshiftIdcApplicationNotExistsFault:
+            return "RedshiftIdcApplicationNotExistsFault"
+        case RedshiftErrorKind.RedshiftIdcApplicationQuotaExceededFault:
+            return "RedshiftIdcApplicationQuotaExceededFault"
+        case RedshiftErrorKind.RedshiftInvalidParameterFault:
+            return "RedshiftInvalidParameterFault"
+        case RedshiftErrorKind.ReservedNodeAlreadyExistsFault:
+            return "ReservedNodeAlreadyExistsFault"
+        case RedshiftErrorKind.ReservedNodeAlreadyMigratedFault:
+            return "ReservedNodeAlreadyMigratedFault"
+        case RedshiftErrorKind.ReservedNodeExchangeNotFoundFault:
+            return "ReservedNodeExchangeNotFoundFault"
+        case RedshiftErrorKind.ReservedNodeNotFoundFault:
+            return "ReservedNodeNotFoundFault"
+        case RedshiftErrorKind.ReservedNodeOfferingNotFoundFault:
+            return "ReservedNodeOfferingNotFoundFault"
+        case RedshiftErrorKind.ReservedNodeQuotaExceededFault:
+            return "ReservedNodeQuotaExceededFault"
+        case RedshiftErrorKind.ResizeNotFoundFault:
+            return "ResizeNotFoundFault"
+        case RedshiftErrorKind.ResourceNotFoundFault:
+            return "ResourceNotFoundFault"
+        case RedshiftErrorKind.SNSInvalidTopicFault:
+            return "SNSInvalidTopicFault"
+        case RedshiftErrorKind.SNSNoAuthorizationFault:
+            return "SNSNoAuthorizationFault"
+        case RedshiftErrorKind.SNSTopicArnNotFoundFault:
+            return "SNSTopicArnNotFoundFault"
+        case RedshiftErrorKind.ScheduleDefinitionTypeUnsupportedFault:
+            return "ScheduleDefinitionTypeUnsupportedFault"
+        case RedshiftErrorKind.ScheduledActionAlreadyExistsFault:
+            return "ScheduledActionAlreadyExistsFault"
+        case RedshiftErrorKind.ScheduledActionNotFoundFault:
+            return "ScheduledActionNotFoundFault"
+        case RedshiftErrorKind.ScheduledActionQuotaExceededFault:
+            return "ScheduledActionQuotaExceededFault"
+        case RedshiftErrorKind.ScheduledActionTypeUnsupportedFault:
+            return "ScheduledActionTypeUnsupportedFault"
+        case RedshiftErrorKind.SnapshotCopyAlreadyDisabledFault:
+            return "SnapshotCopyAlreadyDisabledFault"
+        case RedshiftErrorKind.SnapshotCopyAlreadyEnabledFault:
+            return "SnapshotCopyAlreadyEnabledFault"
+        case RedshiftErrorKind.SnapshotCopyDisabledFault:
+            return "SnapshotCopyDisabledFault"
+        case RedshiftErrorKind.SnapshotCopyGrantAlreadyExistsFault:
+            return "SnapshotCopyGrantAlreadyExistsFault"
+        case RedshiftErrorKind.SnapshotCopyGrantNotFoundFault:
+            return "SnapshotCopyGrantNotFoundFault"
+        case RedshiftErrorKind.SnapshotCopyGrantQuotaExceededFault:
+            return "SnapshotCopyGrantQuotaExceededFault"
+        case RedshiftErrorKind.SnapshotScheduleAlreadyExistsFault:
+            return "SnapshotScheduleAlreadyExistsFault"
+        case RedshiftErrorKind.SnapshotScheduleNotFoundFault:
+            return "SnapshotScheduleNotFoundFault"
+        case RedshiftErrorKind.SnapshotScheduleQuotaExceededFault:
+            return "SnapshotScheduleQuotaExceededFault"
+        case RedshiftErrorKind.SnapshotScheduleUpdateInProgressFault:
+            return "SnapshotScheduleUpdateInProgressFault"
+        case RedshiftErrorKind.SourceNotFoundFault:
+            return "SourceNotFoundFault"
+        case RedshiftErrorKind.SubnetAlreadyInUse:
+            return "SubnetAlreadyInUse"
+        case RedshiftErrorKind.SubscriptionAlreadyExistFault:
+            return "SubscriptionAlreadyExistFault"
+        case RedshiftErrorKind.SubscriptionCategoryNotFoundFault:
+            return "SubscriptionCategoryNotFoundFault"
+        case RedshiftErrorKind.SubscriptionEventIdNotFoundFault:
+            return "SubscriptionEventIdNotFoundFault"
+        case RedshiftErrorKind.SubscriptionNotFoundFault:
+            return "SubscriptionNotFoundFault"
+        case RedshiftErrorKind.SubscriptionSeverityNotFoundFault:
+            return "SubscriptionSeverityNotFoundFault"
+        case RedshiftErrorKind.TableLimitExceededFault:
+            return "TableLimitExceededFault"
+        case RedshiftErrorKind.TableRestoreNotFoundFault:
+            return "TableRestoreNotFoundFault"
+        case RedshiftErrorKind.TagLimitExceededFault:
+            return "TagLimitExceededFault"
+        case RedshiftErrorKind.UnauthorizedOperation:
+            return "UnauthorizedOperation"
+        case RedshiftErrorKind.UnauthorizedPartnerIntegrationFault:
+            return "UnauthorizedPartnerIntegrationFault"
+        case RedshiftErrorKind.UnknownSnapshotCopyRegionFault:
+            return "UnknownSnapshotCopyRegionFault"
+        case RedshiftErrorKind.UnsupportedOperationFault:
+            return "UnsupportedOperationFault"
+        case RedshiftErrorKind.UnsupportedOptionFault:
+            return "UnsupportedOptionFault"
+        case RedshiftErrorKind.UsageLimitAlreadyExistsFault:
+            return "UsageLimitAlreadyExistsFault"
+        case RedshiftErrorKind.UsageLimitNotFoundFault:
+            return "UsageLimitNotFoundFault"
+        case RedshiftErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

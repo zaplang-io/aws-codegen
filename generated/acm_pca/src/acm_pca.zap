@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix ACMPrivateCA)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import base64
@@ -683,9 +685,16 @@ struct Validity:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by acm_pca_error_from_code.
-enum ACM_PCAError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum ACM_PCAErrorKind:
     CertificateMismatchException
     ConcurrentModificationException
     InvalidArgsException
@@ -707,47 +716,99 @@ enum ACM_PCAError:
     TooManyTagsException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def acm_pca_error_from_code(str code) -> ACM_PCAError:
-    if code == "CertificateMismatchException":
-        return ACM_PCAError.CertificateMismatchException
-    if code == "ConcurrentModificationException":
-        return ACM_PCAError.ConcurrentModificationException
-    if code == "InvalidArgsException":
-        return ACM_PCAError.InvalidArgsException
-    if code == "InvalidArnException":
-        return ACM_PCAError.InvalidArnException
-    if code == "InvalidNextTokenException":
-        return ACM_PCAError.InvalidNextTokenException
-    if code == "InvalidPolicyException":
-        return ACM_PCAError.InvalidPolicyException
-    if code == "InvalidRequestException":
-        return ACM_PCAError.InvalidRequestException
-    if code == "InvalidStateException":
-        return ACM_PCAError.InvalidStateException
-    if code == "InvalidTagException":
-        return ACM_PCAError.InvalidTagException
-    if code == "LimitExceededException":
-        return ACM_PCAError.LimitExceededException
-    if code == "LockoutPreventedException":
-        return ACM_PCAError.LockoutPreventedException
-    if code == "MalformedCSRException":
-        return ACM_PCAError.MalformedCSRException
-    if code == "MalformedCertificateException":
-        return ACM_PCAError.MalformedCertificateException
-    if code == "PermissionAlreadyExistsException":
-        return ACM_PCAError.PermissionAlreadyExistsException
-    if code == "RequestAlreadyProcessedException":
-        return ACM_PCAError.RequestAlreadyProcessedException
-    if code == "RequestFailedException":
-        return ACM_PCAError.RequestFailedException
-    if code == "RequestInProgressException":
-        return ACM_PCAError.RequestInProgressException
-    if code == "ResourceNotFoundException":
-        return ACM_PCAError.ResourceNotFoundException
-    if code == "TooManyTagsException":
-        return ACM_PCAError.TooManyTagsException
-    return ACM_PCAError.Unknown(code=code)
+# Classify an AWS error code into `ACM_PCAErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def acm_pca_error_kind(str code) -> ACM_PCAErrorKind:
+    auto name = errors.error_code(code)
+    if name == "CertificateMismatchException":
+        return ACM_PCAErrorKind.CertificateMismatchException
+    if name == "ConcurrentModificationException":
+        return ACM_PCAErrorKind.ConcurrentModificationException
+    if name == "InvalidArgsException":
+        return ACM_PCAErrorKind.InvalidArgsException
+    if name == "InvalidArnException":
+        return ACM_PCAErrorKind.InvalidArnException
+    if name == "InvalidNextTokenException":
+        return ACM_PCAErrorKind.InvalidNextTokenException
+    if name == "InvalidPolicyException":
+        return ACM_PCAErrorKind.InvalidPolicyException
+    if name == "InvalidRequestException":
+        return ACM_PCAErrorKind.InvalidRequestException
+    if name == "InvalidStateException":
+        return ACM_PCAErrorKind.InvalidStateException
+    if name == "InvalidTagException":
+        return ACM_PCAErrorKind.InvalidTagException
+    if name == "LimitExceededException":
+        return ACM_PCAErrorKind.LimitExceededException
+    if name == "LockoutPreventedException":
+        return ACM_PCAErrorKind.LockoutPreventedException
+    if name == "MalformedCSRException":
+        return ACM_PCAErrorKind.MalformedCSRException
+    if name == "MalformedCertificateException":
+        return ACM_PCAErrorKind.MalformedCertificateException
+    if name == "PermissionAlreadyExistsException":
+        return ACM_PCAErrorKind.PermissionAlreadyExistsException
+    if name == "RequestAlreadyProcessedException":
+        return ACM_PCAErrorKind.RequestAlreadyProcessedException
+    if name == "RequestFailedException":
+        return ACM_PCAErrorKind.RequestFailedException
+    if name == "RequestInProgressException":
+        return ACM_PCAErrorKind.RequestInProgressException
+    if name == "ResourceNotFoundException":
+        return ACM_PCAErrorKind.ResourceNotFoundException
+    if name == "TooManyTagsException":
+        return ACM_PCAErrorKind.TooManyTagsException
+    return ACM_PCAErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def acm_pca_error_name(ACM_PCAErrorKind k) -> str:
+    match k:
+        case ACM_PCAErrorKind.CertificateMismatchException:
+            return "CertificateMismatchException"
+        case ACM_PCAErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case ACM_PCAErrorKind.InvalidArgsException:
+            return "InvalidArgsException"
+        case ACM_PCAErrorKind.InvalidArnException:
+            return "InvalidArnException"
+        case ACM_PCAErrorKind.InvalidNextTokenException:
+            return "InvalidNextTokenException"
+        case ACM_PCAErrorKind.InvalidPolicyException:
+            return "InvalidPolicyException"
+        case ACM_PCAErrorKind.InvalidRequestException:
+            return "InvalidRequestException"
+        case ACM_PCAErrorKind.InvalidStateException:
+            return "InvalidStateException"
+        case ACM_PCAErrorKind.InvalidTagException:
+            return "InvalidTagException"
+        case ACM_PCAErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case ACM_PCAErrorKind.LockoutPreventedException:
+            return "LockoutPreventedException"
+        case ACM_PCAErrorKind.MalformedCSRException:
+            return "MalformedCSRException"
+        case ACM_PCAErrorKind.MalformedCertificateException:
+            return "MalformedCertificateException"
+        case ACM_PCAErrorKind.PermissionAlreadyExistsException:
+            return "PermissionAlreadyExistsException"
+        case ACM_PCAErrorKind.RequestAlreadyProcessedException:
+            return "RequestAlreadyProcessedException"
+        case ACM_PCAErrorKind.RequestFailedException:
+            return "RequestFailedException"
+        case ACM_PCAErrorKind.RequestInProgressException:
+            return "RequestInProgressException"
+        case ACM_PCAErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case ACM_PCAErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case ACM_PCAErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix RedshiftServerless)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import datetime
@@ -1349,9 +1351,16 @@ struct Workgroup:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by redshift_serverless_error_from_code.
-enum Redshift_ServerlessError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Redshift_ServerlessErrorKind:
     AccessDeniedException
     ConflictException
     DryRunException
@@ -1366,33 +1375,71 @@ enum Redshift_ServerlessError:
     ValidationException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def redshift_serverless_error_from_code(str code) -> Redshift_ServerlessError:
-    if code == "AccessDeniedException":
-        return Redshift_ServerlessError.AccessDeniedException
-    if code == "ConflictException":
-        return Redshift_ServerlessError.ConflictException
-    if code == "DryRunException":
-        return Redshift_ServerlessError.DryRunException
-    if code == "InsufficientCapacityException":
-        return Redshift_ServerlessError.InsufficientCapacityException
-    if code == "InternalServerException":
-        return Redshift_ServerlessError.InternalServerException
-    if code == "InvalidPaginationException":
-        return Redshift_ServerlessError.InvalidPaginationException
-    if code == "Ipv6CidrBlockNotFoundException":
-        return Redshift_ServerlessError.Ipv6CidrBlockNotFoundException
-    if code == "ResourceNotFoundException":
-        return Redshift_ServerlessError.ResourceNotFoundException
-    if code == "ServiceQuotaExceededException":
-        return Redshift_ServerlessError.ServiceQuotaExceededException
-    if code == "ThrottlingException":
-        return Redshift_ServerlessError.ThrottlingException
-    if code == "TooManyTagsException":
-        return Redshift_ServerlessError.TooManyTagsException
-    if code == "ValidationException":
-        return Redshift_ServerlessError.ValidationException
-    return Redshift_ServerlessError.Unknown(code=code)
+# Classify an AWS error code into `Redshift_ServerlessErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def redshift_serverless_error_kind(str code) -> Redshift_ServerlessErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccessDeniedException":
+        return Redshift_ServerlessErrorKind.AccessDeniedException
+    if name == "ConflictException":
+        return Redshift_ServerlessErrorKind.ConflictException
+    if name == "DryRunException":
+        return Redshift_ServerlessErrorKind.DryRunException
+    if name == "InsufficientCapacityException":
+        return Redshift_ServerlessErrorKind.InsufficientCapacityException
+    if name == "InternalServerException":
+        return Redshift_ServerlessErrorKind.InternalServerException
+    if name == "InvalidPaginationException":
+        return Redshift_ServerlessErrorKind.InvalidPaginationException
+    if name == "Ipv6CidrBlockNotFoundException":
+        return Redshift_ServerlessErrorKind.Ipv6CidrBlockNotFoundException
+    if name == "ResourceNotFoundException":
+        return Redshift_ServerlessErrorKind.ResourceNotFoundException
+    if name == "ServiceQuotaExceededException":
+        return Redshift_ServerlessErrorKind.ServiceQuotaExceededException
+    if name == "ThrottlingException":
+        return Redshift_ServerlessErrorKind.ThrottlingException
+    if name == "TooManyTagsException":
+        return Redshift_ServerlessErrorKind.TooManyTagsException
+    if name == "ValidationException":
+        return Redshift_ServerlessErrorKind.ValidationException
+    return Redshift_ServerlessErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def redshift_serverless_error_name(Redshift_ServerlessErrorKind k) -> str:
+    match k:
+        case Redshift_ServerlessErrorKind.AccessDeniedException:
+            return "AccessDeniedException"
+        case Redshift_ServerlessErrorKind.ConflictException:
+            return "ConflictException"
+        case Redshift_ServerlessErrorKind.DryRunException:
+            return "DryRunException"
+        case Redshift_ServerlessErrorKind.InsufficientCapacityException:
+            return "InsufficientCapacityException"
+        case Redshift_ServerlessErrorKind.InternalServerException:
+            return "InternalServerException"
+        case Redshift_ServerlessErrorKind.InvalidPaginationException:
+            return "InvalidPaginationException"
+        case Redshift_ServerlessErrorKind.Ipv6CidrBlockNotFoundException:
+            return "Ipv6CidrBlockNotFoundException"
+        case Redshift_ServerlessErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case Redshift_ServerlessErrorKind.ServiceQuotaExceededException:
+            return "ServiceQuotaExceededException"
+        case Redshift_ServerlessErrorKind.ThrottlingException:
+            return "ThrottlingException"
+        case Redshift_ServerlessErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case Redshift_ServerlessErrorKind.ValidationException:
+            return "ValidationException"
+        case Redshift_ServerlessErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

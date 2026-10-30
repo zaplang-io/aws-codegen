@@ -6,7 +6,8 @@
 # Protocol: query (SigV4 service elasticbeanstalk, Version 2010-12-01)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + query) via #283 module imports — see
+# Imports the aws_core package (core + errors + query) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: the whole input is a flat form-urlencoded POST body
 # (Action + Version + the members), the AWS query wire format.
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.query
 
 # The Elastic_Beanstalk query protocol: SigV4 service "elasticbeanstalk" (also the endpoint prefix
@@ -1070,9 +1072,16 @@ struct ValidationMessage:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# query `<ErrorResponse><Error><Code>` element code by elasticbeanstalk_error_from_code.
-enum Elastic_BeanstalkError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the query `<ErrorResponse><Error><Code>` element.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Elastic_BeanstalkErrorKind:
     CodeBuildNotInServiceRegionException
     ElasticBeanstalkServiceException
     InsufficientPrivilegesException
@@ -1094,48 +1103,99 @@ enum Elastic_BeanstalkError:
     TooManyTagsException
     Unknown(str code)
 
-# Map a query/ec2 error code (the <Error><Code> text surfaced by the codec's
-# error helpers) to a variant.
-def elasticbeanstalk_error_from_code(str code) -> Elastic_BeanstalkError:
-    if code == "CodeBuildNotInServiceRegionException":
-        return Elastic_BeanstalkError.CodeBuildNotInServiceRegionException
-    if code == "ElasticBeanstalkServiceException":
-        return Elastic_BeanstalkError.ElasticBeanstalkServiceException
-    if code == "InsufficientPrivilegesException":
-        return Elastic_BeanstalkError.InsufficientPrivilegesException
-    if code == "InvalidRequestException":
-        return Elastic_BeanstalkError.InvalidRequestException
-    if code == "ManagedActionInvalidStateException":
-        return Elastic_BeanstalkError.ManagedActionInvalidStateException
-    if code == "OperationInProgressException":
-        return Elastic_BeanstalkError.OperationInProgressException
-    if code == "PlatformVersionStillReferencedException":
-        return Elastic_BeanstalkError.PlatformVersionStillReferencedException
-    if code == "ResourceNotFoundException":
-        return Elastic_BeanstalkError.ResourceNotFoundException
-    if code == "ResourceTypeNotSupportedException":
-        return Elastic_BeanstalkError.ResourceTypeNotSupportedException
-    if code == "S3LocationNotInServiceRegionException":
-        return Elastic_BeanstalkError.S3LocationNotInServiceRegionException
-    if code == "S3SubscriptionRequiredException":
-        return Elastic_BeanstalkError.S3SubscriptionRequiredException
-    if code == "SourceBundleDeletionException":
-        return Elastic_BeanstalkError.SourceBundleDeletionException
-    if code == "TooManyApplicationVersionsException":
-        return Elastic_BeanstalkError.TooManyApplicationVersionsException
-    if code == "TooManyApplicationsException":
-        return Elastic_BeanstalkError.TooManyApplicationsException
-    if code == "TooManyBucketsException":
-        return Elastic_BeanstalkError.TooManyBucketsException
-    if code == "TooManyConfigurationTemplatesException":
-        return Elastic_BeanstalkError.TooManyConfigurationTemplatesException
-    if code == "TooManyEnvironmentsException":
-        return Elastic_BeanstalkError.TooManyEnvironmentsException
-    if code == "TooManyPlatformsException":
-        return Elastic_BeanstalkError.TooManyPlatformsException
-    if code == "TooManyTagsException":
-        return Elastic_BeanstalkError.TooManyTagsException
-    return Elastic_BeanstalkError.Unknown(code=code)
+# Classify an AWS error code into `Elastic_BeanstalkErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def elasticbeanstalk_error_kind(str code) -> Elastic_BeanstalkErrorKind:
+    auto name = errors.error_code(code)
+    if name == "CodeBuildNotInServiceRegionException":
+        return Elastic_BeanstalkErrorKind.CodeBuildNotInServiceRegionException
+    if name == "ElasticBeanstalkServiceException":
+        return Elastic_BeanstalkErrorKind.ElasticBeanstalkServiceException
+    if name == "InsufficientPrivilegesException":
+        return Elastic_BeanstalkErrorKind.InsufficientPrivilegesException
+    if name == "InvalidRequestException":
+        return Elastic_BeanstalkErrorKind.InvalidRequestException
+    if name == "ManagedActionInvalidStateException":
+        return Elastic_BeanstalkErrorKind.ManagedActionInvalidStateException
+    if name == "OperationInProgressException":
+        return Elastic_BeanstalkErrorKind.OperationInProgressException
+    if name == "PlatformVersionStillReferencedException":
+        return Elastic_BeanstalkErrorKind.PlatformVersionStillReferencedException
+    if name == "ResourceNotFoundException":
+        return Elastic_BeanstalkErrorKind.ResourceNotFoundException
+    if name == "ResourceTypeNotSupportedException":
+        return Elastic_BeanstalkErrorKind.ResourceTypeNotSupportedException
+    if name == "S3LocationNotInServiceRegionException":
+        return Elastic_BeanstalkErrorKind.S3LocationNotInServiceRegionException
+    if name == "S3SubscriptionRequiredException":
+        return Elastic_BeanstalkErrorKind.S3SubscriptionRequiredException
+    if name == "SourceBundleDeletionException":
+        return Elastic_BeanstalkErrorKind.SourceBundleDeletionException
+    if name == "TooManyApplicationVersionsException":
+        return Elastic_BeanstalkErrorKind.TooManyApplicationVersionsException
+    if name == "TooManyApplicationsException":
+        return Elastic_BeanstalkErrorKind.TooManyApplicationsException
+    if name == "TooManyBucketsException":
+        return Elastic_BeanstalkErrorKind.TooManyBucketsException
+    if name == "TooManyConfigurationTemplatesException":
+        return Elastic_BeanstalkErrorKind.TooManyConfigurationTemplatesException
+    if name == "TooManyEnvironmentsException":
+        return Elastic_BeanstalkErrorKind.TooManyEnvironmentsException
+    if name == "TooManyPlatformsException":
+        return Elastic_BeanstalkErrorKind.TooManyPlatformsException
+    if name == "TooManyTagsException":
+        return Elastic_BeanstalkErrorKind.TooManyTagsException
+    return Elastic_BeanstalkErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def elasticbeanstalk_error_name(Elastic_BeanstalkErrorKind k) -> str:
+    match k:
+        case Elastic_BeanstalkErrorKind.CodeBuildNotInServiceRegionException:
+            return "CodeBuildNotInServiceRegionException"
+        case Elastic_BeanstalkErrorKind.ElasticBeanstalkServiceException:
+            return "ElasticBeanstalkServiceException"
+        case Elastic_BeanstalkErrorKind.InsufficientPrivilegesException:
+            return "InsufficientPrivilegesException"
+        case Elastic_BeanstalkErrorKind.InvalidRequestException:
+            return "InvalidRequestException"
+        case Elastic_BeanstalkErrorKind.ManagedActionInvalidStateException:
+            return "ManagedActionInvalidStateException"
+        case Elastic_BeanstalkErrorKind.OperationInProgressException:
+            return "OperationInProgressException"
+        case Elastic_BeanstalkErrorKind.PlatformVersionStillReferencedException:
+            return "PlatformVersionStillReferencedException"
+        case Elastic_BeanstalkErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case Elastic_BeanstalkErrorKind.ResourceTypeNotSupportedException:
+            return "ResourceTypeNotSupportedException"
+        case Elastic_BeanstalkErrorKind.S3LocationNotInServiceRegionException:
+            return "S3LocationNotInServiceRegionException"
+        case Elastic_BeanstalkErrorKind.S3SubscriptionRequiredException:
+            return "S3SubscriptionRequiredException"
+        case Elastic_BeanstalkErrorKind.SourceBundleDeletionException:
+            return "SourceBundleDeletionException"
+        case Elastic_BeanstalkErrorKind.TooManyApplicationVersionsException:
+            return "TooManyApplicationVersionsException"
+        case Elastic_BeanstalkErrorKind.TooManyApplicationsException:
+            return "TooManyApplicationsException"
+        case Elastic_BeanstalkErrorKind.TooManyBucketsException:
+            return "TooManyBucketsException"
+        case Elastic_BeanstalkErrorKind.TooManyConfigurationTemplatesException:
+            return "TooManyConfigurationTemplatesException"
+        case Elastic_BeanstalkErrorKind.TooManyEnvironmentsException:
+            return "TooManyEnvironmentsException"
+        case Elastic_BeanstalkErrorKind.TooManyPlatformsException:
+            return "TooManyPlatformsException"
+        case Elastic_BeanstalkErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case Elastic_BeanstalkErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

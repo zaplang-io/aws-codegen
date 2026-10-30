@@ -6,8 +6,8 @@
 # Protocol: rest-json (restJson1) (SigV4 service ses)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + endpoints + binding + restjson) via
-# #283 module imports — see
+# Imports the aws_core package (core + errors + endpoints + binding +
+# restjson) via #283 module imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text: members bind to the URI path/query/headers and the
 # remaining members (or an httpPayload member) form the body.
@@ -28,6 +28,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.binding
 import aws_core.restjson
@@ -932,9 +933,16 @@ struct VolumeStatistics:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# restJson1 X-Amzn-ErrorType / body `__type` code by email_error_from_code.
-enum Pinpoint_EmailError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the restJson1 X-Amzn-ErrorType header or body `__type`.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum Pinpoint_EmailErrorKind:
     AccountSuspendedException
     AlreadyExistsException
     BadRequestException
@@ -947,30 +955,63 @@ enum Pinpoint_EmailError:
     TooManyRequestsException
     Unknown(str code)
 
-# Map a restJson1 error code (from rest_json_error_code: the X-Amzn-ErrorType
-# header or body __type, stripped to the bare shape name) to a variant.
-def email_error_from_code(str code) -> Pinpoint_EmailError:
-    if code == "AccountSuspendedException":
-        return Pinpoint_EmailError.AccountSuspendedException
-    if code == "AlreadyExistsException":
-        return Pinpoint_EmailError.AlreadyExistsException
-    if code == "BadRequestException":
-        return Pinpoint_EmailError.BadRequestException
-    if code == "ConcurrentModificationException":
-        return Pinpoint_EmailError.ConcurrentModificationException
-    if code == "LimitExceededException":
-        return Pinpoint_EmailError.LimitExceededException
-    if code == "MailFromDomainNotVerifiedException":
-        return Pinpoint_EmailError.MailFromDomainNotVerifiedException
-    if code == "MessageRejected":
-        return Pinpoint_EmailError.MessageRejected
-    if code == "NotFoundException":
-        return Pinpoint_EmailError.NotFoundException
-    if code == "SendingPausedException":
-        return Pinpoint_EmailError.SendingPausedException
-    if code == "TooManyRequestsException":
-        return Pinpoint_EmailError.TooManyRequestsException
-    return Pinpoint_EmailError.Unknown(code=code)
+# Classify an AWS error code into `Pinpoint_EmailErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def email_error_kind(str code) -> Pinpoint_EmailErrorKind:
+    auto name = errors.error_code(code)
+    if name == "AccountSuspendedException":
+        return Pinpoint_EmailErrorKind.AccountSuspendedException
+    if name == "AlreadyExistsException":
+        return Pinpoint_EmailErrorKind.AlreadyExistsException
+    if name == "BadRequestException":
+        return Pinpoint_EmailErrorKind.BadRequestException
+    if name == "ConcurrentModificationException":
+        return Pinpoint_EmailErrorKind.ConcurrentModificationException
+    if name == "LimitExceededException":
+        return Pinpoint_EmailErrorKind.LimitExceededException
+    if name == "MailFromDomainNotVerifiedException":
+        return Pinpoint_EmailErrorKind.MailFromDomainNotVerifiedException
+    if name == "MessageRejected":
+        return Pinpoint_EmailErrorKind.MessageRejected
+    if name == "NotFoundException":
+        return Pinpoint_EmailErrorKind.NotFoundException
+    if name == "SendingPausedException":
+        return Pinpoint_EmailErrorKind.SendingPausedException
+    if name == "TooManyRequestsException":
+        return Pinpoint_EmailErrorKind.TooManyRequestsException
+    return Pinpoint_EmailErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def email_error_name(Pinpoint_EmailErrorKind k) -> str:
+    match k:
+        case Pinpoint_EmailErrorKind.AccountSuspendedException:
+            return "AccountSuspendedException"
+        case Pinpoint_EmailErrorKind.AlreadyExistsException:
+            return "AlreadyExistsException"
+        case Pinpoint_EmailErrorKind.BadRequestException:
+            return "BadRequestException"
+        case Pinpoint_EmailErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case Pinpoint_EmailErrorKind.LimitExceededException:
+            return "LimitExceededException"
+        case Pinpoint_EmailErrorKind.MailFromDomainNotVerifiedException:
+            return "MailFromDomainNotVerifiedException"
+        case Pinpoint_EmailErrorKind.MessageRejected:
+            return "MessageRejected"
+        case Pinpoint_EmailErrorKind.NotFoundException:
+            return "NotFoundException"
+        case Pinpoint_EmailErrorKind.SendingPausedException:
+            return "SendingPausedException"
+        case Pinpoint_EmailErrorKind.TooManyRequestsException:
+            return "TooManyRequestsException"
+        case Pinpoint_EmailErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 

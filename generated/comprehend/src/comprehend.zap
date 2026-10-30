@@ -6,7 +6,8 @@
 # Protocol: awsJson 1.1 (targetPrefix Comprehend_20171127)
 # Source: botocore service-2.json (Apache-2.0); documentation stripped.
 #
-# Imports the aws_core package (core + awsjson) via #283 module imports — see
+# Imports the aws_core package (core + errors + awsjson) via #283 module
+# imports — see
 # the import block below. Each operation returns ready-to-send, SigV4-signed
 # HTTP/1.1 request text, matching the hand-written aws.dynamodb client.
 # Paginators additionally use the live transport (core.send /
@@ -26,6 +27,7 @@
 # aws, shipped by #339 step 1). A dotted dependency import binds the leaf
 # name, so e.g. `import aws_core.core` is called as `core.sign_request(...)`.
 import aws_core.core
+import aws_core.errors
 import aws_core.endpoints
 import aws_core.awsjson
 import base64
@@ -2442,9 +2444,16 @@ struct WarningsListItem:
 
 # --- errors ----------------------------------------------------------------
 
-# Service error set (operation + service level), dispatched from the
-# awsJson `__type` / X-Amzn-ErrorType code by comprehend_error_from_code.
-enum ComprehendError:
+# Typed service errors (#361): the per-service enum + classifier + name
+# dispatcher emitted on top of `aws_core.errors` (DECISIONS.md D-0006). One
+# bare variant per modeled error shape, plus an open-enum `Unknown(str code)`
+# catch-all, so a caller built against this model keeps working when the
+# service adds an error. The raw wire code is
+# the awsJson `__type` / X-Amzn-ErrorType shape name.
+# `errors.error_code` normalizes it to the bare shape name before matching;
+# the base carrier, the X-Amzn-ErrorType fallback and the raise/check bridge
+# are inherited from `aws_core.errors` and not re-emitted here.
+enum ComprehendErrorKind:
     BatchSizeLimitExceededException
     ConcurrentModificationException
     InternalServerException
@@ -2463,41 +2472,87 @@ enum ComprehendError:
     UnsupportedLanguageException
     Unknown(str code)
 
-# Map an awsJson error code (the stripped __type shape name) to a variant.
-def comprehend_error_from_code(str code) -> ComprehendError:
-    if code == "BatchSizeLimitExceededException":
-        return ComprehendError.BatchSizeLimitExceededException
-    if code == "ConcurrentModificationException":
-        return ComprehendError.ConcurrentModificationException
-    if code == "InternalServerException":
-        return ComprehendError.InternalServerException
-    if code == "InvalidFilterException":
-        return ComprehendError.InvalidFilterException
-    if code == "InvalidRequestException":
-        return ComprehendError.InvalidRequestException
-    if code == "JobNotFoundException":
-        return ComprehendError.JobNotFoundException
-    if code == "KmsKeyValidationException":
-        return ComprehendError.KmsKeyValidationException
-    if code == "ResourceInUseException":
-        return ComprehendError.ResourceInUseException
-    if code == "ResourceLimitExceededException":
-        return ComprehendError.ResourceLimitExceededException
-    if code == "ResourceNotFoundException":
-        return ComprehendError.ResourceNotFoundException
-    if code == "ResourceUnavailableException":
-        return ComprehendError.ResourceUnavailableException
-    if code == "TextSizeLimitExceededException":
-        return ComprehendError.TextSizeLimitExceededException
-    if code == "TooManyRequestsException":
-        return ComprehendError.TooManyRequestsException
-    if code == "TooManyTagKeysException":
-        return ComprehendError.TooManyTagKeysException
-    if code == "TooManyTagsException":
-        return ComprehendError.TooManyTagsException
-    if code == "UnsupportedLanguageException":
-        return ComprehendError.UnsupportedLanguageException
-    return ComprehendError.Unknown(code=code)
+# Classify an AWS error code into `ComprehendErrorKind`,
+# normalizing first (`errors.error_code` strips any namespace/suffix) then
+# matching by name; an unmodeled code becomes `Unknown(name)`, carrying it.
+def comprehend_error_kind(str code) -> ComprehendErrorKind:
+    auto name = errors.error_code(code)
+    if name == "BatchSizeLimitExceededException":
+        return ComprehendErrorKind.BatchSizeLimitExceededException
+    if name == "ConcurrentModificationException":
+        return ComprehendErrorKind.ConcurrentModificationException
+    if name == "InternalServerException":
+        return ComprehendErrorKind.InternalServerException
+    if name == "InvalidFilterException":
+        return ComprehendErrorKind.InvalidFilterException
+    if name == "InvalidRequestException":
+        return ComprehendErrorKind.InvalidRequestException
+    if name == "JobNotFoundException":
+        return ComprehendErrorKind.JobNotFoundException
+    if name == "KmsKeyValidationException":
+        return ComprehendErrorKind.KmsKeyValidationException
+    if name == "ResourceInUseException":
+        return ComprehendErrorKind.ResourceInUseException
+    if name == "ResourceLimitExceededException":
+        return ComprehendErrorKind.ResourceLimitExceededException
+    if name == "ResourceNotFoundException":
+        return ComprehendErrorKind.ResourceNotFoundException
+    if name == "ResourceUnavailableException":
+        return ComprehendErrorKind.ResourceUnavailableException
+    if name == "TextSizeLimitExceededException":
+        return ComprehendErrorKind.TextSizeLimitExceededException
+    if name == "TooManyRequestsException":
+        return ComprehendErrorKind.TooManyRequestsException
+    if name == "TooManyTagKeysException":
+        return ComprehendErrorKind.TooManyTagKeysException
+    if name == "TooManyTagsException":
+        return ComprehendErrorKind.TooManyTagsException
+    if name == "UnsupportedLanguageException":
+        return ComprehendErrorKind.UnsupportedLanguageException
+    return ComprehendErrorKind.Unknown(name)
+
+# The canonical name of a classified error. This `match` is exhaustive over
+# every variant (the compiler enforces it, so a new variant forces it to be
+# updated — the generator emits the enum and dispatcher together) and is
+# module-local, so each pattern is a two-segment `Enum.Variant` — the portable
+# form until the compiler resolves module-qualified variant patterns in a
+# caller's own `match` (DECISIONS.md D-0006). `Unknown` carries its code.
+def comprehend_error_name(ComprehendErrorKind k) -> str:
+    match k:
+        case ComprehendErrorKind.BatchSizeLimitExceededException:
+            return "BatchSizeLimitExceededException"
+        case ComprehendErrorKind.ConcurrentModificationException:
+            return "ConcurrentModificationException"
+        case ComprehendErrorKind.InternalServerException:
+            return "InternalServerException"
+        case ComprehendErrorKind.InvalidFilterException:
+            return "InvalidFilterException"
+        case ComprehendErrorKind.InvalidRequestException:
+            return "InvalidRequestException"
+        case ComprehendErrorKind.JobNotFoundException:
+            return "JobNotFoundException"
+        case ComprehendErrorKind.KmsKeyValidationException:
+            return "KmsKeyValidationException"
+        case ComprehendErrorKind.ResourceInUseException:
+            return "ResourceInUseException"
+        case ComprehendErrorKind.ResourceLimitExceededException:
+            return "ResourceLimitExceededException"
+        case ComprehendErrorKind.ResourceNotFoundException:
+            return "ResourceNotFoundException"
+        case ComprehendErrorKind.ResourceUnavailableException:
+            return "ResourceUnavailableException"
+        case ComprehendErrorKind.TextSizeLimitExceededException:
+            return "TextSizeLimitExceededException"
+        case ComprehendErrorKind.TooManyRequestsException:
+            return "TooManyRequestsException"
+        case ComprehendErrorKind.TooManyTagKeysException:
+            return "TooManyTagKeysException"
+        case ComprehendErrorKind.TooManyTagsException:
+            return "TooManyTagsException"
+        case ComprehendErrorKind.UnsupportedLanguageException:
+            return "UnsupportedLanguageException"
+        case ComprehendErrorKind.Unknown(c):
+            return "Unknown(" + c + ")"
 
 # --- client ----------------------------------------------------------------
 
