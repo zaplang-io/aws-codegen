@@ -69,9 +69,11 @@ jobs:
           regen models/lambda/2015-03-31/service-2.json      generated/lambda/lambda.zap
           regen models/cloudfront/2015-09-17/service-2.json  generated/cloudfront/cloudfront.zap
           regen models/sdb/2009-04-15/service-2.json         generated/sdb/sdb.zap
-          regen models/ec2/2014-09-01/service-2.json         generated/ec2/ec2.zap
+          regen models/ec2/2016-11-15/service-2.json         generated/ec2/ec2.zap
           regen models/sts/2011-06-15/service-2.json         generated/sts/sts.zap
           regen models/s3/2006-03-01/service-2.json          generated/s3/s3.zap
+          regen models/sns/2010-03-31/service-2.json         generated/sns/sns.zap
+          regen models/iam/2010-05-08/service-2.json         generated/iam/iam.zap
 
       - name: byte-diff goldens are correct SigV4 (independent oracles)
         # Toolchain-free second implementations of the on-the-wire request bytes;

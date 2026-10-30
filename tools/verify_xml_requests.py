@@ -22,8 +22,15 @@ Coverage (the inputs are chosen to exercise each serialization trait):
   * query (STS) — the empty-input body (GetCallerIdentity: Action/Version only)
     and optional scalar members incl. an integer and a url-encoding value
     (GetSessionToken); STS is the first generated-is-product service (#355).
-  * ec2 (EC2) — the ec2 key variant: Capitalized keys + an always-flattened list
-    (MonitorInstances).
+  * query (SNS, IAM) — the query-family household services (#357): required +
+    optional scalars (GetTopicAttributes / SetTopicAttributes), and IAM's named
+    ops GetUser / ListUsers (the latter with an integer MaxItems via str(...) and
+    a '/'-bearing PathPrefix). SNS Publish / CreateTopic and IAM CreateUser are
+    v0-skipped (map / list-of-struct members), so these scalar ops stand in.
+  * ec2 (EC2 2016-11-15) — the ec2 key variant: Capitalized keys + an always-
+    flattened list (MonitorInstances) and a plain scalar + bool op
+    (GetConsoleOutput). EC2 is productionized to the full current model (#357);
+    DescribeInstances / DescribeRegions are v0-skipped (Filters list-of-struct).
   * rest-xml (S3) — the S3 binding variant (canonical URI verbatim, no second
     quote_path pass; greedy {Key+} object keys): a bucket op (HeadBucket), a
     service listing (ListBuckets), an object GET (ListParts) and an object PUT
@@ -299,10 +306,24 @@ def sdb_get_attributes():
 
 
 def ec2_monitor_instances():
-    body = form_body("MonitorInstances", "2014-09-01", [
-        ("DryRun", "true"),
+    # ec2 (EC2 2016-11-15, #357): the always-flattened InstanceId list comes first
+    # (model member order), then the capitalized DryRun bool.
+    body = form_body("MonitorInstances", "2016-11-15", [
         ("InstanceId.1", "i-1111"),
         ("InstanceId.2", "i-2222"),
+        ("DryRun", "true"),
+    ])
+    return query_sign("ec2", regional_host("ec2"), body)
+
+
+def ec2_get_console_output():
+    # ec2 (EC2 2016-11-15, #357): a plain scalar op — a required InstanceId plus two
+    # optional bools rendered by the codec as "true"/"false" (Latest set true,
+    # DryRun set false), in model member order.
+    body = form_body("GetConsoleOutput", "2016-11-15", [
+        ("InstanceId", "i-1234567890abcdef0"),
+        ("Latest", "true"),
+        ("DryRun", "false"),
     ])
     return query_sign("ec2", regional_host("ec2"), body)
 
@@ -322,6 +343,55 @@ def sts_get_session_token():
         ("MinimumSessionTokenSize", "1024"),
     ])
     return query_sign("sts", regional_host("sts"), body)
+
+
+# --- SNS + IAM (query, the generated-is-product services #357) ----------------
+#
+# SNS and IAM are the query-family household services. Their inputs mix required
+# and optional scalars (and, for IAM ListUsers, an integer via str(...)); the
+# ARNs and path prefixes exercise url-encoding of ':' and '/' in a value. The
+# ticket's SNS Publish / CreateTopic / Subscribe and IAM CreateUser are v0-
+# skipped — their inputs carry map (MessageAttributes) or list-of-struct (Tags,
+# PolicyDescriptors) members the `aws.query` oracle does not serialize — so the
+# clean scalar ops below stand in, the same posture as STS's assume-role family.
+
+
+def sns_get_topic_attributes():
+    # A single required scalar; the TopicArn's ':' chars url-encode to %3A.
+    body = form_body("GetTopicAttributes", "2010-03-31", [
+        ("TopicArn", "arn:aws:sns:us-east-1:123456789012:MyTopic"),
+    ])
+    return query_sign("sns", regional_host("sns"), body)
+
+
+def sns_set_topic_attributes():
+    # Two required scalars + one optional, in model member order; the attribute
+    # value carries a space (-> %20).
+    body = form_body("SetTopicAttributes", "2010-03-31", [
+        ("TopicArn", "arn:aws:sns:us-east-1:123456789012:MyTopic"),
+        ("AttributeName", "DisplayName"),
+        ("AttributeValue", "My Topic"),
+    ])
+    return query_sign("sns", regional_host("sns"), body)
+
+
+def iam_get_user():
+    # The optional UserName scalar, set.
+    body = form_body("GetUser", "2010-05-08", [
+        ("UserName", "Bob"),
+    ])
+    return query_sign("iam", regional_host("iam"), body)
+
+
+def iam_list_users():
+    # Optional scalars in model order; PathPrefix's '/' url-encodes (%2F) and
+    # MaxItems is an integer rendered through str(...).
+    body = form_body("ListUsers", "2010-05-08", [
+        ("PathPrefix", "/division_abc/"),
+        ("Marker", "abc"),
+        ("MaxItems", "10"),
+    ])
+    return query_sign("iam", regional_host("iam"), body)
 
 
 # --- S3 (rest-xml, the generated-is-product service #356) ---------------------
@@ -377,8 +447,13 @@ FIXTURES = {
     "restxml_synth_put_thing": synth_put_thing,
     "sdb_get_attributes": sdb_get_attributes,
     "ec2_monitor_instances": ec2_monitor_instances,
+    "ec2_get_console_output": ec2_get_console_output,
     "sts_get_caller_identity": sts_get_caller_identity,
     "sts_get_session_token": sts_get_session_token,
+    "sns_get_topic_attributes": sns_get_topic_attributes,
+    "sns_set_topic_attributes": sns_set_topic_attributes,
+    "iam_get_user": iam_get_user,
+    "iam_list_users": iam_list_users,
     "s3_head_bucket": s3_head_bucket,
     "s3_list_buckets": s3_list_buckets,
     "s3_list_parts": s3_list_parts,

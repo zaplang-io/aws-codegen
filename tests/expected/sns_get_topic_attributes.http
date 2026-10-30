@@ -1,0 +1,10 @@
+POST / HTTP/1.1
+content-type: application/x-www-form-urlencoded; charset=utf-8
+host: sns.us-east-1.amazonaws.com
+x-amz-content-sha256: d1e09160038d29406287aebfaf01b58397c361c19f771e8f0e2b474ec224a403
+x-amz-date: 20150830T123600Z
+content-length: 106
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/sns/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=39a304b7fe6191fe034a46bccae542c3ee5e28d369a96a65caa3578e11c0a481
+Connection: close
+
+Action=GetTopicAttributes&Version=2010-03-31&TopicArn=arn%3Aaws%3Asns%3Aus-east-1%3A123456789012%3AMyTopic

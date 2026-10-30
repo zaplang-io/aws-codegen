@@ -324,7 +324,17 @@ fn checked_in_sdb_output_is_current() {
 
 #[test]
 fn checked_in_ec2_output_is_current() {
-    assert_current("ec2", "2014-09-01", "generated/ec2/ec2.zap");
+    assert_current("ec2", "2016-11-15", "generated/ec2/ec2.zap");
+}
+
+#[test]
+fn checked_in_sns_output_is_current() {
+    assert_current("sns", "2010-03-31", "generated/sns/sns.zap");
+}
+
+#[test]
+fn checked_in_iam_output_is_current() {
+    assert_current("iam", "2010-05-08", "generated/iam/iam.zap");
 }
 
 #[test]
@@ -433,20 +443,75 @@ fn query_contract_shape() {
 
 #[test]
 fn ec2_contract_shape() {
-    let (src, cov) = generate_with_sidecar("ec2", "2014-09-01");
-    assert_eq!(cov.operations_total, 154);
+    // EC2 is productionized to the full current model (2016-11-15, #357): 811 ops,
+    // the "large model" the drift check + generator must handle. Bumping the pin
+    // can move the exact total — update it here and keep the floor as the contract.
+    let (src, cov) = generate_with_sidecar("ec2", "2016-11-15");
+    assert_eq!(cov.operations_total, 811);
     assert!(
-        cov.operations_methods >= 80,
+        cov.operations_methods >= 400,
         "methods: {}",
         cov.operations_methods
     );
+    assert!(cov.operations_skipped > 0, "list-of-struct inputs skip");
     assert!(src.contains("# Protocol: ec2"));
     assert!(src.contains("def ec2_service() -> str:"));
     assert!(src.contains("    return \"ec2\""));
-    assert!(src.contains("auto p = query_params(\"MonitorInstances\", \"2014-09-01\")"));
+    assert!(src.contains("auto p = query_params(\"MonitorInstances\", \"2016-11-15\")"));
     // ec2 capitalizes the key and always flattens the list.
     assert!(src.contains("query_flat_list(p, \"InstanceId\", input.InstanceIds)"));
     assert!(src.contains("query_scalar(p, \"DryRun\","));
+    // The two byte-diffed ops (tests/query_byte_diff.rs) generate; the ticket's
+    // DescribeInstances / DescribeRegions are v0-skipped (Filters list-of-struct).
+    assert!(src.contains("def get_console_output(self, GetConsoleOutputRequest input) -> str:"));
+    assert!(!src.contains("def describe_instances("));
+    assert!(!src.contains("def describe_regions("));
+}
+
+#[test]
+fn sns_contract_shape() {
+    let (src, cov) = generate_with_sidecar("sns", "2010-03-31");
+    assert_eq!(cov.operations_total, 42);
+    assert!(
+        cov.operations_methods >= 25,
+        "methods: {}",
+        cov.operations_methods
+    );
+    assert!(cov.operations_skipped > 0, "map/list-of-struct inputs skip");
+    assert!(cov.error_variants >= 15, "errors: {}", cov.error_variants);
+    assert!(src.contains("# Protocol: query"));
+    assert!(src.contains("def sns_service() -> str:"));
+    assert!(src.contains("    return \"sns\""));
+    assert!(src.contains("auto p = query_params(\"GetTopicAttributes\", \"2010-03-31\")"));
+    assert!(src.contains("p = query_scalar(p, \"TopicArn\", input.TopicArn)"));
+    assert!(src.contains("def set_topic_attributes(self, SetTopicAttributesInput input) -> str:"));
+    // The ticket's Publish / CreateTopic are v0-skipped (map / list-of-struct).
+    assert!(!src.contains("def publish("));
+    assert!(!src.contains("def create_topic("));
+    assert!(src.contains("enum SNSError:") || src.contains("enum SnsError:"));
+}
+
+#[test]
+fn iam_contract_shape() {
+    let (src, cov) = generate_with_sidecar("iam", "2010-05-08");
+    assert_eq!(cov.operations_total, 180);
+    assert!(
+        cov.operations_methods >= 120,
+        "methods: {}",
+        cov.operations_methods
+    );
+    assert!(cov.operations_skipped > 0, "list-of-struct inputs skip");
+    assert!(cov.error_variants >= 15, "errors: {}", cov.error_variants);
+    assert!(src.contains("# Protocol: query"));
+    assert!(src.contains("def iam_service() -> str:"));
+    assert!(src.contains("    return \"iam\""));
+    // The ticket's named ops GetUser / ListUsers generate and are byte-diffed.
+    assert!(src.contains("def get_user(self, GetUserRequest input) -> str:"));
+    assert!(src.contains("def list_users(self, ListUsersRequest input) -> str:"));
+    assert!(src.contains("auto p = query_params(\"ListUsers\", \"2010-05-08\")"));
+    assert!(src.contains("p = query_scalar(p, \"MaxItems\", str(input.MaxItems.unwrap()))"));
+    // CreateUser is v0-skipped (Tags list-of-struct).
+    assert!(!src.contains("def create_user("));
 }
 
 #[test]
@@ -456,7 +521,15 @@ fn xml_family_generation_is_deterministic() {
         generate_with_sidecar("cloudfront", "2015-09-17").0
     );
     assert_eq!(
-        generate_with_sidecar("ec2", "2014-09-01").0,
-        generate_with_sidecar("ec2", "2014-09-01").0
+        generate_with_sidecar("ec2", "2016-11-15").0,
+        generate_with_sidecar("ec2", "2016-11-15").0
+    );
+    assert_eq!(
+        generate_with_sidecar("sns", "2010-03-31").0,
+        generate_with_sidecar("sns", "2010-03-31").0
+    );
+    assert_eq!(
+        generate_with_sidecar("iam", "2010-05-08").0,
+        generate_with_sidecar("iam", "2010-05-08").0
     );
 }

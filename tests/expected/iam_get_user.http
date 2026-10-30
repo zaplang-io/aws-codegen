@@ -1,0 +1,10 @@
+POST / HTTP/1.1
+content-type: application/x-www-form-urlencoded; charset=utf-8
+host: iam.us-east-1.amazonaws.com
+x-amz-content-sha256: 379c75839091bea782a6bd983072276d23a8d404ffc217fd149fbe695de01694
+x-amz-date: 20150830T123600Z
+content-length: 46
+authorization: AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20150830/us-east-1/iam/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=6047fabd2d88ffb5519ddbe284159e7b0a4c8b72adad2f894117fcd82026fd27
+Connection: close
+
+Action=GetUser&Version=2010-05-08&UserName=Bob
