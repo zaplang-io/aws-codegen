@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 6 operations — 5 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 6 operations — 6 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   53 structs (32 @derive(Json)), 11 enums, 8 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -566,11 +566,6 @@ def runtime_v2_lex_error_from_code(str code) -> Lex_Runtime_V2Error:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   StartConversation (httpPayload member `requestEventStream` is a non-derivable structure)
-
 # JSON body helpers (compact, declaration-order objects): the collection
 # serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
 # escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
@@ -610,6 +605,36 @@ def active_context_to_json(ActiveContext v) -> str:
     for k0 in sorted(v.contextAttributes.keys()):
         m0.append(runtime_v2_lex_json_str(k0) + ":" + runtime_v2_lex_json_str(v.contextAttributes[k0]))
     parts.append("\"contextAttributes\":" + runtime_v2_lex_json_obj(m0))
+    return runtime_v2_lex_json_obj(parts)
+
+# Serialize ConfigurationEvent to a compact JSON object (declaration order).
+def configuration_event_to_json(ConfigurationEvent v) -> str:
+    list[str] parts = []
+    if v.requestAttributes.is_some():
+        auto u0 = v.requestAttributes.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(runtime_v2_lex_json_str(k1) + ":" + runtime_v2_lex_json_str(u0[k1]))
+        parts.append("\"requestAttributes\":" + runtime_v2_lex_json_obj(m1))
+    parts.append("\"responseContentType\":" + runtime_v2_lex_json_str(v.responseContentType))
+    if v.sessionState.is_some():
+        auto u2 = v.sessionState.unwrap()
+        parts.append("\"sessionState\":" + session_state_to_json(u2))
+    if v.welcomeMessages.is_some():
+        auto u3 = v.welcomeMessages.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(message_to_json(x4))
+        parts.append("\"welcomeMessages\":" + runtime_v2_lex_json_arr(e4))
+    if v.disablePlayback.is_some():
+        auto u5 = v.disablePlayback.unwrap()
+        parts.append("\"disablePlayback\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.eventId.is_some():
+        auto u6 = v.eventId.unwrap()
+        parts.append("\"eventId\":" + runtime_v2_lex_json_str(u6))
+    if v.clientTimestampMillis.is_some():
+        auto u7 = v.clientTimestampMillis.unwrap()
+        parts.append("\"clientTimestampMillis\":" + str(u7))
     return runtime_v2_lex_json_obj(parts)
 
 # Serialize ImageResponseCard to a compact JSON object (declaration order).
@@ -743,6 +768,29 @@ def slot_to_json(Slot v) -> str:
         parts.append("\"subSlots\":" + runtime_v2_lex_json_obj(m5))
     return runtime_v2_lex_json_obj(parts)
 
+# Serialize StartConversationRequestEventStream to a compact JSON object (declaration order).
+def start_conversation_request_event_stream_to_json(StartConversationRequestEventStream v) -> str:
+    list[str] parts = []
+    if v.ConfigurationEvent.is_some():
+        auto u0 = v.ConfigurationEvent.unwrap()
+        parts.append("\"ConfigurationEvent\":" + configuration_event_to_json(u0))
+    if v.AudioInputEvent.is_some():
+        auto u1 = v.AudioInputEvent.unwrap()
+        parts.append("\"AudioInputEvent\":" + u1.to_json())
+    if v.DTMFInputEvent.is_some():
+        auto u2 = v.DTMFInputEvent.unwrap()
+        parts.append("\"DTMFInputEvent\":" + u2.to_json())
+    if v.TextInputEvent.is_some():
+        auto u3 = v.TextInputEvent.unwrap()
+        parts.append("\"TextInputEvent\":" + u3.to_json())
+    if v.PlaybackCompletionEvent.is_some():
+        auto u4 = v.PlaybackCompletionEvent.unwrap()
+        parts.append("\"PlaybackCompletionEvent\":" + u4.to_json())
+    if v.DisconnectionEvent.is_some():
+        auto u5 = v.DisconnectionEvent.unwrap()
+        parts.append("\"DisconnectionEvent\":" + u5.to_json())
+    return runtime_v2_lex_json_obj(parts)
+
 # Serialize Value to a compact JSON object (declaration order).
 def value_to_json(Value v) -> str:
     list[str] parts = []
@@ -861,6 +909,23 @@ struct Lex_Runtime_V2Client:
             headers["Response-Content-Type"] = input.responseContentType.unwrap_or("")
         auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/botAliases/{botAliasId}/botLocales/{localeId}/sessions/{sessionId}/utterance", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, str(input.inputStream.unwrap_or(bytes())), "application/octet-stream")
+        return restjson.rest_json_request(self.creds, bp, runtime_v2_lex_service(), self.region, host)
+
+    # StartConversation  POST /bots/{botId}/botAliases/{botAliasId}/botLocales/{localeId}/sessions/{sessionId}/conversation
+    # errors: AccessDeniedException, InternalServerException, ThrottlingException, ValidationException
+    def start_conversation(self, StartConversationRequest input) -> str:
+        auto host = endpoints.regional_host(runtime_v2_lex_service(), self.region)
+        dict[str, str] labels = {}
+        labels["botId"] = input.botId
+        labels["botAliasId"] = input.botAliasId
+        labels["localeId"] = input.localeId
+        labels["sessionId"] = input.sessionId
+        dict[str, str] headers = {}
+        if input.conversationMode.is_some():
+            auto qt0 = input.conversationMode.unwrap_or("")
+            headers["x-amz-lex-conversation-mode"] = qt0
+        auto b = binding.HttpBinding(method="POST", path_template="/bots/{botId}/botAliases/{botAliasId}/botLocales/{localeId}/sessions/{sessionId}/conversation", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, start_conversation_request_event_stream_to_json(input.requestEventStream), "application/json")
         return restjson.rest_json_request(self.creds, bp, runtime_v2_lex_service(), self.region, host)
 
 # Construct a Lex_Runtime_V2Client bound to credentials + region.

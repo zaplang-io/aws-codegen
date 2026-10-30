@@ -15,10 +15,10 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 18 operations — 17 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 18 operations — 18 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   70 structs (54 @derive(Json)), 9 enums, 9 error variants.
-#   3 paginators generated (1 paginated ops skipped) from paginators-1.json.
+#   4 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
 # serializable; structs with list/map members stay plain and are
 # serialized by an explicit `<shape>_to_json` (zaplang-io/zap#424).
@@ -661,15 +661,6 @@ def medical_imaging_error_from_code(str code) -> Medical_ImagingError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   SearchImageSets (httpPayload member `searchCriteria` is a non-derivable structure)
-
-# Paginated operations (paginators-1.json) not surfaced — their operation is
-# skipped above, or the continuation token is not a simple string field:
-#   SearchImageSets (operation not generated)
-
 # JSON body helpers (compact, declaration-order objects): the collection
 # serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
 # escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
@@ -715,6 +706,30 @@ def import_configuration_to_json(ImportConfiguration v) -> str:
     if v.dicomJsonMetadataImportConfiguration.is_some():
         auto u0 = v.dicomJsonMetadataImportConfiguration.unwrap()
         parts.append("\"dicomJsonMetadataImportConfiguration\":" + dicom_json_metadata_import_configuration_to_json(u0))
+    return medical_imaging_json_obj(parts)
+
+# Serialize SearchCriteria to a compact JSON object (declaration order).
+def search_criteria_to_json(SearchCriteria v) -> str:
+    list[str] parts = []
+    if v.filters.is_some():
+        auto u0 = v.filters.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(search_filter_to_json(x1))
+        parts.append("\"filters\":" + medical_imaging_json_arr(e1))
+    if v.sort.is_some():
+        auto u2 = v.sort.unwrap()
+        parts.append("\"sort\":" + u2.to_json())
+    return medical_imaging_json_obj(parts)
+
+# Serialize SearchFilter to a compact JSON object (declaration order).
+def search_filter_to_json(SearchFilter v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(x0.to_json())
+    parts.append("\"values\":" + medical_imaging_json_arr(e0))
+    parts.append("\"operator\":" + v.operator.to_json())
     return medical_imaging_json_obj(parts)
 
 # Render a bool bound to a URI/query/header slot as its wire text.
@@ -902,6 +917,24 @@ struct Medical_ImagingClient:
         auto b = binding.HttpBinding(method="GET", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, medical_imaging_service(), self.region, host)
 
+    # SearchImageSets  POST /datastore/{datastoreId}/searchImageSets
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def search_image_sets(self, SearchImageSetsRequest input) -> str:
+        auto host = endpoints.regional_host(medical_imaging_service(), self.region)
+        dict[str, str] labels = {}
+        labels["datastoreId"] = input.datastoreId
+        dict[str, str] query = {}
+        if input.maxResults.is_some():
+            query["maxResults"] = str(input.maxResults.unwrap_or(0))
+        if input.nextToken.is_some():
+            query["nextToken"] = input.nextToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/datastore/{datastoreId}/searchImageSets", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.searchCriteria.is_some():
+            auto pv = input.searchCriteria.unwrap()
+            auto bp = restjson.rest_json_raw_payload(b, search_criteria_to_json(pv), "application/json")
+            return restjson.rest_json_request(self.creds, bp, medical_imaging_service(), self.region, host)
+        return restjson.rest_json_request(self.creds, b, medical_imaging_service(), self.region, host)
+
     # StartDICOMImportJob  POST /startDICOMImportJob/datastore/{datastoreId}
     # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
     def start_dicom_import_job(self, StartDICOMImportJobRequest input) -> str:
@@ -1002,6 +1035,19 @@ struct Medical_ImagingClient:
         auto host = endpoints.regional_host(medical_imaging_service(), self.region)
         while True:
             auto raw = self.list_image_set_versions(input)
+            auto page = core.send(host, raw)
+            yield page
+            auto np = core.next_page_json(page.body, "nextToken")
+            if not np.has_more:
+                break
+            input.nextToken = Optional.Some(np.token)
+
+    # Paginator for SearchImageSets — yields each Response page, threading the
+    # nextToken -> nextToken continuation token until it is absent (result key: imageSetsMetadataSummaries).
+    def paginate_search_image_sets(self, SearchImageSetsRequest input):
+        auto host = endpoints.regional_host(medical_imaging_service(), self.region)
+        while True:
+            auto raw = self.search_image_sets(input)
             auto page = core.send(host, raw)
             yield page
             auto np = core.next_page_json(page.body, "nextToken")

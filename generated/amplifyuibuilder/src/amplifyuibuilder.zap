@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 28 operations — 21 with a generated method,
-#   7 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 28 operations — 28 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   125 structs (57 @derive(Json)), 12 enums, 7 error variants.
 #   7 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -1172,21 +1172,935 @@ def amplifyuibuilder_error_from_code(str code) -> AmplifyUIBuilderError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   CreateComponent (httpPayload member `componentToCreate` is a non-derivable structure)
-#   CreateForm (httpPayload member `formToCreate` is a non-derivable structure)
-#   CreateTheme (httpPayload member `themeToCreate` is a non-derivable structure)
-#   StartCodegenJob (httpPayload member `codegenJobToCreate` is a non-derivable structure)
-#   UpdateComponent (httpPayload member `updatedComponent` is a non-derivable structure)
-#   UpdateForm (httpPayload member `updatedForm` is a non-derivable structure)
-#   UpdateTheme (httpPayload member `updatedTheme` is a non-derivable structure)
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def amplifyuibuilder_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def amplifyuibuilder_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def amplifyuibuilder_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ActionParameters to a compact JSON object (declaration order).
+def action_parameters_to_json(ActionParameters v) -> str:
+    list[str] parts = []
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        parts.append("\"type\":" + component_property_to_json(u0))
+    if v.url.is_some():
+        auto u1 = v.url.unwrap()
+        parts.append("\"url\":" + component_property_to_json(u1))
+    if v.anchor.is_some():
+        auto u2 = v.anchor.unwrap()
+        parts.append("\"anchor\":" + component_property_to_json(u2))
+    if v.target.is_some():
+        auto u3 = v.target.unwrap()
+        parts.append("\"target\":" + component_property_to_json(u3))
+    if v.global.is_some():
+        auto u4 = v.global.unwrap()
+        parts.append("\"global\":" + component_property_to_json(u4))
+    if v.model.is_some():
+        auto u5 = v.model.unwrap()
+        parts.append("\"model\":" + amplifyuibuilder_json_str(u5))
+    if v.id.is_some():
+        auto u6 = v.id.unwrap()
+        parts.append("\"id\":" + component_property_to_json(u6))
+    if v.fields.is_some():
+        auto u7 = v.fields.unwrap()
+        list[str] m8 = []
+        for k8 in sorted(u7.keys()):
+            m8.append(amplifyuibuilder_json_str(k8) + ":" + component_property_to_json(u7[k8]))
+        parts.append("\"fields\":" + amplifyuibuilder_json_obj(m8))
+    if v.state.is_some():
+        auto u9 = v.state.unwrap()
+        parts.append("\"state\":" + mutation_action_set_state_parameter_to_json(u9))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize CodegenGenericDataEnum to a compact JSON object (declaration order).
+def codegen_generic_data_enum_to_json(CodegenGenericDataEnum v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(amplifyuibuilder_json_str(x0))
+    parts.append("\"values\":" + amplifyuibuilder_json_arr(e0))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize CodegenGenericDataField to a compact JSON object (declaration order).
+def codegen_generic_data_field_to_json(CodegenGenericDataField v) -> str:
+    list[str] parts = []
+    parts.append("\"dataType\":" + v.dataType.to_json())
+    parts.append("\"dataTypeValue\":" + amplifyuibuilder_json_str(v.dataTypeValue))
+    parts.append("\"required\":" + json.dumps(JsonValue.Bool(v.required)))
+    parts.append("\"readOnly\":" + json.dumps(JsonValue.Bool(v.readOnly)))
+    parts.append("\"isArray\":" + json.dumps(JsonValue.Bool(v.isArray)))
+    if v.relationship.is_some():
+        auto u0 = v.relationship.unwrap()
+        parts.append("\"relationship\":" + codegen_generic_data_relationship_type_to_json(u0))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize CodegenGenericDataModel to a compact JSON object (declaration order).
+def codegen_generic_data_model_to_json(CodegenGenericDataModel v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.fields.keys()):
+        m0.append(amplifyuibuilder_json_str(k0) + ":" + codegen_generic_data_field_to_json(v.fields[k0]))
+    parts.append("\"fields\":" + amplifyuibuilder_json_obj(m0))
+    if v.isJoinTable.is_some():
+        auto u1 = v.isJoinTable.unwrap()
+        parts.append("\"isJoinTable\":" + json.dumps(JsonValue.Bool(u1)))
+    list[str] e2 = []
+    for x2 in v.primaryKeys:
+        e2.append(amplifyuibuilder_json_str(x2))
+    parts.append("\"primaryKeys\":" + amplifyuibuilder_json_arr(e2))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize CodegenGenericDataNonModel to a compact JSON object (declaration order).
+def codegen_generic_data_non_model_to_json(CodegenGenericDataNonModel v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.fields.keys()):
+        m0.append(amplifyuibuilder_json_str(k0) + ":" + codegen_generic_data_field_to_json(v.fields[k0]))
+    parts.append("\"fields\":" + amplifyuibuilder_json_obj(m0))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize CodegenGenericDataRelationshipType to a compact JSON object (declaration order).
+def codegen_generic_data_relationship_type_to_json(CodegenGenericDataRelationshipType v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + v.type.to_json())
+    parts.append("\"relatedModelName\":" + amplifyuibuilder_json_str(v.relatedModelName))
+    if v.relatedModelFields.is_some():
+        auto u0 = v.relatedModelFields.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(amplifyuibuilder_json_str(x1))
+        parts.append("\"relatedModelFields\":" + amplifyuibuilder_json_arr(e1))
+    if v.canUnlinkAssociatedModel.is_some():
+        auto u2 = v.canUnlinkAssociatedModel.unwrap()
+        parts.append("\"canUnlinkAssociatedModel\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.relatedJoinFieldName.is_some():
+        auto u3 = v.relatedJoinFieldName.unwrap()
+        parts.append("\"relatedJoinFieldName\":" + amplifyuibuilder_json_str(u3))
+    if v.relatedJoinTableName.is_some():
+        auto u4 = v.relatedJoinTableName.unwrap()
+        parts.append("\"relatedJoinTableName\":" + amplifyuibuilder_json_str(u4))
+    if v.belongsToFieldOnRelatedModel.is_some():
+        auto u5 = v.belongsToFieldOnRelatedModel.unwrap()
+        parts.append("\"belongsToFieldOnRelatedModel\":" + amplifyuibuilder_json_str(u5))
+    if v.associatedFields.is_some():
+        auto u6 = v.associatedFields.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(amplifyuibuilder_json_str(x7))
+        parts.append("\"associatedFields\":" + amplifyuibuilder_json_arr(e7))
+    if v.isHasManyIndex.is_some():
+        auto u8 = v.isHasManyIndex.unwrap()
+        parts.append("\"isHasManyIndex\":" + json.dumps(JsonValue.Bool(u8)))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize CodegenJobGenericDataSchema to a compact JSON object (declaration order).
+def codegen_job_generic_data_schema_to_json(CodegenJobGenericDataSchema v) -> str:
+    list[str] parts = []
+    parts.append("\"dataSourceType\":" + amplifyuibuilder_json_str(v.dataSourceType))
+    list[str] m0 = []
+    for k0 in sorted(v.models.keys()):
+        m0.append(amplifyuibuilder_json_str(k0) + ":" + codegen_generic_data_model_to_json(v.models[k0]))
+    parts.append("\"models\":" + amplifyuibuilder_json_obj(m0))
+    list[str] m1 = []
+    for k1 in sorted(v.enums.keys()):
+        m1.append(amplifyuibuilder_json_str(k1) + ":" + codegen_generic_data_enum_to_json(v.enums[k1]))
+    parts.append("\"enums\":" + amplifyuibuilder_json_obj(m1))
+    list[str] m2 = []
+    for k2 in sorted(v.nonModels.keys()):
+        m2.append(amplifyuibuilder_json_str(k2) + ":" + codegen_generic_data_non_model_to_json(v.nonModels[k2]))
+    parts.append("\"nonModels\":" + amplifyuibuilder_json_obj(m2))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize CodegenJobRenderConfig to a compact JSON object (declaration order).
+def codegen_job_render_config_to_json(CodegenJobRenderConfig v) -> str:
+    list[str] parts = []
+    if v.react.is_some():
+        auto u0 = v.react.unwrap()
+        parts.append("\"react\":" + react_start_codegen_job_data_to_json(u0))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize ComponentBindingPropertiesValue to a compact JSON object (declaration order).
+def component_binding_properties_value_to_json(ComponentBindingPropertiesValue v) -> str:
+    list[str] parts = []
+    if v.type.is_some():
+        auto u0 = v.type.unwrap()
+        parts.append("\"type\":" + amplifyuibuilder_json_str(u0))
+    if v.bindingProperties.is_some():
+        auto u1 = v.bindingProperties.unwrap()
+        parts.append("\"bindingProperties\":" + component_binding_properties_value_properties_to_json(u1))
+    if v.defaultValue.is_some():
+        auto u2 = v.defaultValue.unwrap()
+        parts.append("\"defaultValue\":" + amplifyuibuilder_json_str(u2))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize ComponentBindingPropertiesValueProperties to a compact JSON object (declaration order).
+def component_binding_properties_value_properties_to_json(ComponentBindingPropertiesValueProperties v) -> str:
+    list[str] parts = []
+    if v.model.is_some():
+        auto u0 = v.model.unwrap()
+        parts.append("\"model\":" + amplifyuibuilder_json_str(u0))
+    if v.field.is_some():
+        auto u1 = v.field.unwrap()
+        parts.append("\"field\":" + amplifyuibuilder_json_str(u1))
+    if v.predicates.is_some():
+        auto u2 = v.predicates.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(predicate_to_json(x3))
+        parts.append("\"predicates\":" + amplifyuibuilder_json_arr(e3))
+    if v.userAttribute.is_some():
+        auto u4 = v.userAttribute.unwrap()
+        parts.append("\"userAttribute\":" + amplifyuibuilder_json_str(u4))
+    if v.bucket.is_some():
+        auto u5 = v.bucket.unwrap()
+        parts.append("\"bucket\":" + amplifyuibuilder_json_str(u5))
+    if v.key.is_some():
+        auto u6 = v.key.unwrap()
+        parts.append("\"key\":" + amplifyuibuilder_json_str(u6))
+    if v.defaultValue.is_some():
+        auto u7 = v.defaultValue.unwrap()
+        parts.append("\"defaultValue\":" + amplifyuibuilder_json_str(u7))
+    if v.slotName.is_some():
+        auto u8 = v.slotName.unwrap()
+        parts.append("\"slotName\":" + amplifyuibuilder_json_str(u8))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize ComponentChild to a compact JSON object (declaration order).
+def component_child_to_json(ComponentChild v) -> str:
+    list[str] parts = []
+    parts.append("\"componentType\":" + amplifyuibuilder_json_str(v.componentType))
+    parts.append("\"name\":" + amplifyuibuilder_json_str(v.name))
+    list[str] m0 = []
+    for k0 in sorted(v.properties.keys()):
+        m0.append(amplifyuibuilder_json_str(k0) + ":" + component_property_to_json(v.properties[k0]))
+    parts.append("\"properties\":" + amplifyuibuilder_json_obj(m0))
+    if v.children.is_some():
+        auto u1 = v.children.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(component_child_to_json(x2))
+        parts.append("\"children\":" + amplifyuibuilder_json_arr(e2))
+    if v.events.is_some():
+        auto u3 = v.events.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(amplifyuibuilder_json_str(k4) + ":" + component_event_to_json(u3[k4]))
+        parts.append("\"events\":" + amplifyuibuilder_json_obj(m4))
+    if v.sourceId.is_some():
+        auto u5 = v.sourceId.unwrap()
+        parts.append("\"sourceId\":" + amplifyuibuilder_json_str(u5))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize ComponentConditionProperty to a compact JSON object (declaration order).
+def component_condition_property_to_json(ComponentConditionProperty v) -> str:
+    list[str] parts = []
+    if v.property.is_some():
+        auto u0 = v.property.unwrap()
+        parts.append("\"property\":" + amplifyuibuilder_json_str(u0))
+    if v.field.is_some():
+        auto u1 = v.field.unwrap()
+        parts.append("\"field\":" + amplifyuibuilder_json_str(u1))
+    if v.operator.is_some():
+        auto u2 = v.operator.unwrap()
+        parts.append("\"operator\":" + amplifyuibuilder_json_str(u2))
+    if v.operand.is_some():
+        auto u3 = v.operand.unwrap()
+        parts.append("\"operand\":" + amplifyuibuilder_json_str(u3))
+    if v.then.is_some():
+        auto u4 = v.then.unwrap()
+        parts.append("\"then\":" + component_property_to_json(u4))
+    if v.else_.is_some():
+        auto u5 = v.else_.unwrap()
+        parts.append("\"else\":" + component_property_to_json(u5))
+    if v.operandType.is_some():
+        auto u6 = v.operandType.unwrap()
+        parts.append("\"operandType\":" + amplifyuibuilder_json_str(u6))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize ComponentDataConfiguration to a compact JSON object (declaration order).
+def component_data_configuration_to_json(ComponentDataConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"model\":" + amplifyuibuilder_json_str(v.model))
+    if v.sort.is_some():
+        auto u0 = v.sort.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"sort\":" + amplifyuibuilder_json_arr(e1))
+    if v.predicate.is_some():
+        auto u2 = v.predicate.unwrap()
+        parts.append("\"predicate\":" + predicate_to_json(u2))
+    if v.identifiers.is_some():
+        auto u3 = v.identifiers.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(amplifyuibuilder_json_str(x4))
+        parts.append("\"identifiers\":" + amplifyuibuilder_json_arr(e4))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize ComponentEvent to a compact JSON object (declaration order).
+def component_event_to_json(ComponentEvent v) -> str:
+    list[str] parts = []
+    if v.action.is_some():
+        auto u0 = v.action.unwrap()
+        parts.append("\"action\":" + amplifyuibuilder_json_str(u0))
+    if v.parameters.is_some():
+        auto u1 = v.parameters.unwrap()
+        parts.append("\"parameters\":" + action_parameters_to_json(u1))
+    if v.bindingEvent.is_some():
+        auto u2 = v.bindingEvent.unwrap()
+        parts.append("\"bindingEvent\":" + amplifyuibuilder_json_str(u2))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize ComponentProperty to a compact JSON object (declaration order).
+def component_property_to_json(ComponentProperty v) -> str:
+    list[str] parts = []
+    if v.value.is_some():
+        auto u0 = v.value.unwrap()
+        parts.append("\"value\":" + amplifyuibuilder_json_str(u0))
+    if v.bindingProperties.is_some():
+        auto u1 = v.bindingProperties.unwrap()
+        parts.append("\"bindingProperties\":" + u1.to_json())
+    if v.collectionBindingProperties.is_some():
+        auto u2 = v.collectionBindingProperties.unwrap()
+        parts.append("\"collectionBindingProperties\":" + u2.to_json())
+    if v.defaultValue.is_some():
+        auto u3 = v.defaultValue.unwrap()
+        parts.append("\"defaultValue\":" + amplifyuibuilder_json_str(u3))
+    if v.model.is_some():
+        auto u4 = v.model.unwrap()
+        parts.append("\"model\":" + amplifyuibuilder_json_str(u4))
+    if v.bindings.is_some():
+        auto u5 = v.bindings.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(amplifyuibuilder_json_str(k6) + ":" + u5[k6].to_json())
+        parts.append("\"bindings\":" + amplifyuibuilder_json_obj(m6))
+    if v.event.is_some():
+        auto u7 = v.event.unwrap()
+        parts.append("\"event\":" + amplifyuibuilder_json_str(u7))
+    if v.userAttribute.is_some():
+        auto u8 = v.userAttribute.unwrap()
+        parts.append("\"userAttribute\":" + amplifyuibuilder_json_str(u8))
+    if v.concat.is_some():
+        auto u9 = v.concat.unwrap()
+        list[str] e10 = []
+        for x10 in u9:
+            e10.append(component_property_to_json(x10))
+        parts.append("\"concat\":" + amplifyuibuilder_json_arr(e10))
+    if v.condition.is_some():
+        auto u11 = v.condition.unwrap()
+        parts.append("\"condition\":" + component_condition_property_to_json(u11))
+    if v.configured.is_some():
+        auto u12 = v.configured.unwrap()
+        parts.append("\"configured\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.type.is_some():
+        auto u13 = v.type.unwrap()
+        parts.append("\"type\":" + amplifyuibuilder_json_str(u13))
+    if v.importedValue.is_some():
+        auto u14 = v.importedValue.unwrap()
+        parts.append("\"importedValue\":" + amplifyuibuilder_json_str(u14))
+    if v.componentName.is_some():
+        auto u15 = v.componentName.unwrap()
+        parts.append("\"componentName\":" + amplifyuibuilder_json_str(u15))
+    if v.property.is_some():
+        auto u16 = v.property.unwrap()
+        parts.append("\"property\":" + amplifyuibuilder_json_str(u16))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize ComponentVariant to a compact JSON object (declaration order).
+def component_variant_to_json(ComponentVariant v) -> str:
+    list[str] parts = []
+    if v.variantValues.is_some():
+        auto u0 = v.variantValues.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(amplifyuibuilder_json_str(k1) + ":" + amplifyuibuilder_json_str(u0[k1]))
+        parts.append("\"variantValues\":" + amplifyuibuilder_json_obj(m1))
+    if v.overrides.is_some():
+        auto u2 = v.overrides.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            list[str] m4 = []
+            for k4 in sorted(u2[k3].keys()):
+                m4.append(amplifyuibuilder_json_str(k4) + ":" + amplifyuibuilder_json_str(u2[k3][k4]))
+            m3.append(amplifyuibuilder_json_str(k3) + ":" + amplifyuibuilder_json_obj(m4))
+        parts.append("\"overrides\":" + amplifyuibuilder_json_obj(m3))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize CreateComponentData to a compact JSON object (declaration order).
+def create_component_data_to_json(CreateComponentData v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + amplifyuibuilder_json_str(v.name))
+    if v.sourceId.is_some():
+        auto u0 = v.sourceId.unwrap()
+        parts.append("\"sourceId\":" + amplifyuibuilder_json_str(u0))
+    parts.append("\"componentType\":" + amplifyuibuilder_json_str(v.componentType))
+    list[str] m1 = []
+    for k1 in sorted(v.properties.keys()):
+        m1.append(amplifyuibuilder_json_str(k1) + ":" + component_property_to_json(v.properties[k1]))
+    parts.append("\"properties\":" + amplifyuibuilder_json_obj(m1))
+    if v.children.is_some():
+        auto u2 = v.children.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(component_child_to_json(x3))
+        parts.append("\"children\":" + amplifyuibuilder_json_arr(e3))
+    list[str] e4 = []
+    for x4 in v.variants:
+        e4.append(component_variant_to_json(x4))
+    parts.append("\"variants\":" + amplifyuibuilder_json_arr(e4))
+    list[str] m5 = []
+    for k5 in sorted(v.overrides.keys()):
+        list[str] m6 = []
+        for k6 in sorted(v.overrides[k5].keys()):
+            m6.append(amplifyuibuilder_json_str(k6) + ":" + amplifyuibuilder_json_str(v.overrides[k5][k6]))
+        m5.append(amplifyuibuilder_json_str(k5) + ":" + amplifyuibuilder_json_obj(m6))
+    parts.append("\"overrides\":" + amplifyuibuilder_json_obj(m5))
+    list[str] m7 = []
+    for k7 in sorted(v.bindingProperties.keys()):
+        m7.append(amplifyuibuilder_json_str(k7) + ":" + component_binding_properties_value_to_json(v.bindingProperties[k7]))
+    parts.append("\"bindingProperties\":" + amplifyuibuilder_json_obj(m7))
+    if v.collectionProperties.is_some():
+        auto u8 = v.collectionProperties.unwrap()
+        list[str] m9 = []
+        for k9 in sorted(u8.keys()):
+            m9.append(amplifyuibuilder_json_str(k9) + ":" + component_data_configuration_to_json(u8[k9]))
+        parts.append("\"collectionProperties\":" + amplifyuibuilder_json_obj(m9))
+    if v.tags.is_some():
+        auto u10 = v.tags.unwrap()
+        list[str] m11 = []
+        for k11 in sorted(u10.keys()):
+            m11.append(amplifyuibuilder_json_str(k11) + ":" + amplifyuibuilder_json_str(u10[k11]))
+        parts.append("\"tags\":" + amplifyuibuilder_json_obj(m11))
+    if v.events.is_some():
+        auto u12 = v.events.unwrap()
+        list[str] m13 = []
+        for k13 in sorted(u12.keys()):
+            m13.append(amplifyuibuilder_json_str(k13) + ":" + component_event_to_json(u12[k13]))
+        parts.append("\"events\":" + amplifyuibuilder_json_obj(m13))
+    if v.schemaVersion.is_some():
+        auto u14 = v.schemaVersion.unwrap()
+        parts.append("\"schemaVersion\":" + amplifyuibuilder_json_str(u14))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize CreateFormData to a compact JSON object (declaration order).
+def create_form_data_to_json(CreateFormData v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + amplifyuibuilder_json_str(v.name))
+    parts.append("\"dataType\":" + v.dataType.to_json())
+    parts.append("\"formActionType\":" + v.formActionType.to_json())
+    list[str] m0 = []
+    for k0 in sorted(v.fields.keys()):
+        m0.append(amplifyuibuilder_json_str(k0) + ":" + field_config_to_json(v.fields[k0]))
+    parts.append("\"fields\":" + amplifyuibuilder_json_obj(m0))
+    parts.append("\"style\":" + v.style.to_json())
+    list[str] m1 = []
+    for k1 in sorted(v.sectionalElements.keys()):
+        m1.append(amplifyuibuilder_json_str(k1) + ":" + v.sectionalElements[k1].to_json())
+    parts.append("\"sectionalElements\":" + amplifyuibuilder_json_obj(m1))
+    parts.append("\"schemaVersion\":" + amplifyuibuilder_json_str(v.schemaVersion))
+    if v.cta.is_some():
+        auto u2 = v.cta.unwrap()
+        parts.append("\"cta\":" + u2.to_json())
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(amplifyuibuilder_json_str(k4) + ":" + amplifyuibuilder_json_str(u3[k4]))
+        parts.append("\"tags\":" + amplifyuibuilder_json_obj(m4))
+    if v.labelDecorator.is_some():
+        auto u5 = v.labelDecorator.unwrap()
+        parts.append("\"labelDecorator\":" + u5.to_json())
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize CreateThemeData to a compact JSON object (declaration order).
+def create_theme_data_to_json(CreateThemeData v) -> str:
+    list[str] parts = []
+    parts.append("\"name\":" + amplifyuibuilder_json_str(v.name))
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(theme_values_to_json(x0))
+    parts.append("\"values\":" + amplifyuibuilder_json_arr(e0))
+    if v.overrides.is_some():
+        auto u1 = v.overrides.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(theme_values_to_json(x2))
+        parts.append("\"overrides\":" + amplifyuibuilder_json_arr(e2))
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(amplifyuibuilder_json_str(k4) + ":" + amplifyuibuilder_json_str(u3[k4]))
+        parts.append("\"tags\":" + amplifyuibuilder_json_obj(m4))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize FieldConfig to a compact JSON object (declaration order).
+def field_config_to_json(FieldConfig v) -> str:
+    list[str] parts = []
+    if v.label.is_some():
+        auto u0 = v.label.unwrap()
+        parts.append("\"label\":" + amplifyuibuilder_json_str(u0))
+    if v.position.is_some():
+        auto u1 = v.position.unwrap()
+        parts.append("\"position\":" + u1.to_json())
+    if v.excluded.is_some():
+        auto u2 = v.excluded.unwrap()
+        parts.append("\"excluded\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.inputType.is_some():
+        auto u3 = v.inputType.unwrap()
+        parts.append("\"inputType\":" + field_input_config_to_json(u3))
+    if v.validations.is_some():
+        auto u4 = v.validations.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(field_validation_configuration_to_json(x5))
+        parts.append("\"validations\":" + amplifyuibuilder_json_arr(e5))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize FieldInputConfig to a compact JSON object (declaration order).
+def field_input_config_to_json(FieldInputConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + amplifyuibuilder_json_str(v.type))
+    if v.required.is_some():
+        auto u0 = v.required.unwrap()
+        parts.append("\"required\":" + json.dumps(JsonValue.Bool(u0)))
+    if v.readOnly.is_some():
+        auto u1 = v.readOnly.unwrap()
+        parts.append("\"readOnly\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.placeholder.is_some():
+        auto u2 = v.placeholder.unwrap()
+        parts.append("\"placeholder\":" + amplifyuibuilder_json_str(u2))
+    if v.defaultValue.is_some():
+        auto u3 = v.defaultValue.unwrap()
+        parts.append("\"defaultValue\":" + amplifyuibuilder_json_str(u3))
+    if v.descriptiveText.is_some():
+        auto u4 = v.descriptiveText.unwrap()
+        parts.append("\"descriptiveText\":" + amplifyuibuilder_json_str(u4))
+    if v.defaultChecked.is_some():
+        auto u5 = v.defaultChecked.unwrap()
+        parts.append("\"defaultChecked\":" + json.dumps(JsonValue.Bool(u5)))
+    if v.defaultCountryCode.is_some():
+        auto u6 = v.defaultCountryCode.unwrap()
+        parts.append("\"defaultCountryCode\":" + amplifyuibuilder_json_str(u6))
+    if v.valueMappings.is_some():
+        auto u7 = v.valueMappings.unwrap()
+        parts.append("\"valueMappings\":" + value_mappings_to_json(u7))
+    if v.name.is_some():
+        auto u8 = v.name.unwrap()
+        parts.append("\"name\":" + amplifyuibuilder_json_str(u8))
+    if v.minValue.is_some():
+        auto u9 = v.minValue.unwrap()
+        parts.append("\"minValue\":" + str(u9))
+    if v.maxValue.is_some():
+        auto u10 = v.maxValue.unwrap()
+        parts.append("\"maxValue\":" + str(u10))
+    if v.step.is_some():
+        auto u11 = v.step.unwrap()
+        parts.append("\"step\":" + str(u11))
+    if v.value.is_some():
+        auto u12 = v.value.unwrap()
+        parts.append("\"value\":" + amplifyuibuilder_json_str(u12))
+    if v.isArray.is_some():
+        auto u13 = v.isArray.unwrap()
+        parts.append("\"isArray\":" + json.dumps(JsonValue.Bool(u13)))
+    if v.fileUploaderConfig.is_some():
+        auto u14 = v.fileUploaderConfig.unwrap()
+        parts.append("\"fileUploaderConfig\":" + file_uploader_field_config_to_json(u14))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize FieldValidationConfiguration to a compact JSON object (declaration order).
+def field_validation_configuration_to_json(FieldValidationConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"type\":" + amplifyuibuilder_json_str(v.type))
+    if v.strValues.is_some():
+        auto u0 = v.strValues.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(amplifyuibuilder_json_str(x1))
+        parts.append("\"strValues\":" + amplifyuibuilder_json_arr(e1))
+    if v.numValues.is_some():
+        auto u2 = v.numValues.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(str(x3))
+        parts.append("\"numValues\":" + amplifyuibuilder_json_arr(e3))
+    if v.validationMessage.is_some():
+        auto u4 = v.validationMessage.unwrap()
+        parts.append("\"validationMessage\":" + amplifyuibuilder_json_str(u4))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize FileUploaderFieldConfig to a compact JSON object (declaration order).
+def file_uploader_field_config_to_json(FileUploaderFieldConfig v) -> str:
+    list[str] parts = []
+    parts.append("\"accessLevel\":" + v.accessLevel.to_json())
+    list[str] e0 = []
+    for x0 in v.acceptedFileTypes:
+        e0.append(amplifyuibuilder_json_str(x0))
+    parts.append("\"acceptedFileTypes\":" + amplifyuibuilder_json_arr(e0))
+    if v.showThumbnails.is_some():
+        auto u1 = v.showThumbnails.unwrap()
+        parts.append("\"showThumbnails\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.isResumable.is_some():
+        auto u2 = v.isResumable.unwrap()
+        parts.append("\"isResumable\":" + json.dumps(JsonValue.Bool(u2)))
+    if v.maxFileCount.is_some():
+        auto u3 = v.maxFileCount.unwrap()
+        parts.append("\"maxFileCount\":" + str(u3))
+    if v.maxSize.is_some():
+        auto u4 = v.maxSize.unwrap()
+        parts.append("\"maxSize\":" + str(u4))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize FormInputValueProperty to a compact JSON object (declaration order).
+def form_input_value_property_to_json(FormInputValueProperty v) -> str:
+    list[str] parts = []
+    if v.value.is_some():
+        auto u0 = v.value.unwrap()
+        parts.append("\"value\":" + amplifyuibuilder_json_str(u0))
+    if v.bindingProperties.is_some():
+        auto u1 = v.bindingProperties.unwrap()
+        parts.append("\"bindingProperties\":" + u1.to_json())
+    if v.concat.is_some():
+        auto u2 = v.concat.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(form_input_value_property_to_json(x3))
+        parts.append("\"concat\":" + amplifyuibuilder_json_arr(e3))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize MutationActionSetStateParameter to a compact JSON object (declaration order).
+def mutation_action_set_state_parameter_to_json(MutationActionSetStateParameter v) -> str:
+    list[str] parts = []
+    parts.append("\"componentName\":" + amplifyuibuilder_json_str(v.componentName))
+    parts.append("\"property\":" + amplifyuibuilder_json_str(v.property))
+    parts.append("\"set\":" + component_property_to_json(v.set_))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize Predicate to a compact JSON object (declaration order).
+def predicate_to_json(Predicate v) -> str:
+    list[str] parts = []
+    if v.or_.is_some():
+        auto u0 = v.or_.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(predicate_to_json(x1))
+        parts.append("\"or\":" + amplifyuibuilder_json_arr(e1))
+    if v.and_.is_some():
+        auto u2 = v.and_.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(predicate_to_json(x3))
+        parts.append("\"and\":" + amplifyuibuilder_json_arr(e3))
+    if v.field.is_some():
+        auto u4 = v.field.unwrap()
+        parts.append("\"field\":" + amplifyuibuilder_json_str(u4))
+    if v.operator.is_some():
+        auto u5 = v.operator.unwrap()
+        parts.append("\"operator\":" + amplifyuibuilder_json_str(u5))
+    if v.operand.is_some():
+        auto u6 = v.operand.unwrap()
+        parts.append("\"operand\":" + amplifyuibuilder_json_str(u6))
+    if v.operandType.is_some():
+        auto u7 = v.operandType.unwrap()
+        parts.append("\"operandType\":" + amplifyuibuilder_json_str(u7))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize ReactStartCodegenJobData to a compact JSON object (declaration order).
+def react_start_codegen_job_data_to_json(ReactStartCodegenJobData v) -> str:
+    list[str] parts = []
+    if v.module.is_some():
+        auto u0 = v.module.unwrap()
+        parts.append("\"module\":" + u0.to_json())
+    if v.target.is_some():
+        auto u1 = v.target.unwrap()
+        parts.append("\"target\":" + u1.to_json())
+    if v.script.is_some():
+        auto u2 = v.script.unwrap()
+        parts.append("\"script\":" + u2.to_json())
+    if v.renderTypeDeclarations.is_some():
+        auto u3 = v.renderTypeDeclarations.unwrap()
+        parts.append("\"renderTypeDeclarations\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.inlineSourceMap.is_some():
+        auto u4 = v.inlineSourceMap.unwrap()
+        parts.append("\"inlineSourceMap\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.apiConfiguration.is_some():
+        auto u5 = v.apiConfiguration.unwrap()
+        parts.append("\"apiConfiguration\":" + u5.to_json())
+    if v.dependencies.is_some():
+        auto u6 = v.dependencies.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(amplifyuibuilder_json_str(k7) + ":" + amplifyuibuilder_json_str(u6[k7]))
+        parts.append("\"dependencies\":" + amplifyuibuilder_json_obj(m7))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize StartCodegenJobData to a compact JSON object (declaration order).
+def start_codegen_job_data_to_json(StartCodegenJobData v) -> str:
+    list[str] parts = []
+    parts.append("\"renderConfig\":" + codegen_job_render_config_to_json(v.renderConfig))
+    if v.genericDataSchema.is_some():
+        auto u0 = v.genericDataSchema.unwrap()
+        parts.append("\"genericDataSchema\":" + codegen_job_generic_data_schema_to_json(u0))
+    if v.autoGenerateForms.is_some():
+        auto u1 = v.autoGenerateForms.unwrap()
+        parts.append("\"autoGenerateForms\":" + json.dumps(JsonValue.Bool(u1)))
+    if v.features.is_some():
+        auto u2 = v.features.unwrap()
+        parts.append("\"features\":" + u2.to_json())
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(amplifyuibuilder_json_str(k4) + ":" + amplifyuibuilder_json_str(u3[k4]))
+        parts.append("\"tags\":" + amplifyuibuilder_json_obj(m4))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize ThemeValue to a compact JSON object (declaration order).
+def theme_value_to_json(ThemeValue v) -> str:
+    list[str] parts = []
+    if v.value.is_some():
+        auto u0 = v.value.unwrap()
+        parts.append("\"value\":" + amplifyuibuilder_json_str(u0))
+    if v.children.is_some():
+        auto u1 = v.children.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(theme_values_to_json(x2))
+        parts.append("\"children\":" + amplifyuibuilder_json_arr(e2))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize ThemeValues to a compact JSON object (declaration order).
+def theme_values_to_json(ThemeValues v) -> str:
+    list[str] parts = []
+    if v.key.is_some():
+        auto u0 = v.key.unwrap()
+        parts.append("\"key\":" + amplifyuibuilder_json_str(u0))
+    if v.value.is_some():
+        auto u1 = v.value.unwrap()
+        parts.append("\"value\":" + theme_value_to_json(u1))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize UpdateComponentData to a compact JSON object (declaration order).
+def update_component_data_to_json(UpdateComponentData v) -> str:
+    list[str] parts = []
+    if v.id.is_some():
+        auto u0 = v.id.unwrap()
+        parts.append("\"id\":" + amplifyuibuilder_json_str(u0))
+    if v.name.is_some():
+        auto u1 = v.name.unwrap()
+        parts.append("\"name\":" + amplifyuibuilder_json_str(u1))
+    if v.sourceId.is_some():
+        auto u2 = v.sourceId.unwrap()
+        parts.append("\"sourceId\":" + amplifyuibuilder_json_str(u2))
+    if v.componentType.is_some():
+        auto u3 = v.componentType.unwrap()
+        parts.append("\"componentType\":" + amplifyuibuilder_json_str(u3))
+    if v.properties.is_some():
+        auto u4 = v.properties.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(amplifyuibuilder_json_str(k5) + ":" + component_property_to_json(u4[k5]))
+        parts.append("\"properties\":" + amplifyuibuilder_json_obj(m5))
+    if v.children.is_some():
+        auto u6 = v.children.unwrap()
+        list[str] e7 = []
+        for x7 in u6:
+            e7.append(component_child_to_json(x7))
+        parts.append("\"children\":" + amplifyuibuilder_json_arr(e7))
+    if v.variants.is_some():
+        auto u8 = v.variants.unwrap()
+        list[str] e9 = []
+        for x9 in u8:
+            e9.append(component_variant_to_json(x9))
+        parts.append("\"variants\":" + amplifyuibuilder_json_arr(e9))
+    if v.overrides.is_some():
+        auto u10 = v.overrides.unwrap()
+        list[str] m11 = []
+        for k11 in sorted(u10.keys()):
+            list[str] m12 = []
+            for k12 in sorted(u10[k11].keys()):
+                m12.append(amplifyuibuilder_json_str(k12) + ":" + amplifyuibuilder_json_str(u10[k11][k12]))
+            m11.append(amplifyuibuilder_json_str(k11) + ":" + amplifyuibuilder_json_obj(m12))
+        parts.append("\"overrides\":" + amplifyuibuilder_json_obj(m11))
+    if v.bindingProperties.is_some():
+        auto u13 = v.bindingProperties.unwrap()
+        list[str] m14 = []
+        for k14 in sorted(u13.keys()):
+            m14.append(amplifyuibuilder_json_str(k14) + ":" + component_binding_properties_value_to_json(u13[k14]))
+        parts.append("\"bindingProperties\":" + amplifyuibuilder_json_obj(m14))
+    if v.collectionProperties.is_some():
+        auto u15 = v.collectionProperties.unwrap()
+        list[str] m16 = []
+        for k16 in sorted(u15.keys()):
+            m16.append(amplifyuibuilder_json_str(k16) + ":" + component_data_configuration_to_json(u15[k16]))
+        parts.append("\"collectionProperties\":" + amplifyuibuilder_json_obj(m16))
+    if v.events.is_some():
+        auto u17 = v.events.unwrap()
+        list[str] m18 = []
+        for k18 in sorted(u17.keys()):
+            m18.append(amplifyuibuilder_json_str(k18) + ":" + component_event_to_json(u17[k18]))
+        parts.append("\"events\":" + amplifyuibuilder_json_obj(m18))
+    if v.schemaVersion.is_some():
+        auto u19 = v.schemaVersion.unwrap()
+        parts.append("\"schemaVersion\":" + amplifyuibuilder_json_str(u19))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize UpdateFormData to a compact JSON object (declaration order).
+def update_form_data_to_json(UpdateFormData v) -> str:
+    list[str] parts = []
+    if v.name.is_some():
+        auto u0 = v.name.unwrap()
+        parts.append("\"name\":" + amplifyuibuilder_json_str(u0))
+    if v.dataType.is_some():
+        auto u1 = v.dataType.unwrap()
+        parts.append("\"dataType\":" + u1.to_json())
+    if v.formActionType.is_some():
+        auto u2 = v.formActionType.unwrap()
+        parts.append("\"formActionType\":" + u2.to_json())
+    if v.fields.is_some():
+        auto u3 = v.fields.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(amplifyuibuilder_json_str(k4) + ":" + field_config_to_json(u3[k4]))
+        parts.append("\"fields\":" + amplifyuibuilder_json_obj(m4))
+    if v.style.is_some():
+        auto u5 = v.style.unwrap()
+        parts.append("\"style\":" + u5.to_json())
+    if v.sectionalElements.is_some():
+        auto u6 = v.sectionalElements.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(amplifyuibuilder_json_str(k7) + ":" + u6[k7].to_json())
+        parts.append("\"sectionalElements\":" + amplifyuibuilder_json_obj(m7))
+    if v.schemaVersion.is_some():
+        auto u8 = v.schemaVersion.unwrap()
+        parts.append("\"schemaVersion\":" + amplifyuibuilder_json_str(u8))
+    if v.cta.is_some():
+        auto u9 = v.cta.unwrap()
+        parts.append("\"cta\":" + u9.to_json())
+    if v.labelDecorator.is_some():
+        auto u10 = v.labelDecorator.unwrap()
+        parts.append("\"labelDecorator\":" + u10.to_json())
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize UpdateThemeData to a compact JSON object (declaration order).
+def update_theme_data_to_json(UpdateThemeData v) -> str:
+    list[str] parts = []
+    if v.id.is_some():
+        auto u0 = v.id.unwrap()
+        parts.append("\"id\":" + amplifyuibuilder_json_str(u0))
+    if v.name.is_some():
+        auto u1 = v.name.unwrap()
+        parts.append("\"name\":" + amplifyuibuilder_json_str(u1))
+    list[str] e2 = []
+    for x2 in v.values:
+        e2.append(theme_values_to_json(x2))
+    parts.append("\"values\":" + amplifyuibuilder_json_arr(e2))
+    if v.overrides.is_some():
+        auto u3 = v.overrides.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(theme_values_to_json(x4))
+        parts.append("\"overrides\":" + amplifyuibuilder_json_arr(e4))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize ValueMapping to a compact JSON object (declaration order).
+def value_mapping_to_json(ValueMapping v) -> str:
+    list[str] parts = []
+    if v.displayValue.is_some():
+        auto u0 = v.displayValue.unwrap()
+        parts.append("\"displayValue\":" + form_input_value_property_to_json(u0))
+    parts.append("\"value\":" + form_input_value_property_to_json(v.value))
+    return amplifyuibuilder_json_obj(parts)
+
+# Serialize ValueMappings to a compact JSON object (declaration order).
+def value_mappings_to_json(ValueMappings v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.values:
+        e0.append(value_mapping_to_json(x0))
+    parts.append("\"values\":" + amplifyuibuilder_json_arr(e0))
+    if v.bindingProperties.is_some():
+        auto u1 = v.bindingProperties.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(amplifyuibuilder_json_str(k2) + ":" + u1[k2].to_json())
+        parts.append("\"bindingProperties\":" + amplifyuibuilder_json_obj(m2))
+    return amplifyuibuilder_json_obj(parts)
 
 # A bound AmplifyUIBuilder client: credentials + region, threaded into every operation.
 struct AmplifyUIBuilderClient:
     core.Credentials creds
     str region
+
+    # CreateComponent  POST /app/{appId}/environment/{environmentName}/components
+    # errors: InternalServerException, InvalidParameterException, ResourceConflictException, ServiceQuotaExceededException
+    def create_component(self, CreateComponentRequest input) -> str:
+        auto host = endpoints.regional_host(amplifyuibuilder_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.appId
+        labels["environmentName"] = input.environmentName
+        dict[str, str] query = {}
+        if input.clientToken.is_some():
+            query["clientToken"] = input.clientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/app/{appId}/environment/{environmentName}/components", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, create_component_data_to_json(input.componentToCreate), "application/json")
+        return restjson.rest_json_request(self.creds, bp, amplifyuibuilder_service(), self.region, host)
+
+    # CreateForm  POST /app/{appId}/environment/{environmentName}/forms
+    # errors: InternalServerException, InvalidParameterException, ResourceConflictException, ServiceQuotaExceededException
+    def create_form(self, CreateFormRequest input) -> str:
+        auto host = endpoints.regional_host(amplifyuibuilder_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.appId
+        labels["environmentName"] = input.environmentName
+        dict[str, str] query = {}
+        if input.clientToken.is_some():
+            query["clientToken"] = input.clientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/app/{appId}/environment/{environmentName}/forms", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, create_form_data_to_json(input.formToCreate), "application/json")
+        return restjson.rest_json_request(self.creds, bp, amplifyuibuilder_service(), self.region, host)
+
+    # CreateTheme  POST /app/{appId}/environment/{environmentName}/themes
+    # errors: InternalServerException, InvalidParameterException, ResourceConflictException, ServiceQuotaExceededException
+    def create_theme(self, CreateThemeRequest input) -> str:
+        auto host = endpoints.regional_host(amplifyuibuilder_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.appId
+        labels["environmentName"] = input.environmentName
+        dict[str, str] query = {}
+        if input.clientToken.is_some():
+            query["clientToken"] = input.clientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/app/{appId}/environment/{environmentName}/themes", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, create_theme_data_to_json(input.themeToCreate), "application/json")
+        return restjson.rest_json_request(self.creds, bp, amplifyuibuilder_service(), self.region, host)
 
     # DeleteComponent  DELETE /app/{appId}/environment/{environmentName}/components/{id}
     # errors: InternalServerException, InvalidParameterException, ResourceNotFoundException
@@ -1415,6 +2329,20 @@ struct AmplifyUIBuilderClient:
         auto bp = restjson.rest_json_raw_payload(b, input.refreshTokenBody.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, amplifyuibuilder_service(), self.region, host)
 
+    # StartCodegenJob  POST /app/{appId}/environment/{environmentName}/codegen-jobs
+    # errors: InternalServerException, InvalidParameterException, ThrottlingException
+    def start_codegen_job(self, StartCodegenJobRequest input) -> str:
+        auto host = endpoints.regional_host(amplifyuibuilder_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.appId
+        labels["environmentName"] = input.environmentName
+        dict[str, str] query = {}
+        if input.clientToken.is_some():
+            query["clientToken"] = input.clientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/app/{appId}/environment/{environmentName}/codegen-jobs", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, start_codegen_job_data_to_json(input.codegenJobToCreate), "application/json")
+        return restjson.rest_json_request(self.creds, bp, amplifyuibuilder_service(), self.region, host)
+
     # TagResource  POST /tags/{resourceArn}
     # errors: InternalServerException, InvalidParameterException, ResourceNotFoundException, ThrottlingException, UnauthorizedException
     def tag_resource(self, TagResourceRequest input) -> str:
@@ -1440,6 +2368,51 @@ struct AmplifyUIBuilderClient:
         multi_query["tagKeys"] = input.tagKeys
         auto b = binding.HttpBinding(method="DELETE", path_template="/tags/{resourceArn}", labels=labels, greedy_labels={}, query={}, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         return restjson.rest_json_request(self.creds, b, amplifyuibuilder_service(), self.region, host)
+
+    # UpdateComponent  PATCH /app/{appId}/environment/{environmentName}/components/{id}
+    # errors: InternalServerException, InvalidParameterException, ResourceConflictException
+    def update_component(self, UpdateComponentRequest input) -> str:
+        auto host = endpoints.regional_host(amplifyuibuilder_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.appId
+        labels["environmentName"] = input.environmentName
+        labels["id"] = input.id
+        dict[str, str] query = {}
+        if input.clientToken.is_some():
+            query["clientToken"] = input.clientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/app/{appId}/environment/{environmentName}/components/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, update_component_data_to_json(input.updatedComponent), "application/json")
+        return restjson.rest_json_request(self.creds, bp, amplifyuibuilder_service(), self.region, host)
+
+    # UpdateForm  PATCH /app/{appId}/environment/{environmentName}/forms/{id}
+    # errors: InternalServerException, InvalidParameterException, ResourceConflictException
+    def update_form(self, UpdateFormRequest input) -> str:
+        auto host = endpoints.regional_host(amplifyuibuilder_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.appId
+        labels["environmentName"] = input.environmentName
+        labels["id"] = input.id
+        dict[str, str] query = {}
+        if input.clientToken.is_some():
+            query["clientToken"] = input.clientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/app/{appId}/environment/{environmentName}/forms/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, update_form_data_to_json(input.updatedForm), "application/json")
+        return restjson.rest_json_request(self.creds, bp, amplifyuibuilder_service(), self.region, host)
+
+    # UpdateTheme  PATCH /app/{appId}/environment/{environmentName}/themes/{id}
+    # errors: InternalServerException, InvalidParameterException, ResourceConflictException
+    def update_theme(self, UpdateThemeRequest input) -> str:
+        auto host = endpoints.regional_host(amplifyuibuilder_service(), self.region)
+        dict[str, str] labels = {}
+        labels["appId"] = input.appId
+        labels["environmentName"] = input.environmentName
+        labels["id"] = input.id
+        dict[str, str] query = {}
+        if input.clientToken.is_some():
+            query["clientToken"] = input.clientToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="PATCH", path_template="/app/{appId}/environment/{environmentName}/themes/{id}", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, update_theme_data_to_json(input.updatedTheme), "application/json")
+        return restjson.rest_json_request(self.creds, bp, amplifyuibuilder_service(), self.region, host)
 
     # Paginator for ExportComponents — yields each Response page, threading the
     # nextToken -> nextToken continuation token until it is absent (result key: entities).

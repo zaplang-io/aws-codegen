@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-xml): 116 operations — 102 with a generated method,
-#   14 skipped (a body member is not yet serializable by the XML emitter).
+# Coverage (rest-xml): 116 operations — 112 with a generated method,
+#   4 skipped (a body member is not yet serializable by the XML emitter).
 #   377 structs (plain carriers), 63 enums, 20 error variants.
 #   0 paginators generated (8 paginated ops skipped) from paginators-1.json.
 # Structs are plain data carriers (the body is built explicitly by each
@@ -3233,20 +3233,10 @@ def s3_error_from_code(str code) -> S3Error:
 # (bool/timestamp/list, #425), an optional or non-derivable httpPayload (#427),
 # or a residual XML-body limit — a scalar carrying its own xmlNamespace, a
 # list/map of lists/maps, or a recursive shape graph):
-#   CompleteMultipartUpload (httpPayload structure `MultipartUpload` is optional (v0 needs a required body))
-#   CreateBucket (httpPayload structure `CreateBucketConfiguration` is optional (v0 needs a required body))
 #   GetObjectAttributes (httpHeader `ObjectAttributes` has unsupported type list[ObjectAttributes])
 #   ListObjectVersions (httpHeader `OptionalObjectAttributes` has unsupported type list[str])
 #   ListObjects (httpHeader `OptionalObjectAttributes` has unsupported type list[str])
 #   ListObjectsV2 (httpHeader `OptionalObjectAttributes` has unsupported type list[str])
-#   PutBucketAcl (httpPayload structure `AccessControlPolicy` is optional (v0 needs a required body))
-#   PutBucketLifecycle (httpPayload structure `LifecycleConfiguration` is optional (v0 needs a required body))
-#   PutBucketLifecycleConfiguration (httpPayload structure `LifecycleConfiguration` is optional (v0 needs a required body))
-#   PutObjectAcl (httpPayload structure `AccessControlPolicy` is optional (v0 needs a required body))
-#   PutObjectLegalHold (httpPayload structure `LegalHold` is optional (v0 needs a required body))
-#   PutObjectLockConfiguration (httpPayload structure `ObjectLockConfiguration` is optional (v0 needs a required body))
-#   PutObjectRetention (httpPayload structure `Retention` is optional (v0 needs a required body))
-#   RestoreObject (httpPayload structure `RestoreRequest` is optional (v0 needs a required body))
 
 # Paginated operations (paginators-1.json) are not surfaced for this protocol in
 # v0 — XML-response pagination (next_page_xml) is a follow-up:
@@ -3296,6 +3286,106 @@ struct S3Client:
             auto qt1 = datetime.strftime(input.IfMatchInitiatedTime.unwrap(), "%a, %d %b %Y %H:%M:%S GMT")
             headers["x-amz-if-match-initiated-time"] = qt1
         auto b = binding.HttpBinding(method="DELETE", path_template="/{Bucket}/{Key+}", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
+
+    # CompleteMultipartUpload  POST /{Bucket}/{Key+}
+    def complete_multipart_upload(self, CompleteMultipartUploadRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] greedy_labels = {}
+        greedy_labels["Key"] = input.Key
+        dict[str, str] query = {}
+        query["uploadId"] = input.UploadId
+        dict[str, str] headers = {}
+        if input.ChecksumCRC32.is_some():
+            headers["x-amz-checksum-crc32"] = input.ChecksumCRC32.unwrap_or("")
+        if input.ChecksumCRC32C.is_some():
+            headers["x-amz-checksum-crc32c"] = input.ChecksumCRC32C.unwrap_or("")
+        if input.ChecksumCRC64NVME.is_some():
+            headers["x-amz-checksum-crc64nvme"] = input.ChecksumCRC64NVME.unwrap_or("")
+        if input.ChecksumSHA1.is_some():
+            headers["x-amz-checksum-sha1"] = input.ChecksumSHA1.unwrap_or("")
+        if input.ChecksumSHA256.is_some():
+            headers["x-amz-checksum-sha256"] = input.ChecksumSHA256.unwrap_or("")
+        if input.ChecksumSHA512.is_some():
+            headers["x-amz-checksum-sha512"] = input.ChecksumSHA512.unwrap_or("")
+        if input.ChecksumMD5.is_some():
+            headers["x-amz-checksum-md5"] = input.ChecksumMD5.unwrap_or("")
+        if input.ChecksumXXHASH64.is_some():
+            headers["x-amz-checksum-xxhash64"] = input.ChecksumXXHASH64.unwrap_or("")
+        if input.ChecksumXXHASH3.is_some():
+            headers["x-amz-checksum-xxhash3"] = input.ChecksumXXHASH3.unwrap_or("")
+        if input.ChecksumXXHASH128.is_some():
+            headers["x-amz-checksum-xxhash128"] = input.ChecksumXXHASH128.unwrap_or("")
+        if input.ChecksumType.is_some():
+            headers["x-amz-checksum-type"] = input.ChecksumType.unwrap_or("")
+        if input.MpuObjectSize.is_some():
+            headers["x-amz-mp-object-size"] = str(input.MpuObjectSize.unwrap_or(0))
+        if input.RequestPayer.is_some():
+            headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
+        if input.ExpectedBucketOwner.is_some():
+            auto qt0 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt0
+        if input.IfMatch.is_some():
+            headers["If-Match"] = input.IfMatch.unwrap_or("")
+        if input.IfNoneMatch.is_some():
+            headers["If-None-Match"] = input.IfNoneMatch.unwrap_or("")
+        if input.SSECustomerAlgorithm.is_some():
+            auto qt1 = input.SSECustomerAlgorithm.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-algorithm"] = qt1
+        if input.SSECustomerKey.is_some():
+            auto qt2 = input.SSECustomerKey.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key"] = qt2
+        if input.SSECustomerKeyMD5.is_some():
+            auto qt3 = input.SSECustomerKeyMD5.unwrap_or("")
+            headers["x-amz-server-side-encryption-customer-key-MD5"] = qt3
+        auto b = binding.HttpBinding(method="POST", path_template="/{Bucket}/{Key+}", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.MultipartUpload.is_some():
+            auto pv = input.MultipartUpload.unwrap()
+            auto root = restxml.rest_xml_root_ns("CompleteMultipartUpload", "http://s3.amazonaws.com/doc/2006-03-01/")
+            if pv.Parts.is_some():
+                auto t0 = pv.Parts.unwrap()
+                for t1 in t0:
+                    auto n2 = restxml.rest_xml_struct(root, "Part")
+                    if t1.ETag.is_some():
+                        restxml.rest_xml_scalar(n2, "ETag", t1.ETag.unwrap())
+                    if t1.ChecksumCRC32.is_some():
+                        auto t3 = t1.ChecksumCRC32.unwrap()
+                        restxml.rest_xml_scalar(n2, "ChecksumCRC32", t3)
+                    if t1.ChecksumCRC32C.is_some():
+                        auto t4 = t1.ChecksumCRC32C.unwrap()
+                        restxml.rest_xml_scalar(n2, "ChecksumCRC32C", t4)
+                    if t1.ChecksumCRC64NVME.is_some():
+                        auto t5 = t1.ChecksumCRC64NVME.unwrap()
+                        restxml.rest_xml_scalar(n2, "ChecksumCRC64NVME", t5)
+                    if t1.ChecksumSHA1.is_some():
+                        auto t6 = t1.ChecksumSHA1.unwrap()
+                        restxml.rest_xml_scalar(n2, "ChecksumSHA1", t6)
+                    if t1.ChecksumSHA256.is_some():
+                        auto t7 = t1.ChecksumSHA256.unwrap()
+                        restxml.rest_xml_scalar(n2, "ChecksumSHA256", t7)
+                    if t1.ChecksumSHA512.is_some():
+                        auto t8 = t1.ChecksumSHA512.unwrap()
+                        restxml.rest_xml_scalar(n2, "ChecksumSHA512", t8)
+                    if t1.ChecksumMD5.is_some():
+                        auto t9 = t1.ChecksumMD5.unwrap()
+                        restxml.rest_xml_scalar(n2, "ChecksumMD5", t9)
+                    if t1.ChecksumXXHASH64.is_some():
+                        auto t10 = t1.ChecksumXXHASH64.unwrap()
+                        restxml.rest_xml_scalar(n2, "ChecksumXXHASH64", t10)
+                    if t1.ChecksumXXHASH3.is_some():
+                        auto t11 = t1.ChecksumXXHASH3.unwrap()
+                        restxml.rest_xml_scalar(n2, "ChecksumXXHASH3", t11)
+                    if t1.ChecksumXXHASH128.is_some():
+                        auto t12 = t1.ChecksumXXHASH128.unwrap()
+                        restxml.rest_xml_scalar(n2, "ChecksumXXHASH128", t12)
+                    if t1.PartNumber.is_some():
+                        auto t13 = str(t1.PartNumber.unwrap())
+                        restxml.rest_xml_scalar(n2, "PartNumber", t13)
+            auto body = restxml.rest_xml_serialize(root)
+            auto bp = restxml.rest_xml_document(b, body)
+            return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # CopyObject  PUT /{Bucket}/{Key+}
@@ -3418,6 +3508,67 @@ struct S3Client:
             auto qt22 = input.ExpectedSourceBucketOwner.unwrap_or("")
             headers["x-amz-source-expected-bucket-owner"] = qt22
         auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}", labels=labels, greedy_labels=greedy_labels, query={}, multi_query={}, headers=headers, prefix_header_prefix="x-amz-meta-", prefix_headers=input.Metadata.unwrap_or({}), payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
+
+    # CreateBucket  PUT /{Bucket}
+    # errors: BucketAlreadyExists, BucketAlreadyOwnedByYou
+    def create_bucket(self, CreateBucketRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] headers = {}
+        if input.ACL.is_some():
+            headers["x-amz-acl"] = input.ACL.unwrap_or("")
+        if input.GrantFullControl.is_some():
+            headers["x-amz-grant-full-control"] = input.GrantFullControl.unwrap_or("")
+        if input.GrantRead.is_some():
+            headers["x-amz-grant-read"] = input.GrantRead.unwrap_or("")
+        if input.GrantReadACP.is_some():
+            headers["x-amz-grant-read-acp"] = input.GrantReadACP.unwrap_or("")
+        if input.GrantWrite.is_some():
+            headers["x-amz-grant-write"] = input.GrantWrite.unwrap_or("")
+        if input.GrantWriteACP.is_some():
+            headers["x-amz-grant-write-acp"] = input.GrantWriteACP.unwrap_or("")
+        if input.ObjectLockEnabledForBucket.is_some():
+            auto qt0 = s3_bind_bool(input.ObjectLockEnabledForBucket.unwrap_or(False))
+            headers["x-amz-bucket-object-lock-enabled"] = qt0
+        if input.ObjectOwnership.is_some():
+            headers["x-amz-object-ownership"] = input.ObjectOwnership.unwrap_or("")
+        if input.BucketNamespace.is_some():
+            headers["x-amz-bucket-namespace"] = input.BucketNamespace.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.CreateBucketConfiguration.is_some():
+            auto pv = input.CreateBucketConfiguration.unwrap()
+            auto root = restxml.rest_xml_root_ns("CreateBucketConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
+            if pv.LocationConstraint.is_some():
+                auto t0 = pv.LocationConstraint.unwrap()
+                restxml.rest_xml_scalar(root, "LocationConstraint", t0)
+            if pv.Location.is_some():
+                auto n1 = restxml.rest_xml_struct(root, "Location")
+                if pv.Location.unwrap().Type.is_some():
+                    auto t2 = pv.Location.unwrap().Type.unwrap()
+                    restxml.rest_xml_scalar(n1, "Type", t2)
+                if pv.Location.unwrap().Name.is_some():
+                    auto t3 = pv.Location.unwrap().Name.unwrap()
+                    restxml.rest_xml_scalar(n1, "Name", t3)
+            if pv.Bucket.is_some():
+                auto n4 = restxml.rest_xml_struct(root, "Bucket")
+                if pv.Bucket.unwrap().DataRedundancy.is_some():
+                    auto t5 = pv.Bucket.unwrap().DataRedundancy.unwrap()
+                    restxml.rest_xml_scalar(n4, "DataRedundancy", t5)
+                if pv.Bucket.unwrap().Type.is_some():
+                    auto t6 = pv.Bucket.unwrap().Type.unwrap()
+                    restxml.rest_xml_scalar(n4, "Type", t6)
+            if pv.Tags.is_some():
+                auto t7 = pv.Tags.unwrap()
+                auto n8 = restxml.rest_xml_struct(root, "Tags")
+                for t9 in t7:
+                    auto n10 = restxml.rest_xml_struct(n8, "Tag")
+                    restxml.rest_xml_scalar(n10, "Key", t9.Key)
+                    restxml.rest_xml_scalar(n10, "Value", t9.Value)
+            auto body = restxml.rest_xml_serialize(root)
+            auto bp = restxml.rest_xml_document(b, body)
+            return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # CreateBucketMetadataConfiguration  POST /{Bucket}?metadataConfiguration
@@ -4725,6 +4876,73 @@ struct S3Client:
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
 
+    # PutBucketAcl  PUT /{Bucket}?acl
+    def put_bucket_acl(self, PutBucketAclRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] headers = {}
+        if input.ACL.is_some():
+            headers["x-amz-acl"] = input.ACL.unwrap_or("")
+        if input.ContentMD5.is_some():
+            headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
+        if input.GrantFullControl.is_some():
+            headers["x-amz-grant-full-control"] = input.GrantFullControl.unwrap_or("")
+        if input.GrantRead.is_some():
+            headers["x-amz-grant-read"] = input.GrantRead.unwrap_or("")
+        if input.GrantReadACP.is_some():
+            headers["x-amz-grant-read-acp"] = input.GrantReadACP.unwrap_or("")
+        if input.GrantWrite.is_some():
+            headers["x-amz-grant-write"] = input.GrantWrite.unwrap_or("")
+        if input.GrantWriteACP.is_some():
+            headers["x-amz-grant-write-acp"] = input.GrantWriteACP.unwrap_or("")
+        if input.ExpectedBucketOwner.is_some():
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?acl", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.AccessControlPolicy.is_some():
+            auto pv = input.AccessControlPolicy.unwrap()
+            auto root = restxml.rest_xml_root_ns("AccessControlPolicy", "http://s3.amazonaws.com/doc/2006-03-01/")
+            if pv.Grants.is_some():
+                auto t0 = pv.Grants.unwrap()
+                auto n1 = restxml.rest_xml_struct(root, "AccessControlList")
+                for t2 in t0:
+                    auto n3 = restxml.rest_xml_struct(n1, "Grant")
+                    if t2.Grantee.is_some():
+                        auto n4 = restxml.rest_xml_struct(n3, "Grantee")
+                        rest_xml_attribute(n4, "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+                        if t2.Grantee.unwrap().DisplayName.is_some():
+                            auto t5 = t2.Grantee.unwrap().DisplayName.unwrap()
+                            restxml.rest_xml_scalar(n4, "DisplayName", t5)
+                        if t2.Grantee.unwrap().EmailAddress.is_some():
+                            auto t6 = t2.Grantee.unwrap().EmailAddress.unwrap()
+                            restxml.rest_xml_scalar(n4, "EmailAddress", t6)
+                        if t2.Grantee.unwrap().ID.is_some():
+                            auto t7 = t2.Grantee.unwrap().ID.unwrap()
+                            restxml.rest_xml_scalar(n4, "ID", t7)
+                        auto t8 = t2.Grantee.unwrap().Type
+                        restxml.rest_xml_attribute(n4, "xsi:type", t8)
+                        if t2.Grantee.unwrap().URI.is_some():
+                            auto t9 = t2.Grantee.unwrap().URI.unwrap()
+                            restxml.rest_xml_scalar(n4, "URI", t9)
+                    if t2.Permission.is_some():
+                        auto t10 = t2.Permission.unwrap()
+                        restxml.rest_xml_scalar(n3, "Permission", t10)
+            if pv.Owner.is_some():
+                auto n11 = restxml.rest_xml_struct(root, "Owner")
+                if pv.Owner.unwrap().DisplayName.is_some():
+                    auto t12 = pv.Owner.unwrap().DisplayName.unwrap()
+                    restxml.rest_xml_scalar(n11, "DisplayName", t12)
+                if pv.Owner.unwrap().ID.is_some():
+                    restxml.rest_xml_scalar(n11, "ID", pv.Owner.unwrap().ID.unwrap())
+            auto body = restxml.rest_xml_serialize(root)
+            auto bp = restxml.rest_xml_document(b, body)
+            return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
+
     # PutBucketAnalyticsConfiguration  PUT /{Bucket}?analytics
     def put_bucket_analytics_configuration(self, PutBucketAnalyticsConfigurationRequest input) -> str:
         auto host = endpoints.regional_host(s3_service(), self.region)
@@ -4948,6 +5166,195 @@ struct S3Client:
         auto body = restxml.rest_xml_serialize(root)
         auto bp = restxml.rest_xml_document(b, body)
         return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
+    # PutBucketLifecycle  PUT /{Bucket}?lifecycle
+    def put_bucket_lifecycle(self, PutBucketLifecycleRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] headers = {}
+        if input.ContentMD5.is_some():
+            headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
+        if input.ExpectedBucketOwner.is_some():
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?lifecycle", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.LifecycleConfiguration.is_some():
+            auto pv = input.LifecycleConfiguration.unwrap()
+            auto root = restxml.rest_xml_root_ns("LifecycleConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
+            for t0 in pv.Rules:
+                auto n1 = restxml.rest_xml_struct(root, "Rule")
+                if t0.Expiration.is_some():
+                    auto n2 = restxml.rest_xml_struct(n1, "Expiration")
+                    if t0.Expiration.unwrap().Date.is_some():
+                        auto t3 = restxml.xml_timestamp_iso8601(t0.Expiration.unwrap().Date.unwrap())
+                        restxml.rest_xml_scalar(n2, "Date", t3)
+                    if t0.Expiration.unwrap().Days.is_some():
+                        auto t4 = str(t0.Expiration.unwrap().Days.unwrap())
+                        restxml.rest_xml_scalar(n2, "Days", t4)
+                    if t0.Expiration.unwrap().ExpiredObjectDeleteMarker.is_some():
+                        auto t5 = s3_xml_bool(t0.Expiration.unwrap().ExpiredObjectDeleteMarker.unwrap())
+                        restxml.rest_xml_scalar(n2, "ExpiredObjectDeleteMarker", t5)
+                if t0.ID.is_some():
+                    restxml.rest_xml_scalar(n1, "ID", t0.ID.unwrap())
+                restxml.rest_xml_scalar(n1, "Prefix", t0.Prefix)
+                restxml.rest_xml_scalar(n1, "Status", t0.Status)
+                if t0.Transition.is_some():
+                    auto n6 = restxml.rest_xml_struct(n1, "Transition")
+                    if t0.Transition.unwrap().Date.is_some():
+                        auto t7 = restxml.xml_timestamp_iso8601(t0.Transition.unwrap().Date.unwrap())
+                        restxml.rest_xml_scalar(n6, "Date", t7)
+                    if t0.Transition.unwrap().Days.is_some():
+                        auto t8 = str(t0.Transition.unwrap().Days.unwrap())
+                        restxml.rest_xml_scalar(n6, "Days", t8)
+                    if t0.Transition.unwrap().StorageClass.is_some():
+                        auto t9 = t0.Transition.unwrap().StorageClass.unwrap()
+                        restxml.rest_xml_scalar(n6, "StorageClass", t9)
+                if t0.NoncurrentVersionTransition.is_some():
+                    auto n10 = restxml.rest_xml_struct(n1, "NoncurrentVersionTransition")
+                    if t0.NoncurrentVersionTransition.unwrap().NoncurrentDays.is_some():
+                        auto t11 = str(t0.NoncurrentVersionTransition.unwrap().NoncurrentDays.unwrap())
+                        restxml.rest_xml_scalar(n10, "NoncurrentDays", t11)
+                    if t0.NoncurrentVersionTransition.unwrap().StorageClass.is_some():
+                        auto t12 = t0.NoncurrentVersionTransition.unwrap().StorageClass.unwrap()
+                        restxml.rest_xml_scalar(n10, "StorageClass", t12)
+                    if t0.NoncurrentVersionTransition.unwrap().NewerNoncurrentVersions.is_some():
+                        auto t13 = str(t0.NoncurrentVersionTransition.unwrap().NewerNoncurrentVersions.unwrap())
+                        restxml.rest_xml_scalar(n10, "NewerNoncurrentVersions", t13)
+                if t0.NoncurrentVersionExpiration.is_some():
+                    auto n14 = restxml.rest_xml_struct(n1, "NoncurrentVersionExpiration")
+                    if t0.NoncurrentVersionExpiration.unwrap().NoncurrentDays.is_some():
+                        auto t15 = str(t0.NoncurrentVersionExpiration.unwrap().NoncurrentDays.unwrap())
+                        restxml.rest_xml_scalar(n14, "NoncurrentDays", t15)
+                    if t0.NoncurrentVersionExpiration.unwrap().NewerNoncurrentVersions.is_some():
+                        auto t16 = str(t0.NoncurrentVersionExpiration.unwrap().NewerNoncurrentVersions.unwrap())
+                        restxml.rest_xml_scalar(n14, "NewerNoncurrentVersions", t16)
+                if t0.AbortIncompleteMultipartUpload.is_some():
+                    auto n17 = restxml.rest_xml_struct(n1, "AbortIncompleteMultipartUpload")
+                    if t0.AbortIncompleteMultipartUpload.unwrap().DaysAfterInitiation.is_some():
+                        auto t18 = str(t0.AbortIncompleteMultipartUpload.unwrap().DaysAfterInitiation.unwrap())
+                        restxml.rest_xml_scalar(n17, "DaysAfterInitiation", t18)
+            auto body = restxml.rest_xml_serialize(root)
+            auto bp = restxml.rest_xml_document(b, body)
+            return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
+
+    # PutBucketLifecycleConfiguration  PUT /{Bucket}?lifecycle
+    def put_bucket_lifecycle_configuration(self, PutBucketLifecycleConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] headers = {}
+        if input.ChecksumAlgorithm.is_some():
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
+        if input.ExpectedBucketOwner.is_some():
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        if input.TransitionDefaultMinimumObjectSize.is_some():
+            auto qt2 = input.TransitionDefaultMinimumObjectSize.unwrap_or("")
+            headers["x-amz-transition-default-minimum-object-size"] = qt2
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?lifecycle", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.LifecycleConfiguration.is_some():
+            auto pv = input.LifecycleConfiguration.unwrap()
+            auto root = restxml.rest_xml_root_ns("LifecycleConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
+            for t0 in pv.Rules:
+                auto n1 = restxml.rest_xml_struct(root, "Rule")
+                if t0.Expiration.is_some():
+                    auto n2 = restxml.rest_xml_struct(n1, "Expiration")
+                    if t0.Expiration.unwrap().Date.is_some():
+                        auto t3 = restxml.xml_timestamp_iso8601(t0.Expiration.unwrap().Date.unwrap())
+                        restxml.rest_xml_scalar(n2, "Date", t3)
+                    if t0.Expiration.unwrap().Days.is_some():
+                        auto t4 = str(t0.Expiration.unwrap().Days.unwrap())
+                        restxml.rest_xml_scalar(n2, "Days", t4)
+                    if t0.Expiration.unwrap().ExpiredObjectDeleteMarker.is_some():
+                        auto t5 = s3_xml_bool(t0.Expiration.unwrap().ExpiredObjectDeleteMarker.unwrap())
+                        restxml.rest_xml_scalar(n2, "ExpiredObjectDeleteMarker", t5)
+                if t0.ID.is_some():
+                    restxml.rest_xml_scalar(n1, "ID", t0.ID.unwrap())
+                if t0.Prefix.is_some():
+                    restxml.rest_xml_scalar(n1, "Prefix", t0.Prefix.unwrap())
+                if t0.Filter.is_some():
+                    auto n6 = restxml.rest_xml_struct(n1, "Filter")
+                    if t0.Filter.unwrap().Prefix.is_some():
+                        auto t7 = t0.Filter.unwrap().Prefix.unwrap()
+                        restxml.rest_xml_scalar(n6, "Prefix", t7)
+                    if t0.Filter.unwrap().Tag.is_some():
+                        auto n8 = restxml.rest_xml_struct(n6, "Tag")
+                        auto t9 = t0.Filter.unwrap().Tag.unwrap().Key
+                        restxml.rest_xml_scalar(n8, "Key", t9)
+                        auto t10 = t0.Filter.unwrap().Tag.unwrap().Value
+                        restxml.rest_xml_scalar(n8, "Value", t10)
+                    if t0.Filter.unwrap().ObjectSizeGreaterThan.is_some():
+                        auto t11 = str(t0.Filter.unwrap().ObjectSizeGreaterThan.unwrap())
+                        restxml.rest_xml_scalar(n6, "ObjectSizeGreaterThan", t11)
+                    if t0.Filter.unwrap().ObjectSizeLessThan.is_some():
+                        auto t12 = str(t0.Filter.unwrap().ObjectSizeLessThan.unwrap())
+                        restxml.rest_xml_scalar(n6, "ObjectSizeLessThan", t12)
+                    if t0.Filter.unwrap().And.is_some():
+                        auto n13 = restxml.rest_xml_struct(n6, "And")
+                        if t0.Filter.unwrap().And.unwrap().Prefix.is_some():
+                            auto t14 = t0.Filter.unwrap().And.unwrap().Prefix.unwrap()
+                            restxml.rest_xml_scalar(n13, "Prefix", t14)
+                        if t0.Filter.unwrap().And.unwrap().Tags.is_some():
+                            auto t15 = t0.Filter.unwrap().And.unwrap().Tags.unwrap()
+                            for t16 in t15:
+                                auto n17 = restxml.rest_xml_struct(n13, "Tag")
+                                restxml.rest_xml_scalar(n17, "Key", t16.Key)
+                                restxml.rest_xml_scalar(n17, "Value", t16.Value)
+                        if t0.Filter.unwrap().And.unwrap().ObjectSizeGreaterThan.is_some():
+                            auto t18 = str(t0.Filter.unwrap().And.unwrap().ObjectSizeGreaterThan.unwrap())
+                            restxml.rest_xml_scalar(n13, "ObjectSizeGreaterThan", t18)
+                        if t0.Filter.unwrap().And.unwrap().ObjectSizeLessThan.is_some():
+                            auto t19 = str(t0.Filter.unwrap().And.unwrap().ObjectSizeLessThan.unwrap())
+                            restxml.rest_xml_scalar(n13, "ObjectSizeLessThan", t19)
+                restxml.rest_xml_scalar(n1, "Status", t0.Status)
+                if t0.Transitions.is_some():
+                    auto t20 = t0.Transitions.unwrap()
+                    for t21 in t20:
+                        auto n22 = restxml.rest_xml_struct(n1, "Transition")
+                        if t21.Date.is_some():
+                            auto t23 = restxml.xml_timestamp_iso8601(t21.Date.unwrap())
+                            restxml.rest_xml_scalar(n22, "Date", t23)
+                        if t21.Days.is_some():
+                            restxml.rest_xml_scalar(n22, "Days", str(t21.Days.unwrap()))
+                        if t21.StorageClass.is_some():
+                            auto t24 = t21.StorageClass.unwrap()
+                            restxml.rest_xml_scalar(n22, "StorageClass", t24)
+                if t0.NoncurrentVersionTransitions.is_some():
+                    auto t25 = t0.NoncurrentVersionTransitions.unwrap()
+                    for t26 in t25:
+                        auto n27 = restxml.rest_xml_struct(n1, "NoncurrentVersionTransition")
+                        if t26.NoncurrentDays.is_some():
+                            auto t28 = str(t26.NoncurrentDays.unwrap())
+                            restxml.rest_xml_scalar(n27, "NoncurrentDays", t28)
+                        if t26.StorageClass.is_some():
+                            auto t29 = t26.StorageClass.unwrap()
+                            restxml.rest_xml_scalar(n27, "StorageClass", t29)
+                        if t26.NewerNoncurrentVersions.is_some():
+                            auto t30 = str(t26.NewerNoncurrentVersions.unwrap())
+                            restxml.rest_xml_scalar(n27, "NewerNoncurrentVersions", t30)
+                if t0.NoncurrentVersionExpiration.is_some():
+                    auto n31 = restxml.rest_xml_struct(n1, "NoncurrentVersionExpiration")
+                    if t0.NoncurrentVersionExpiration.unwrap().NoncurrentDays.is_some():
+                        auto t32 = str(t0.NoncurrentVersionExpiration.unwrap().NoncurrentDays.unwrap())
+                        restxml.rest_xml_scalar(n31, "NoncurrentDays", t32)
+                    if t0.NoncurrentVersionExpiration.unwrap().NewerNoncurrentVersions.is_some():
+                        auto t33 = str(t0.NoncurrentVersionExpiration.unwrap().NewerNoncurrentVersions.unwrap())
+                        restxml.rest_xml_scalar(n31, "NewerNoncurrentVersions", t33)
+                if t0.AbortIncompleteMultipartUpload.is_some():
+                    auto n34 = restxml.rest_xml_struct(n1, "AbortIncompleteMultipartUpload")
+                    if t0.AbortIncompleteMultipartUpload.unwrap().DaysAfterInitiation.is_some():
+                        auto t35 = str(t0.AbortIncompleteMultipartUpload.unwrap().DaysAfterInitiation.unwrap())
+                        restxml.rest_xml_scalar(n34, "DaysAfterInitiation", t35)
+            auto body = restxml.rest_xml_serialize(root)
+            auto bp = restxml.rest_xml_document(b, body)
+            return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # PutBucketLogging  PUT /{Bucket}?logging
     def put_bucket_logging(self, PutBucketLoggingRequest input) -> str:
@@ -5610,6 +6017,81 @@ struct S3Client:
         auto bp = restxml.rest_xml_raw_payload(b, str(input.Body.unwrap_or(bytes())), "application/octet-stream")
         return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
 
+    # PutObjectAcl  PUT /{Bucket}/{Key+}?acl
+    # errors: NoSuchKey
+    def put_object_acl(self, PutObjectAclRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] greedy_labels = {}
+        greedy_labels["Key"] = input.Key
+        dict[str, str] query = {}
+        if input.VersionId.is_some():
+            query["versionId"] = input.VersionId.unwrap_or("")
+        dict[str, str] headers = {}
+        if input.ACL.is_some():
+            headers["x-amz-acl"] = input.ACL.unwrap_or("")
+        if input.ContentMD5.is_some():
+            headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
+        if input.GrantFullControl.is_some():
+            headers["x-amz-grant-full-control"] = input.GrantFullControl.unwrap_or("")
+        if input.GrantRead.is_some():
+            headers["x-amz-grant-read"] = input.GrantRead.unwrap_or("")
+        if input.GrantReadACP.is_some():
+            headers["x-amz-grant-read-acp"] = input.GrantReadACP.unwrap_or("")
+        if input.GrantWrite.is_some():
+            headers["x-amz-grant-write"] = input.GrantWrite.unwrap_or("")
+        if input.GrantWriteACP.is_some():
+            headers["x-amz-grant-write-acp"] = input.GrantWriteACP.unwrap_or("")
+        if input.RequestPayer.is_some():
+            headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
+        if input.ExpectedBucketOwner.is_some():
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}?acl", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.AccessControlPolicy.is_some():
+            auto pv = input.AccessControlPolicy.unwrap()
+            auto root = restxml.rest_xml_root_ns("AccessControlPolicy", "http://s3.amazonaws.com/doc/2006-03-01/")
+            if pv.Grants.is_some():
+                auto t0 = pv.Grants.unwrap()
+                auto n1 = restxml.rest_xml_struct(root, "AccessControlList")
+                for t2 in t0:
+                    auto n3 = restxml.rest_xml_struct(n1, "Grant")
+                    if t2.Grantee.is_some():
+                        auto n4 = restxml.rest_xml_struct(n3, "Grantee")
+                        rest_xml_attribute(n4, "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+                        if t2.Grantee.unwrap().DisplayName.is_some():
+                            auto t5 = t2.Grantee.unwrap().DisplayName.unwrap()
+                            restxml.rest_xml_scalar(n4, "DisplayName", t5)
+                        if t2.Grantee.unwrap().EmailAddress.is_some():
+                            auto t6 = t2.Grantee.unwrap().EmailAddress.unwrap()
+                            restxml.rest_xml_scalar(n4, "EmailAddress", t6)
+                        if t2.Grantee.unwrap().ID.is_some():
+                            auto t7 = t2.Grantee.unwrap().ID.unwrap()
+                            restxml.rest_xml_scalar(n4, "ID", t7)
+                        auto t8 = t2.Grantee.unwrap().Type
+                        restxml.rest_xml_attribute(n4, "xsi:type", t8)
+                        if t2.Grantee.unwrap().URI.is_some():
+                            auto t9 = t2.Grantee.unwrap().URI.unwrap()
+                            restxml.rest_xml_scalar(n4, "URI", t9)
+                    if t2.Permission.is_some():
+                        auto t10 = t2.Permission.unwrap()
+                        restxml.rest_xml_scalar(n3, "Permission", t10)
+            if pv.Owner.is_some():
+                auto n11 = restxml.rest_xml_struct(root, "Owner")
+                if pv.Owner.unwrap().DisplayName.is_some():
+                    auto t12 = pv.Owner.unwrap().DisplayName.unwrap()
+                    restxml.rest_xml_scalar(n11, "DisplayName", t12)
+                if pv.Owner.unwrap().ID.is_some():
+                    restxml.rest_xml_scalar(n11, "ID", pv.Owner.unwrap().ID.unwrap())
+            auto body = restxml.rest_xml_serialize(root)
+            auto bp = restxml.rest_xml_document(b, body)
+            return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
+
     # PutObjectAnnotation  PUT /{Bucket}/{Key+}?annotation
     # errors: AnnotationLimitExceeded, AnnotationNameTooLong, InvalidAnnotationName, InvalidRequest, NoSuchBucket, NoSuchKey, UnsupportedMediaType
     def put_object_annotation(self, PutObjectAnnotationRequest input) -> str:
@@ -5658,6 +6140,137 @@ struct S3Client:
         auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}?annotation", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restxml.rest_xml_raw_payload(b, str(input.AnnotationPayload), "application/octet-stream")
         return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+
+    # PutObjectLegalHold  PUT /{Bucket}/{Key+}?legal-hold
+    def put_object_legal_hold(self, PutObjectLegalHoldRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] greedy_labels = {}
+        greedy_labels["Key"] = input.Key
+        dict[str, str] query = {}
+        if input.VersionId.is_some():
+            query["versionId"] = input.VersionId.unwrap_or("")
+        dict[str, str] headers = {}
+        if input.RequestPayer.is_some():
+            headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
+        if input.ContentMD5.is_some():
+            headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
+        if input.ExpectedBucketOwner.is_some():
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}?legal-hold", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.LegalHold.is_some():
+            auto pv = input.LegalHold.unwrap()
+            auto root = restxml.rest_xml_root_ns("LegalHold", "http://s3.amazonaws.com/doc/2006-03-01/")
+            if pv.Status.is_some():
+                restxml.rest_xml_scalar(root, "Status", pv.Status.unwrap())
+            auto body = restxml.rest_xml_serialize(root)
+            auto bp = restxml.rest_xml_document(b, body)
+            return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
+
+    # PutObjectLockConfiguration  PUT /{Bucket}?object-lock
+    def put_object_lock_configuration(self, PutObjectLockConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] headers = {}
+        if input.RequestPayer.is_some():
+            headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
+        if input.Token.is_some():
+            headers["x-amz-bucket-object-lock-token"] = input.Token.unwrap_or("")
+        if input.ContentMD5.is_some():
+            headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
+        if input.ExpectedBucketOwner.is_some():
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}?object-lock", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.ObjectLockConfiguration.is_some():
+            auto pv = input.ObjectLockConfiguration.unwrap()
+            auto root = restxml.rest_xml_root_ns("ObjectLockConfiguration", "http://s3.amazonaws.com/doc/2006-03-01/")
+            if pv.ObjectLockEnabled.is_some():
+                auto t0 = pv.ObjectLockEnabled.unwrap()
+                restxml.rest_xml_scalar(root, "ObjectLockEnabled", t0)
+            if pv.Rule.is_some():
+                auto n1 = restxml.rest_xml_struct(root, "Rule")
+                if pv.Rule.unwrap().DefaultRetention.is_some():
+                    auto n2 = restxml.rest_xml_struct(n1, "DefaultRetention")
+                    if pv.Rule.unwrap().DefaultRetention.unwrap().Mode.is_some():
+                        auto t3 = pv.Rule.unwrap().DefaultRetention.unwrap().Mode.unwrap()
+                        restxml.rest_xml_scalar(n2, "Mode", t3)
+                    if pv.Rule.unwrap().DefaultRetention.unwrap().Days.is_some():
+                        auto t4 = str(pv.Rule.unwrap().DefaultRetention.unwrap().Days.unwrap())
+                        restxml.rest_xml_scalar(n2, "Days", t4)
+                    if pv.Rule.unwrap().DefaultRetention.unwrap().Years.is_some():
+                        auto t5 = str(pv.Rule.unwrap().DefaultRetention.unwrap().Years.unwrap())
+                        restxml.rest_xml_scalar(n2, "Years", t5)
+                    if pv.Rule.unwrap().DefaultRetention.unwrap().DefaultEventHold.is_some():
+                        auto n6 = restxml.rest_xml_struct(n2, "DefaultEventHold")
+                        if pv.Rule.unwrap().DefaultRetention.unwrap().DefaultEventHold.unwrap().Days.is_some():
+                            auto t7 = str(pv.Rule.unwrap().DefaultRetention.unwrap().DefaultEventHold.unwrap().Days.unwrap())
+                            restxml.rest_xml_scalar(n6, "Days", t7)
+                        if pv.Rule.unwrap().DefaultRetention.unwrap().DefaultEventHold.unwrap().Years.is_some():
+                            auto t8 = str(pv.Rule.unwrap().DefaultRetention.unwrap().DefaultEventHold.unwrap().Years.unwrap())
+                            restxml.rest_xml_scalar(n6, "Years", t8)
+            auto body = restxml.rest_xml_serialize(root)
+            auto bp = restxml.rest_xml_document(b, body)
+            return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
+
+    # PutObjectRetention  PUT /{Bucket}/{Key+}?retention
+    def put_object_retention(self, PutObjectRetentionRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] greedy_labels = {}
+        greedy_labels["Key"] = input.Key
+        dict[str, str] query = {}
+        if input.VersionId.is_some():
+            query["versionId"] = input.VersionId.unwrap_or("")
+        dict[str, str] headers = {}
+        if input.RequestPayer.is_some():
+            headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
+        if input.BypassGovernanceRetention.is_some():
+            auto qt0 = s3_bind_bool(input.BypassGovernanceRetention.unwrap_or(False))
+            headers["x-amz-bypass-governance-retention"] = qt0
+        if input.ContentMD5.is_some():
+            headers["Content-MD5"] = input.ContentMD5.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            auto qt1 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt1
+        if input.ExpectedBucketOwner.is_some():
+            auto qt2 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt2
+        auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}?retention", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.Retention.is_some():
+            auto pv = input.Retention.unwrap()
+            auto root = restxml.rest_xml_root_ns("Retention", "http://s3.amazonaws.com/doc/2006-03-01/")
+            if pv.Mode.is_some():
+                restxml.rest_xml_scalar(root, "Mode", pv.Mode.unwrap())
+            if pv.RetainUntilDate.is_some():
+                auto t0 = restxml.xml_timestamp_iso8601(pv.RetainUntilDate.unwrap())
+                restxml.rest_xml_scalar(root, "RetainUntilDate", t0)
+            if pv.EventHold.is_some():
+                restxml.rest_xml_scalar(root, "EventHold", pv.EventHold.unwrap())
+            if pv.EventHoldDuration.is_some():
+                auto n1 = restxml.rest_xml_struct(root, "EventHoldDuration")
+                if pv.EventHoldDuration.unwrap().Days.is_some():
+                    auto t2 = str(pv.EventHoldDuration.unwrap().Days.unwrap())
+                    restxml.rest_xml_scalar(n1, "Days", t2)
+                if pv.EventHoldDuration.unwrap().Years.is_some():
+                    auto t3 = str(pv.EventHoldDuration.unwrap().Years.unwrap())
+                    restxml.rest_xml_scalar(n1, "Years", t3)
+            auto body = restxml.rest_xml_serialize(root)
+            auto bp = restxml.rest_xml_document(b, body)
+            return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # PutObjectTagging  PUT /{Bucket}/{Key+}?tagging
     def put_object_tagging(self, PutObjectTaggingRequest input) -> str:
@@ -5757,6 +6370,176 @@ struct S3Client:
         if input.ClientToken.is_some():
             headers["x-amz-client-token"] = input.ClientToken.unwrap_or("")
         auto b = binding.HttpBinding(method="PUT", path_template="/{Bucket}/{Key+}?renameObject", labels=labels, greedy_labels=greedy_labels, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
+
+    # RestoreObject  POST /{Bucket}/{Key+}?restore
+    # errors: ObjectAlreadyInActiveTierError
+    def restore_object(self, RestoreObjectRequest input) -> str:
+        auto host = endpoints.regional_host(s3_service(), self.region)
+        dict[str, str] labels = {}
+        labels["Bucket"] = input.Bucket
+        dict[str, str] greedy_labels = {}
+        greedy_labels["Key"] = input.Key
+        dict[str, str] query = {}
+        if input.VersionId.is_some():
+            query["versionId"] = input.VersionId.unwrap_or("")
+        dict[str, str] headers = {}
+        if input.RequestPayer.is_some():
+            headers["x-amz-request-payer"] = input.RequestPayer.unwrap_or("")
+        if input.ChecksumAlgorithm.is_some():
+            auto qt0 = input.ChecksumAlgorithm.unwrap_or("")
+            headers["x-amz-sdk-checksum-algorithm"] = qt0
+        if input.ExpectedBucketOwner.is_some():
+            auto qt1 = input.ExpectedBucketOwner.unwrap_or("")
+            headers["x-amz-expected-bucket-owner"] = qt1
+        auto b = binding.HttpBinding(method="POST", path_template="/{Bucket}/{Key+}?restore", labels=labels, greedy_labels=greedy_labels, query=query, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.RestoreRequest.is_some():
+            auto pv = input.RestoreRequest.unwrap()
+            auto root = restxml.rest_xml_root_ns("RestoreRequest", "http://s3.amazonaws.com/doc/2006-03-01/")
+            if pv.Days.is_some():
+                restxml.rest_xml_scalar(root, "Days", str(pv.Days.unwrap()))
+            if pv.GlacierJobParameters.is_some():
+                auto n0 = restxml.rest_xml_struct(root, "GlacierJobParameters")
+                auto t1 = pv.GlacierJobParameters.unwrap().Tier
+                restxml.rest_xml_scalar(n0, "Tier", t1)
+            if pv.Type.is_some():
+                restxml.rest_xml_scalar(root, "Type", pv.Type.unwrap())
+            if pv.Tier.is_some():
+                restxml.rest_xml_scalar(root, "Tier", pv.Tier.unwrap())
+            if pv.Description.is_some():
+                restxml.rest_xml_scalar(root, "Description", pv.Description.unwrap())
+            if pv.SelectParameters.is_some():
+                auto n2 = restxml.rest_xml_struct(root, "SelectParameters")
+                auto n3 = restxml.rest_xml_struct(n2, "InputSerialization")
+                if pv.SelectParameters.unwrap().InputSerialization.CSV.is_some():
+                    auto n4 = restxml.rest_xml_struct(n3, "CSV")
+                    if pv.SelectParameters.unwrap().InputSerialization.CSV.unwrap().FileHeaderInfo.is_some():
+                        auto t5 = pv.SelectParameters.unwrap().InputSerialization.CSV.unwrap().FileHeaderInfo.unwrap()
+                        restxml.rest_xml_scalar(n4, "FileHeaderInfo", t5)
+                    if pv.SelectParameters.unwrap().InputSerialization.CSV.unwrap().Comments.is_some():
+                        auto t6 = pv.SelectParameters.unwrap().InputSerialization.CSV.unwrap().Comments.unwrap()
+                        restxml.rest_xml_scalar(n4, "Comments", t6)
+                    if pv.SelectParameters.unwrap().InputSerialization.CSV.unwrap().QuoteEscapeCharacter.is_some():
+                        auto t7 = pv.SelectParameters.unwrap().InputSerialization.CSV.unwrap().QuoteEscapeCharacter.unwrap()
+                        restxml.rest_xml_scalar(n4, "QuoteEscapeCharacter", t7)
+                    if pv.SelectParameters.unwrap().InputSerialization.CSV.unwrap().RecordDelimiter.is_some():
+                        auto t8 = pv.SelectParameters.unwrap().InputSerialization.CSV.unwrap().RecordDelimiter.unwrap()
+                        restxml.rest_xml_scalar(n4, "RecordDelimiter", t8)
+                    if pv.SelectParameters.unwrap().InputSerialization.CSV.unwrap().FieldDelimiter.is_some():
+                        auto t9 = pv.SelectParameters.unwrap().InputSerialization.CSV.unwrap().FieldDelimiter.unwrap()
+                        restxml.rest_xml_scalar(n4, "FieldDelimiter", t9)
+                    if pv.SelectParameters.unwrap().InputSerialization.CSV.unwrap().QuoteCharacter.is_some():
+                        auto t10 = pv.SelectParameters.unwrap().InputSerialization.CSV.unwrap().QuoteCharacter.unwrap()
+                        restxml.rest_xml_scalar(n4, "QuoteCharacter", t10)
+                    if pv.SelectParameters.unwrap().InputSerialization.CSV.unwrap().AllowQuotedRecordDelimiter.is_some():
+                        auto t11 = s3_xml_bool(pv.SelectParameters.unwrap().InputSerialization.CSV.unwrap().AllowQuotedRecordDelimiter.unwrap())
+                        restxml.rest_xml_scalar(n4, "AllowQuotedRecordDelimiter", t11)
+                if pv.SelectParameters.unwrap().InputSerialization.CompressionType.is_some():
+                    auto t12 = pv.SelectParameters.unwrap().InputSerialization.CompressionType.unwrap()
+                    restxml.rest_xml_scalar(n3, "CompressionType", t12)
+                if pv.SelectParameters.unwrap().InputSerialization.JSON.is_some():
+                    auto n13 = restxml.rest_xml_struct(n3, "JSON")
+                    if pv.SelectParameters.unwrap().InputSerialization.JSON.unwrap().Type.is_some():
+                        auto t14 = pv.SelectParameters.unwrap().InputSerialization.JSON.unwrap().Type.unwrap()
+                        restxml.rest_xml_scalar(n13, "Type", t14)
+                if pv.SelectParameters.unwrap().InputSerialization.Parquet.is_some():
+                    auto n15 = restxml.rest_xml_struct(n3, "Parquet")
+                auto t16 = pv.SelectParameters.unwrap().ExpressionType
+                restxml.rest_xml_scalar(n2, "ExpressionType", t16)
+                auto t17 = pv.SelectParameters.unwrap().Expression
+                restxml.rest_xml_scalar(n2, "Expression", t17)
+                auto n18 = restxml.rest_xml_struct(n2, "OutputSerialization")
+                if pv.SelectParameters.unwrap().OutputSerialization.CSV.is_some():
+                    auto n19 = restxml.rest_xml_struct(n18, "CSV")
+                    if pv.SelectParameters.unwrap().OutputSerialization.CSV.unwrap().QuoteFields.is_some():
+                        auto t20 = pv.SelectParameters.unwrap().OutputSerialization.CSV.unwrap().QuoteFields.unwrap()
+                        restxml.rest_xml_scalar(n19, "QuoteFields", t20)
+                    if pv.SelectParameters.unwrap().OutputSerialization.CSV.unwrap().QuoteEscapeCharacter.is_some():
+                        auto t21 = pv.SelectParameters.unwrap().OutputSerialization.CSV.unwrap().QuoteEscapeCharacter.unwrap()
+                        restxml.rest_xml_scalar(n19, "QuoteEscapeCharacter", t21)
+                    if pv.SelectParameters.unwrap().OutputSerialization.CSV.unwrap().RecordDelimiter.is_some():
+                        auto t22 = pv.SelectParameters.unwrap().OutputSerialization.CSV.unwrap().RecordDelimiter.unwrap()
+                        restxml.rest_xml_scalar(n19, "RecordDelimiter", t22)
+                    if pv.SelectParameters.unwrap().OutputSerialization.CSV.unwrap().FieldDelimiter.is_some():
+                        auto t23 = pv.SelectParameters.unwrap().OutputSerialization.CSV.unwrap().FieldDelimiter.unwrap()
+                        restxml.rest_xml_scalar(n19, "FieldDelimiter", t23)
+                    if pv.SelectParameters.unwrap().OutputSerialization.CSV.unwrap().QuoteCharacter.is_some():
+                        auto t24 = pv.SelectParameters.unwrap().OutputSerialization.CSV.unwrap().QuoteCharacter.unwrap()
+                        restxml.rest_xml_scalar(n19, "QuoteCharacter", t24)
+                if pv.SelectParameters.unwrap().OutputSerialization.JSON.is_some():
+                    auto n25 = restxml.rest_xml_struct(n18, "JSON")
+                    if pv.SelectParameters.unwrap().OutputSerialization.JSON.unwrap().RecordDelimiter.is_some():
+                        auto t26 = pv.SelectParameters.unwrap().OutputSerialization.JSON.unwrap().RecordDelimiter.unwrap()
+                        restxml.rest_xml_scalar(n25, "RecordDelimiter", t26)
+            if pv.OutputLocation.is_some():
+                auto n27 = restxml.rest_xml_struct(root, "OutputLocation")
+                if pv.OutputLocation.unwrap().S3.is_some():
+                    auto n28 = restxml.rest_xml_struct(n27, "S3")
+                    auto t29 = pv.OutputLocation.unwrap().S3.unwrap().BucketName
+                    restxml.rest_xml_scalar(n28, "BucketName", t29)
+                    auto t30 = pv.OutputLocation.unwrap().S3.unwrap().Prefix
+                    restxml.rest_xml_scalar(n28, "Prefix", t30)
+                    if pv.OutputLocation.unwrap().S3.unwrap().Encryption.is_some():
+                        auto n31 = restxml.rest_xml_struct(n28, "Encryption")
+                        auto t32 = pv.OutputLocation.unwrap().S3.unwrap().Encryption.unwrap().EncryptionType
+                        restxml.rest_xml_scalar(n31, "EncryptionType", t32)
+                        if pv.OutputLocation.unwrap().S3.unwrap().Encryption.unwrap().KMSKeyId.is_some():
+                            auto t33 = pv.OutputLocation.unwrap().S3.unwrap().Encryption.unwrap().KMSKeyId.unwrap()
+                            restxml.rest_xml_scalar(n31, "KMSKeyId", t33)
+                        if pv.OutputLocation.unwrap().S3.unwrap().Encryption.unwrap().KMSContext.is_some():
+                            auto t34 = pv.OutputLocation.unwrap().S3.unwrap().Encryption.unwrap().KMSContext.unwrap()
+                            restxml.rest_xml_scalar(n31, "KMSContext", t34)
+                    if pv.OutputLocation.unwrap().S3.unwrap().CannedACL.is_some():
+                        auto t35 = pv.OutputLocation.unwrap().S3.unwrap().CannedACL.unwrap()
+                        restxml.rest_xml_scalar(n28, "CannedACL", t35)
+                    if pv.OutputLocation.unwrap().S3.unwrap().AccessControlList.is_some():
+                        auto t36 = pv.OutputLocation.unwrap().S3.unwrap().AccessControlList.unwrap()
+                        auto n37 = restxml.rest_xml_struct(n28, "AccessControlList")
+                        for t38 in t36:
+                            auto n39 = restxml.rest_xml_struct(n37, "Grant")
+                            if t38.Grantee.is_some():
+                                auto n40 = restxml.rest_xml_struct(n39, "Grantee")
+                                rest_xml_attribute(n40, "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+                                if t38.Grantee.unwrap().DisplayName.is_some():
+                                    auto t41 = t38.Grantee.unwrap().DisplayName.unwrap()
+                                    restxml.rest_xml_scalar(n40, "DisplayName", t41)
+                                if t38.Grantee.unwrap().EmailAddress.is_some():
+                                    auto t42 = t38.Grantee.unwrap().EmailAddress.unwrap()
+                                    restxml.rest_xml_scalar(n40, "EmailAddress", t42)
+                                if t38.Grantee.unwrap().ID.is_some():
+                                    auto t43 = t38.Grantee.unwrap().ID.unwrap()
+                                    restxml.rest_xml_scalar(n40, "ID", t43)
+                                auto t44 = t38.Grantee.unwrap().Type
+                                restxml.rest_xml_attribute(n40, "xsi:type", t44)
+                                if t38.Grantee.unwrap().URI.is_some():
+                                    auto t45 = t38.Grantee.unwrap().URI.unwrap()
+                                    restxml.rest_xml_scalar(n40, "URI", t45)
+                            if t38.Permission.is_some():
+                                auto t46 = t38.Permission.unwrap()
+                                restxml.rest_xml_scalar(n39, "Permission", t46)
+                    if pv.OutputLocation.unwrap().S3.unwrap().Tagging.is_some():
+                        auto n47 = restxml.rest_xml_struct(n28, "Tagging")
+                        auto n48 = restxml.rest_xml_struct(n47, "TagSet")
+                        for t49 in pv.OutputLocation.unwrap().S3.unwrap().Tagging.unwrap().TagSet:
+                            auto n50 = restxml.rest_xml_struct(n48, "Tag")
+                            restxml.rest_xml_scalar(n50, "Key", t49.Key)
+                            restxml.rest_xml_scalar(n50, "Value", t49.Value)
+                    if pv.OutputLocation.unwrap().S3.unwrap().UserMetadata.is_some():
+                        auto t51 = pv.OutputLocation.unwrap().S3.unwrap().UserMetadata.unwrap()
+                        auto n52 = restxml.rest_xml_struct(n28, "UserMetadata")
+                        for t53 in t51:
+                            auto n54 = restxml.rest_xml_struct(n52, "MetadataEntry")
+                            if t53.Name.is_some():
+                                restxml.rest_xml_scalar(n54, "Name", t53.Name.unwrap())
+                            if t53.Value.is_some():
+                                auto t55 = t53.Value.unwrap()
+                                restxml.rest_xml_scalar(n54, "Value", t55)
+                    if pv.OutputLocation.unwrap().S3.unwrap().StorageClass.is_some():
+                        auto t56 = pv.OutputLocation.unwrap().S3.unwrap().StorageClass.unwrap()
+                        restxml.rest_xml_scalar(n28, "StorageClass", t56)
+            auto body = restxml.rest_xml_serialize(root)
+            auto bp = restxml.rest_xml_document(b, body)
+            return restxml.rest_xml_request(self.creds, bp, s3_service(), self.region, host)
         return restxml.rest_xml_request(self.creds, b, s3_service(), self.region, host)
 
     # SelectObjectContent  POST /{Bucket}/{Key+}?select&select-type=2

@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 83 operations — 82 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 83 operations — 83 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   330 structs (218 @derive(Json)), 55 enums, 10 error variants.
 #   20 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -2926,11 +2926,6 @@ def qbusiness_error_from_code(str code) -> QBusinessError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   Chat (httpPayload member `inputStream` is a non-derivable structure)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -3052,6 +3047,17 @@ def action_execution_to_json(ActionExecution v) -> str:
     parts.append("\"payloadFieldNameSeparator\":" + qbusiness_json_str(v.payloadFieldNameSeparator))
     return qbusiness_json_obj(parts)
 
+# Serialize ActionExecutionEvent to a compact JSON object (declaration order).
+def action_execution_event_to_json(ActionExecutionEvent v) -> str:
+    list[str] parts = []
+    parts.append("\"pluginId\":" + qbusiness_json_str(v.pluginId))
+    list[str] m0 = []
+    for k0 in sorted(v.payload.keys()):
+        m0.append(qbusiness_json_str(k0) + ":" + v.payload[k0].to_json())
+    parts.append("\"payload\":" + qbusiness_json_obj(m0))
+    parts.append("\"payloadFieldNameSeparator\":" + qbusiness_json_str(v.payloadFieldNameSeparator))
+    return qbusiness_json_obj(parts)
+
 # Serialize ActionFilterConfiguration to a compact JSON object (declaration order).
 def action_filter_configuration_to_json(ActionFilterConfiguration v) -> str:
     list[str] parts = []
@@ -3108,6 +3114,15 @@ def auth_challenge_response_to_json(AuthChallengeResponse v) -> str:
     parts.append("\"responseMap\":" + qbusiness_json_obj(m0))
     return qbusiness_json_obj(parts)
 
+# Serialize AuthChallengeResponseEvent to a compact JSON object (declaration order).
+def auth_challenge_response_event_to_json(AuthChallengeResponseEvent v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.responseMap.keys()):
+        m0.append(qbusiness_json_str(k0) + ":" + qbusiness_json_str(v.responseMap[k0]))
+    parts.append("\"responseMap\":" + qbusiness_json_obj(m0))
+    return qbusiness_json_obj(parts)
+
 # Serialize BlockedPhrasesConfigurationUpdate to a compact JSON object (declaration order).
 def blocked_phrases_configuration_update_to_json(BlockedPhrasesConfigurationUpdate v) -> str:
     list[str] parts = []
@@ -3135,6 +3150,43 @@ def browser_extension_configuration_to_json(BrowserExtensionConfiguration v) -> 
     for x0 in v.enabledBrowserExtensions:
         e0.append(x0.to_json())
     parts.append("\"enabledBrowserExtensions\":" + qbusiness_json_arr(e0))
+    return qbusiness_json_obj(parts)
+
+# Serialize ChatInputStream to a compact JSON object (declaration order).
+def chat_input_stream_to_json(ChatInputStream v) -> str:
+    list[str] parts = []
+    if v.configurationEvent.is_some():
+        auto u0 = v.configurationEvent.unwrap()
+        parts.append("\"configurationEvent\":" + configuration_event_to_json(u0))
+    if v.textEvent.is_some():
+        auto u1 = v.textEvent.unwrap()
+        parts.append("\"textEvent\":" + u1.to_json())
+    if v.attachmentEvent.is_some():
+        auto u2 = v.attachmentEvent.unwrap()
+        parts.append("\"attachmentEvent\":" + u2.to_json())
+    if v.actionExecutionEvent.is_some():
+        auto u3 = v.actionExecutionEvent.unwrap()
+        parts.append("\"actionExecutionEvent\":" + action_execution_event_to_json(u3))
+    if v.endOfInputEvent.is_some():
+        auto u4 = v.endOfInputEvent.unwrap()
+        parts.append("\"endOfInputEvent\":" + u4.to_json())
+    if v.authChallengeResponseEvent.is_some():
+        auto u5 = v.authChallengeResponseEvent.unwrap()
+        parts.append("\"authChallengeResponseEvent\":" + auth_challenge_response_event_to_json(u5))
+    return qbusiness_json_obj(parts)
+
+# Serialize ConfigurationEvent to a compact JSON object (declaration order).
+def configuration_event_to_json(ConfigurationEvent v) -> str:
+    list[str] parts = []
+    if v.chatMode.is_some():
+        auto u0 = v.chatMode.unwrap()
+        parts.append("\"chatMode\":" + u0.to_json())
+    if v.chatModeConfiguration.is_some():
+        auto u1 = v.chatModeConfiguration.unwrap()
+        parts.append("\"chatModeConfiguration\":" + u1.to_json())
+    if v.attributeFilter.is_some():
+        auto u2 = v.attributeFilter.unwrap()
+        parts.append("\"attributeFilter\":" + attribute_filter_to_json(u2))
     return qbusiness_json_obj(parts)
 
 # Serialize ContentRetrievalRule to a compact JSON object (declaration order).
@@ -3528,6 +3580,31 @@ struct QBusinessClient:
         labels["applicationId"] = input.applicationId
         labels["subscriptionId"] = input.subscriptionId
         auto b = binding.HttpBinding(method="DELETE", path_template="/applications/{applicationId}/subscriptions/{subscriptionId}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
+
+    # Chat  POST /applications/{applicationId}/conversations
+    # errors: AccessDeniedException, ConflictException, ExternalResourceException, InternalServerException, LicenseNotFoundException, ResourceNotFoundException, ThrottlingException, ValidationException
+    def chat(self, ChatInput input) -> str:
+        auto host = endpoints.regional_host(qbusiness_service(), self.region)
+        dict[str, str] labels = {}
+        labels["applicationId"] = input.applicationId
+        dict[str, str] query = {}
+        if input.userId.is_some():
+            query["userId"] = input.userId.unwrap_or("")
+        if input.conversationId.is_some():
+            query["conversationId"] = input.conversationId.unwrap_or("")
+        if input.parentMessageId.is_some():
+            query["parentMessageId"] = input.parentMessageId.unwrap_or("")
+        if input.clientToken.is_some():
+            query["clientToken"] = input.clientToken.unwrap_or("")
+        dict[str, list[str]] multi_query = {}
+        if input.userGroups.is_some():
+            multi_query["userGroups"] = input.userGroups.unwrap()
+        auto b = binding.HttpBinding(method="POST", path_template="/applications/{applicationId}/conversations", labels=labels, greedy_labels={}, query=query, multi_query=multi_query, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        if input.inputStream.is_some():
+            auto pv = input.inputStream.unwrap()
+            auto bp = restjson.rest_json_raw_payload(b, chat_input_stream_to_json(pv), "application/json")
+            return restjson.rest_json_request(self.creds, bp, qbusiness_service(), self.region, host)
         return restjson.rest_json_request(self.creds, b, qbusiness_service(), self.region, host)
 
     # ChatSync  POST /applications/{applicationId}/conversations?sync

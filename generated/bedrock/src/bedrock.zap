@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 108 operations — 107 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 108 operations — 108 with a generated method,
+#   0 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   486 structs (299 @derive(Json)), 65 enums, 10 error variants.
 #   19 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -4219,11 +4219,6 @@ def bedrock_error_from_code(str code) -> BedrockError:
 
 # --- client ----------------------------------------------------------------
 
-# Operations skipped in v0 (a member type is not yet bindable/serializable —
-# a non-string/enum/int URI/query/header, a collection or non-derivable
-# document member, or an unsupported httpPayload):
-#   StartAutomatedReasoningPolicyBuildWorkflow (httpPayload member `sourceContent` is a non-derivable structure)
-
 # Per-operation JSON document bodies (the unbound "document" members of an
 # operation's input, serialized with @derive(Json)).
 
@@ -4436,6 +4431,26 @@ def automated_reasoning_policy_annotation_to_json(AutomatedReasoningPolicyAnnota
         parts.append("\"ingestContent\":" + u12.to_json())
     return bedrock_json_obj(parts)
 
+# Serialize AutomatedReasoningPolicyBuildWorkflowRepairContent to a compact JSON object (declaration order).
+def automated_reasoning_policy_build_workflow_repair_content_to_json(AutomatedReasoningPolicyBuildWorkflowRepairContent v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.annotations:
+        e0.append(automated_reasoning_policy_annotation_to_json(x0))
+    parts.append("\"annotations\":" + bedrock_json_arr(e0))
+    return bedrock_json_obj(parts)
+
+# Serialize AutomatedReasoningPolicyBuildWorkflowSource to a compact JSON object (declaration order).
+def automated_reasoning_policy_build_workflow_source_to_json(AutomatedReasoningPolicyBuildWorkflowSource v) -> str:
+    list[str] parts = []
+    if v.policyDefinition.is_some():
+        auto u0 = v.policyDefinition.unwrap()
+        parts.append("\"policyDefinition\":" + automated_reasoning_policy_definition_to_json(u0))
+    if v.workflowContent.is_some():
+        auto u1 = v.workflowContent.unwrap()
+        parts.append("\"workflowContent\":" + automated_reasoning_policy_workflow_type_content_to_json(u1))
+    return bedrock_json_obj(parts)
+
 # Serialize AutomatedReasoningPolicyDefinition to a compact JSON object (declaration order).
 def automated_reasoning_policy_definition_to_json(AutomatedReasoningPolicyDefinition v) -> str:
     list[str] parts = []
@@ -4473,6 +4488,29 @@ def automated_reasoning_policy_definition_type_to_json(AutomatedReasoningPolicyD
     for x1 in v.values:
         e1.append(x1.to_json())
     parts.append("\"values\":" + bedrock_json_arr(e1))
+    return bedrock_json_obj(parts)
+
+# Serialize AutomatedReasoningPolicyGenerateFidelityReportContent to a compact JSON object (declaration order).
+def automated_reasoning_policy_generate_fidelity_report_content_to_json(AutomatedReasoningPolicyGenerateFidelityReportContent v) -> str:
+    list[str] parts = []
+    if v.documents.is_some():
+        auto u0 = v.documents.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"documents\":" + bedrock_json_arr(e1))
+    return bedrock_json_obj(parts)
+
+# Serialize AutomatedReasoningPolicyIterativeRefinementContent to a compact JSON object (declaration order).
+def automated_reasoning_policy_iterative_refinement_content_to_json(AutomatedReasoningPolicyIterativeRefinementContent v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.documents:
+        e0.append(x0.to_json())
+    parts.append("\"documents\":" + bedrock_json_arr(e0))
+    if v.feedback.is_some():
+        auto u1 = v.feedback.unwrap()
+        parts.append("\"feedback\":" + bedrock_json_str(u1))
     return bedrock_json_obj(parts)
 
 # Serialize AutomatedReasoningPolicyUpdateFromRuleFeedbackAnnotation to a compact JSON object (declaration order).
@@ -4516,6 +4554,26 @@ def automated_reasoning_policy_update_type_annotation_to_json(AutomatedReasoning
     for x2 in v.values:
         e2.append(x2.to_json())
     parts.append("\"values\":" + bedrock_json_arr(e2))
+    return bedrock_json_obj(parts)
+
+# Serialize AutomatedReasoningPolicyWorkflowTypeContent to a compact JSON object (declaration order).
+def automated_reasoning_policy_workflow_type_content_to_json(AutomatedReasoningPolicyWorkflowTypeContent v) -> str:
+    list[str] parts = []
+    if v.documents.is_some():
+        auto u0 = v.documents.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"documents\":" + bedrock_json_arr(e1))
+    if v.policyRepairAssets.is_some():
+        auto u2 = v.policyRepairAssets.unwrap()
+        parts.append("\"policyRepairAssets\":" + automated_reasoning_policy_build_workflow_repair_content_to_json(u2))
+    if v.generateFidelityReportContent.is_some():
+        auto u3 = v.generateFidelityReportContent.unwrap()
+        parts.append("\"generateFidelityReportContent\":" + automated_reasoning_policy_generate_fidelity_report_content_to_json(u3))
+    if v.iterativeRefinementContent.is_some():
+        auto u4 = v.iterativeRefinementContent.unwrap()
+        parts.append("\"iterativeRefinementContent\":" + automated_reasoning_policy_iterative_refinement_content_to_json(u4))
     return bedrock_json_obj(parts)
 
 # Serialize CustomMetricDefinition to a compact JSON object (declaration order).
@@ -6625,6 +6683,20 @@ struct BedrockClient:
         auto b = binding.HttpBinding(method="POST", path_template="/marketplace-model/endpoints/{endpointIdentifier}/registration", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto doc = RegisterMarketplaceModelEndpointDocument(modelSourceIdentifier=input.modelSourceIdentifier)
         auto bp = restjson.rest_json_document(b, doc.to_json())
+        return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
+
+    # StartAutomatedReasoningPolicyBuildWorkflow  POST /automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowType}/start
+    # errors: AccessDeniedException, ConflictException, InternalServerException, ResourceInUseException, ResourceNotFoundException, ServiceQuotaExceededException, ThrottlingException, ValidationException
+    def start_automated_reasoning_policy_build_workflow(self, StartAutomatedReasoningPolicyBuildWorkflowRequest input) -> str:
+        auto host = endpoints.regional_host(bedrock_service(), self.region)
+        dict[str, str] labels = {}
+        labels["policyArn"] = input.policyArn
+        labels["buildWorkflowType"] = input.buildWorkflowType
+        dict[str, str] headers = {}
+        if input.clientRequestToken.is_some():
+            headers["x-amz-client-token"] = input.clientRequestToken.unwrap_or("")
+        auto b = binding.HttpBinding(method="POST", path_template="/automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowType}/start", labels=labels, greedy_labels={}, query={}, multi_query={}, headers=headers, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, automated_reasoning_policy_build_workflow_source_to_json(input.sourceContent), "application/json")
         return restjson.rest_json_request(self.creds, bp, bedrock_service(), self.region, host)
 
     # StartAutomatedReasoningPolicyTestWorkflow  POST /automated-reasoning-policies/{policyArn}/build-workflows/{buildWorkflowId}/test-workflows

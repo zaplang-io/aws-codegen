@@ -15,8 +15,8 @@
 # endpoints.regional_host / core.next_page_json) to walk pages and yield each
 # Response.
 #
-# Coverage (rest-json): 122 operations — 96 with a generated method,
-#   26 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+# Coverage (rest-json): 122 operations — 120 with a generated method,
+#   2 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   459 structs (254 @derive(Json)), 28 enums, 8 error variants.
 #   0 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
@@ -3797,37 +3797,1489 @@ def pinpoint_error_from_code(str code) -> PinpointError:
 # Operations skipped in v0 (a member type is not yet bindable/serializable —
 # a non-string/enum/int URI/query/header, a collection or non-derivable
 # document member, or an unsupported httpPayload):
-#   CreateApp (httpPayload member `CreateApplicationRequest` is a non-derivable structure)
-#   CreateCampaign (httpPayload member `WriteCampaignRequest` is a non-derivable structure)
-#   CreateEmailTemplate (httpPayload member `EmailTemplateRequest` is a non-derivable structure)
-#   CreateInAppTemplate (httpPayload member `InAppTemplateRequest` is a non-derivable structure)
-#   CreateJourney (httpPayload member `WriteJourneyRequest` is a non-derivable structure)
-#   CreatePushTemplate (httpPayload member `PushNotificationTemplateRequest` is a non-derivable structure)
-#   CreateRecommenderConfiguration (httpPayload member `CreateRecommenderConfiguration` is a non-derivable structure)
-#   CreateSegment (httpPayload member `WriteSegmentRequest` is a non-derivable structure)
-#   CreateSmsTemplate (httpPayload member `SMSTemplateRequest` is a non-derivable structure)
-#   CreateVoiceTemplate (httpPayload member `VoiceTemplateRequest` is a non-derivable structure)
-#   PutEvents (httpPayload member `EventsRequest` is a non-derivable structure)
-#   RemoveAttributes (httpPayload member `UpdateAttributesRequest` is a non-derivable structure)
-#   SendMessages (httpPayload member `MessageRequest` is a non-derivable structure)
-#   SendUsersMessages (httpPayload member `SendUsersMessageRequest` is a non-derivable structure)
-#   TagResource (httpPayload member `TagsModel` is a non-derivable structure)
-#   UpdateCampaign (httpPayload member `WriteCampaignRequest` is a non-derivable structure)
-#   UpdateEmailTemplate (httpPayload member `EmailTemplateRequest` is a non-derivable structure)
-#   UpdateEndpoint (httpPayload member `EndpointRequest` is a non-derivable structure)
-#   UpdateEndpointsBatch (httpPayload member `EndpointBatchRequest` is a non-derivable structure)
-#   UpdateInAppTemplate (httpPayload member `InAppTemplateRequest` is a non-derivable structure)
-#   UpdateJourney (httpPayload member `WriteJourneyRequest` is a non-derivable structure)
-#   UpdatePushTemplate (httpPayload member `PushNotificationTemplateRequest` is a non-derivable structure)
-#   UpdateRecommenderConfiguration (httpPayload member `UpdateRecommenderConfiguration` is a non-derivable structure)
-#   UpdateSegment (httpPayload member `WriteSegmentRequest` is a non-derivable structure)
-#   UpdateSmsTemplate (httpPayload member `SMSTemplateRequest` is a non-derivable structure)
-#   UpdateVoiceTemplate (httpPayload member `VoiceTemplateRequest` is a non-derivable structure)
+#   CreateJourney (httpPayload member `WriteJourneyRequest` is a non-serializable structure)
+#   UpdateJourney (httpPayload member `WriteJourneyRequest` is a non-serializable structure)
+
+# JSON body helpers (compact, declaration-order objects): the collection
+# serialization @derive(Json) does not emit yet (zaplang-io/zap#424). `_json_str`
+# escapes+quotes via the prelude JSON writer; `_json_obj`/`_json_arr` comma-join
+# pre-serialized members.
+def pinpoint_json_str(str s) -> str:
+    return json.dumps(JsonValue.Str(s))
+
+def pinpoint_json_obj(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "{" + body + "}"
+
+def pinpoint_json_arr(list[str] parts) -> str:
+    auto body = ""
+    auto i = 0
+    for part in parts:
+        if i > 0:
+            body = body + ","
+        body = body + part
+        i = i + 1
+    return "[" + body + "]"
+
+# Explicit JSON serializers for document bodies with collection/nested
+# members (the @derive(Json) collection follow-up, zaplang-io/zap#424).
+
+# Serialize ADMMessage to a compact JSON object (declaration order).
+def adm_message_to_json(ADMMessage v) -> str:
+    list[str] parts = []
+    if v.Action.is_some():
+        auto u0 = v.Action.unwrap()
+        parts.append("\"Action\":" + u0.to_json())
+    if v.Body.is_some():
+        auto u1 = v.Body.unwrap()
+        parts.append("\"Body\":" + pinpoint_json_str(u1))
+    if v.ConsolidationKey.is_some():
+        auto u2 = v.ConsolidationKey.unwrap()
+        parts.append("\"ConsolidationKey\":" + pinpoint_json_str(u2))
+    if v.Data.is_some():
+        auto u3 = v.Data.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(pinpoint_json_str(k4) + ":" + pinpoint_json_str(u3[k4]))
+        parts.append("\"Data\":" + pinpoint_json_obj(m4))
+    if v.ExpiresAfter.is_some():
+        auto u5 = v.ExpiresAfter.unwrap()
+        parts.append("\"ExpiresAfter\":" + pinpoint_json_str(u5))
+    if v.IconReference.is_some():
+        auto u6 = v.IconReference.unwrap()
+        parts.append("\"IconReference\":" + pinpoint_json_str(u6))
+    if v.ImageIconUrl.is_some():
+        auto u7 = v.ImageIconUrl.unwrap()
+        parts.append("\"ImageIconUrl\":" + pinpoint_json_str(u7))
+    if v.ImageUrl.is_some():
+        auto u8 = v.ImageUrl.unwrap()
+        parts.append("\"ImageUrl\":" + pinpoint_json_str(u8))
+    if v.MD5.is_some():
+        auto u9 = v.MD5.unwrap()
+        parts.append("\"MD5\":" + pinpoint_json_str(u9))
+    if v.RawContent.is_some():
+        auto u10 = v.RawContent.unwrap()
+        parts.append("\"RawContent\":" + pinpoint_json_str(u10))
+    if v.SilentPush.is_some():
+        auto u11 = v.SilentPush.unwrap()
+        parts.append("\"SilentPush\":" + json.dumps(JsonValue.Bool(u11)))
+    if v.SmallImageIconUrl.is_some():
+        auto u12 = v.SmallImageIconUrl.unwrap()
+        parts.append("\"SmallImageIconUrl\":" + pinpoint_json_str(u12))
+    if v.Sound.is_some():
+        auto u13 = v.Sound.unwrap()
+        parts.append("\"Sound\":" + pinpoint_json_str(u13))
+    if v.Substitutions.is_some():
+        auto u14 = v.Substitutions.unwrap()
+        list[str] m15 = []
+        for k15 in sorted(u14.keys()):
+            list[str] e16 = []
+            for x16 in u14[k15]:
+                e16.append(pinpoint_json_str(x16))
+            m15.append(pinpoint_json_str(k15) + ":" + pinpoint_json_arr(e16))
+        parts.append("\"Substitutions\":" + pinpoint_json_obj(m15))
+    if v.Title.is_some():
+        auto u17 = v.Title.unwrap()
+        parts.append("\"Title\":" + pinpoint_json_str(u17))
+    if v.Url.is_some():
+        auto u18 = v.Url.unwrap()
+        parts.append("\"Url\":" + pinpoint_json_str(u18))
+    return pinpoint_json_obj(parts)
+
+# Serialize APNSMessage to a compact JSON object (declaration order).
+def apns_message_to_json(APNSMessage v) -> str:
+    list[str] parts = []
+    if v.APNSPushType.is_some():
+        auto u0 = v.APNSPushType.unwrap()
+        parts.append("\"APNSPushType\":" + pinpoint_json_str(u0))
+    if v.Action.is_some():
+        auto u1 = v.Action.unwrap()
+        parts.append("\"Action\":" + u1.to_json())
+    if v.Badge.is_some():
+        auto u2 = v.Badge.unwrap()
+        parts.append("\"Badge\":" + str(u2))
+    if v.Body.is_some():
+        auto u3 = v.Body.unwrap()
+        parts.append("\"Body\":" + pinpoint_json_str(u3))
+    if v.Category.is_some():
+        auto u4 = v.Category.unwrap()
+        parts.append("\"Category\":" + pinpoint_json_str(u4))
+    if v.CollapseId.is_some():
+        auto u5 = v.CollapseId.unwrap()
+        parts.append("\"CollapseId\":" + pinpoint_json_str(u5))
+    if v.Data.is_some():
+        auto u6 = v.Data.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(pinpoint_json_str(k7) + ":" + pinpoint_json_str(u6[k7]))
+        parts.append("\"Data\":" + pinpoint_json_obj(m7))
+    if v.MediaUrl.is_some():
+        auto u8 = v.MediaUrl.unwrap()
+        parts.append("\"MediaUrl\":" + pinpoint_json_str(u8))
+    if v.PreferredAuthenticationMethod.is_some():
+        auto u9 = v.PreferredAuthenticationMethod.unwrap()
+        parts.append("\"PreferredAuthenticationMethod\":" + pinpoint_json_str(u9))
+    if v.Priority.is_some():
+        auto u10 = v.Priority.unwrap()
+        parts.append("\"Priority\":" + pinpoint_json_str(u10))
+    if v.RawContent.is_some():
+        auto u11 = v.RawContent.unwrap()
+        parts.append("\"RawContent\":" + pinpoint_json_str(u11))
+    if v.SilentPush.is_some():
+        auto u12 = v.SilentPush.unwrap()
+        parts.append("\"SilentPush\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.Sound.is_some():
+        auto u13 = v.Sound.unwrap()
+        parts.append("\"Sound\":" + pinpoint_json_str(u13))
+    if v.Substitutions.is_some():
+        auto u14 = v.Substitutions.unwrap()
+        list[str] m15 = []
+        for k15 in sorted(u14.keys()):
+            list[str] e16 = []
+            for x16 in u14[k15]:
+                e16.append(pinpoint_json_str(x16))
+            m15.append(pinpoint_json_str(k15) + ":" + pinpoint_json_arr(e16))
+        parts.append("\"Substitutions\":" + pinpoint_json_obj(m15))
+    if v.ThreadId.is_some():
+        auto u17 = v.ThreadId.unwrap()
+        parts.append("\"ThreadId\":" + pinpoint_json_str(u17))
+    if v.TimeToLive.is_some():
+        auto u18 = v.TimeToLive.unwrap()
+        parts.append("\"TimeToLive\":" + str(u18))
+    if v.Title.is_some():
+        auto u19 = v.Title.unwrap()
+        parts.append("\"Title\":" + pinpoint_json_str(u19))
+    if v.Url.is_some():
+        auto u20 = v.Url.unwrap()
+        parts.append("\"Url\":" + pinpoint_json_str(u20))
+    return pinpoint_json_obj(parts)
+
+# Serialize AddressConfiguration to a compact JSON object (declaration order).
+def address_configuration_to_json(AddressConfiguration v) -> str:
+    list[str] parts = []
+    if v.BodyOverride.is_some():
+        auto u0 = v.BodyOverride.unwrap()
+        parts.append("\"BodyOverride\":" + pinpoint_json_str(u0))
+    if v.ChannelType.is_some():
+        auto u1 = v.ChannelType.unwrap()
+        parts.append("\"ChannelType\":" + u1.to_json())
+    if v.Context.is_some():
+        auto u2 = v.Context.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(pinpoint_json_str(k3) + ":" + pinpoint_json_str(u2[k3]))
+        parts.append("\"Context\":" + pinpoint_json_obj(m3))
+    if v.RawContent.is_some():
+        auto u4 = v.RawContent.unwrap()
+        parts.append("\"RawContent\":" + pinpoint_json_str(u4))
+    if v.Substitutions.is_some():
+        auto u5 = v.Substitutions.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            list[str] e7 = []
+            for x7 in u5[k6]:
+                e7.append(pinpoint_json_str(x7))
+            m6.append(pinpoint_json_str(k6) + ":" + pinpoint_json_arr(e7))
+        parts.append("\"Substitutions\":" + pinpoint_json_obj(m6))
+    if v.TitleOverride.is_some():
+        auto u8 = v.TitleOverride.unwrap()
+        parts.append("\"TitleOverride\":" + pinpoint_json_str(u8))
+    return pinpoint_json_obj(parts)
+
+# Serialize AttributeDimension to a compact JSON object (declaration order).
+def attribute_dimension_to_json(AttributeDimension v) -> str:
+    list[str] parts = []
+    if v.AttributeType.is_some():
+        auto u0 = v.AttributeType.unwrap()
+        parts.append("\"AttributeType\":" + u0.to_json())
+    list[str] e1 = []
+    for x1 in v.Values:
+        e1.append(pinpoint_json_str(x1))
+    parts.append("\"Values\":" + pinpoint_json_arr(e1))
+    return pinpoint_json_obj(parts)
+
+# Serialize BaiduMessage to a compact JSON object (declaration order).
+def baidu_message_to_json(BaiduMessage v) -> str:
+    list[str] parts = []
+    if v.Action.is_some():
+        auto u0 = v.Action.unwrap()
+        parts.append("\"Action\":" + u0.to_json())
+    if v.Body.is_some():
+        auto u1 = v.Body.unwrap()
+        parts.append("\"Body\":" + pinpoint_json_str(u1))
+    if v.Data.is_some():
+        auto u2 = v.Data.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(pinpoint_json_str(k3) + ":" + pinpoint_json_str(u2[k3]))
+        parts.append("\"Data\":" + pinpoint_json_obj(m3))
+    if v.IconReference.is_some():
+        auto u4 = v.IconReference.unwrap()
+        parts.append("\"IconReference\":" + pinpoint_json_str(u4))
+    if v.ImageIconUrl.is_some():
+        auto u5 = v.ImageIconUrl.unwrap()
+        parts.append("\"ImageIconUrl\":" + pinpoint_json_str(u5))
+    if v.ImageUrl.is_some():
+        auto u6 = v.ImageUrl.unwrap()
+        parts.append("\"ImageUrl\":" + pinpoint_json_str(u6))
+    if v.RawContent.is_some():
+        auto u7 = v.RawContent.unwrap()
+        parts.append("\"RawContent\":" + pinpoint_json_str(u7))
+    if v.SilentPush.is_some():
+        auto u8 = v.SilentPush.unwrap()
+        parts.append("\"SilentPush\":" + json.dumps(JsonValue.Bool(u8)))
+    if v.SmallImageIconUrl.is_some():
+        auto u9 = v.SmallImageIconUrl.unwrap()
+        parts.append("\"SmallImageIconUrl\":" + pinpoint_json_str(u9))
+    if v.Sound.is_some():
+        auto u10 = v.Sound.unwrap()
+        parts.append("\"Sound\":" + pinpoint_json_str(u10))
+    if v.Substitutions.is_some():
+        auto u11 = v.Substitutions.unwrap()
+        list[str] m12 = []
+        for k12 in sorted(u11.keys()):
+            list[str] e13 = []
+            for x13 in u11[k12]:
+                e13.append(pinpoint_json_str(x13))
+            m12.append(pinpoint_json_str(k12) + ":" + pinpoint_json_arr(e13))
+        parts.append("\"Substitutions\":" + pinpoint_json_obj(m12))
+    if v.TimeToLive.is_some():
+        auto u14 = v.TimeToLive.unwrap()
+        parts.append("\"TimeToLive\":" + str(u14))
+    if v.Title.is_some():
+        auto u15 = v.Title.unwrap()
+        parts.append("\"Title\":" + pinpoint_json_str(u15))
+    if v.Url.is_some():
+        auto u16 = v.Url.unwrap()
+        parts.append("\"Url\":" + pinpoint_json_str(u16))
+    return pinpoint_json_obj(parts)
+
+# Serialize CampaignEmailMessage to a compact JSON object (declaration order).
+def campaign_email_message_to_json(CampaignEmailMessage v) -> str:
+    list[str] parts = []
+    if v.Body.is_some():
+        auto u0 = v.Body.unwrap()
+        parts.append("\"Body\":" + pinpoint_json_str(u0))
+    if v.FromAddress.is_some():
+        auto u1 = v.FromAddress.unwrap()
+        parts.append("\"FromAddress\":" + pinpoint_json_str(u1))
+    if v.Headers.is_some():
+        auto u2 = v.Headers.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"Headers\":" + pinpoint_json_arr(e3))
+    if v.HtmlBody.is_some():
+        auto u4 = v.HtmlBody.unwrap()
+        parts.append("\"HtmlBody\":" + pinpoint_json_str(u4))
+    if v.Title.is_some():
+        auto u5 = v.Title.unwrap()
+        parts.append("\"Title\":" + pinpoint_json_str(u5))
+    return pinpoint_json_obj(parts)
+
+# Serialize CampaignEventFilter to a compact JSON object (declaration order).
+def campaign_event_filter_to_json(CampaignEventFilter v) -> str:
+    list[str] parts = []
+    parts.append("\"Dimensions\":" + event_dimensions_to_json(v.Dimensions))
+    parts.append("\"FilterType\":" + v.FilterType.to_json())
+    return pinpoint_json_obj(parts)
+
+# Serialize CampaignInAppMessage to a compact JSON object (declaration order).
+def campaign_in_app_message_to_json(CampaignInAppMessage v) -> str:
+    list[str] parts = []
+    if v.Body.is_some():
+        auto u0 = v.Body.unwrap()
+        parts.append("\"Body\":" + pinpoint_json_str(u0))
+    if v.Content.is_some():
+        auto u1 = v.Content.unwrap()
+        list[str] e2 = []
+        for x2 in u1:
+            e2.append(x2.to_json())
+        parts.append("\"Content\":" + pinpoint_json_arr(e2))
+    if v.CustomConfig.is_some():
+        auto u3 = v.CustomConfig.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(pinpoint_json_str(k4) + ":" + pinpoint_json_str(u3[k4]))
+        parts.append("\"CustomConfig\":" + pinpoint_json_obj(m4))
+    if v.Layout.is_some():
+        auto u5 = v.Layout.unwrap()
+        parts.append("\"Layout\":" + u5.to_json())
+    return pinpoint_json_obj(parts)
+
+# Serialize CreateApplicationRequest to a compact JSON object (declaration order).
+def create_application_request_to_json(CreateApplicationRequest v) -> str:
+    list[str] parts = []
+    parts.append("\"Name\":" + pinpoint_json_str(v.Name))
+    if v.tags.is_some():
+        auto u0 = v.tags.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(pinpoint_json_str(k1) + ":" + pinpoint_json_str(u0[k1]))
+        parts.append("\"tags\":" + pinpoint_json_obj(m1))
+    return pinpoint_json_obj(parts)
+
+# Serialize CreateRecommenderConfiguration to a compact JSON object (declaration order).
+def create_recommender_configuration_to_json(CreateRecommenderConfiguration v) -> str:
+    list[str] parts = []
+    if v.Attributes.is_some():
+        auto u0 = v.Attributes.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(pinpoint_json_str(k1) + ":" + pinpoint_json_str(u0[k1]))
+        parts.append("\"Attributes\":" + pinpoint_json_obj(m1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + pinpoint_json_str(u2))
+    if v.Name.is_some():
+        auto u3 = v.Name.unwrap()
+        parts.append("\"Name\":" + pinpoint_json_str(u3))
+    if v.RecommendationProviderIdType.is_some():
+        auto u4 = v.RecommendationProviderIdType.unwrap()
+        parts.append("\"RecommendationProviderIdType\":" + pinpoint_json_str(u4))
+    parts.append("\"RecommendationProviderRoleArn\":" + pinpoint_json_str(v.RecommendationProviderRoleArn))
+    parts.append("\"RecommendationProviderUri\":" + pinpoint_json_str(v.RecommendationProviderUri))
+    if v.RecommendationTransformerUri.is_some():
+        auto u5 = v.RecommendationTransformerUri.unwrap()
+        parts.append("\"RecommendationTransformerUri\":" + pinpoint_json_str(u5))
+    if v.RecommendationsDisplayName.is_some():
+        auto u6 = v.RecommendationsDisplayName.unwrap()
+        parts.append("\"RecommendationsDisplayName\":" + pinpoint_json_str(u6))
+    if v.RecommendationsPerMessage.is_some():
+        auto u7 = v.RecommendationsPerMessage.unwrap()
+        parts.append("\"RecommendationsPerMessage\":" + str(u7))
+    return pinpoint_json_obj(parts)
+
+# Serialize CustomDeliveryConfiguration to a compact JSON object (declaration order).
+def custom_delivery_configuration_to_json(CustomDeliveryConfiguration v) -> str:
+    list[str] parts = []
+    parts.append("\"DeliveryUri\":" + pinpoint_json_str(v.DeliveryUri))
+    if v.EndpointTypes.is_some():
+        auto u0 = v.EndpointTypes.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"EndpointTypes\":" + pinpoint_json_arr(e1))
+    return pinpoint_json_obj(parts)
+
+# Serialize DefaultMessage to a compact JSON object (declaration order).
+def default_message_to_json(DefaultMessage v) -> str:
+    list[str] parts = []
+    if v.Body.is_some():
+        auto u0 = v.Body.unwrap()
+        parts.append("\"Body\":" + pinpoint_json_str(u0))
+    if v.Substitutions.is_some():
+        auto u1 = v.Substitutions.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            list[str] e3 = []
+            for x3 in u1[k2]:
+                e3.append(pinpoint_json_str(x3))
+            m2.append(pinpoint_json_str(k2) + ":" + pinpoint_json_arr(e3))
+        parts.append("\"Substitutions\":" + pinpoint_json_obj(m2))
+    return pinpoint_json_obj(parts)
+
+# Serialize DefaultPushNotificationMessage to a compact JSON object (declaration order).
+def default_push_notification_message_to_json(DefaultPushNotificationMessage v) -> str:
+    list[str] parts = []
+    if v.Action.is_some():
+        auto u0 = v.Action.unwrap()
+        parts.append("\"Action\":" + u0.to_json())
+    if v.Body.is_some():
+        auto u1 = v.Body.unwrap()
+        parts.append("\"Body\":" + pinpoint_json_str(u1))
+    if v.Data.is_some():
+        auto u2 = v.Data.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(pinpoint_json_str(k3) + ":" + pinpoint_json_str(u2[k3]))
+        parts.append("\"Data\":" + pinpoint_json_obj(m3))
+    if v.SilentPush.is_some():
+        auto u4 = v.SilentPush.unwrap()
+        parts.append("\"SilentPush\":" + json.dumps(JsonValue.Bool(u4)))
+    if v.Substitutions.is_some():
+        auto u5 = v.Substitutions.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            list[str] e7 = []
+            for x7 in u5[k6]:
+                e7.append(pinpoint_json_str(x7))
+            m6.append(pinpoint_json_str(k6) + ":" + pinpoint_json_arr(e7))
+        parts.append("\"Substitutions\":" + pinpoint_json_obj(m6))
+    if v.Title.is_some():
+        auto u8 = v.Title.unwrap()
+        parts.append("\"Title\":" + pinpoint_json_str(u8))
+    if v.Url.is_some():
+        auto u9 = v.Url.unwrap()
+        parts.append("\"Url\":" + pinpoint_json_str(u9))
+    return pinpoint_json_obj(parts)
+
+# Serialize DirectMessageConfiguration to a compact JSON object (declaration order).
+def direct_message_configuration_to_json(DirectMessageConfiguration v) -> str:
+    list[str] parts = []
+    if v.ADMMessage.is_some():
+        auto u0 = v.ADMMessage.unwrap()
+        parts.append("\"ADMMessage\":" + adm_message_to_json(u0))
+    if v.APNSMessage.is_some():
+        auto u1 = v.APNSMessage.unwrap()
+        parts.append("\"APNSMessage\":" + apns_message_to_json(u1))
+    if v.BaiduMessage.is_some():
+        auto u2 = v.BaiduMessage.unwrap()
+        parts.append("\"BaiduMessage\":" + baidu_message_to_json(u2))
+    if v.DefaultMessage.is_some():
+        auto u3 = v.DefaultMessage.unwrap()
+        parts.append("\"DefaultMessage\":" + default_message_to_json(u3))
+    if v.DefaultPushNotificationMessage.is_some():
+        auto u4 = v.DefaultPushNotificationMessage.unwrap()
+        parts.append("\"DefaultPushNotificationMessage\":" + default_push_notification_message_to_json(u4))
+    if v.EmailMessage.is_some():
+        auto u5 = v.EmailMessage.unwrap()
+        parts.append("\"EmailMessage\":" + email_message_to_json(u5))
+    if v.GCMMessage.is_some():
+        auto u6 = v.GCMMessage.unwrap()
+        parts.append("\"GCMMessage\":" + gcm_message_to_json(u6))
+    if v.SMSMessage.is_some():
+        auto u7 = v.SMSMessage.unwrap()
+        parts.append("\"SMSMessage\":" + sms_message_to_json(u7))
+    if v.VoiceMessage.is_some():
+        auto u8 = v.VoiceMessage.unwrap()
+        parts.append("\"VoiceMessage\":" + voice_message_to_json(u8))
+    return pinpoint_json_obj(parts)
+
+# Serialize EmailMessage to a compact JSON object (declaration order).
+def email_message_to_json(EmailMessage v) -> str:
+    list[str] parts = []
+    if v.Body.is_some():
+        auto u0 = v.Body.unwrap()
+        parts.append("\"Body\":" + pinpoint_json_str(u0))
+    if v.FeedbackForwardingAddress.is_some():
+        auto u1 = v.FeedbackForwardingAddress.unwrap()
+        parts.append("\"FeedbackForwardingAddress\":" + pinpoint_json_str(u1))
+    if v.FromAddress.is_some():
+        auto u2 = v.FromAddress.unwrap()
+        parts.append("\"FromAddress\":" + pinpoint_json_str(u2))
+    if v.RawEmail.is_some():
+        auto u3 = v.RawEmail.unwrap()
+        parts.append("\"RawEmail\":" + u3.to_json())
+    if v.ReplyToAddresses.is_some():
+        auto u4 = v.ReplyToAddresses.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(pinpoint_json_str(x5))
+        parts.append("\"ReplyToAddresses\":" + pinpoint_json_arr(e5))
+    if v.SimpleEmail.is_some():
+        auto u6 = v.SimpleEmail.unwrap()
+        parts.append("\"SimpleEmail\":" + simple_email_to_json(u6))
+    if v.Substitutions.is_some():
+        auto u7 = v.Substitutions.unwrap()
+        list[str] m8 = []
+        for k8 in sorted(u7.keys()):
+            list[str] e9 = []
+            for x9 in u7[k8]:
+                e9.append(pinpoint_json_str(x9))
+            m8.append(pinpoint_json_str(k8) + ":" + pinpoint_json_arr(e9))
+        parts.append("\"Substitutions\":" + pinpoint_json_obj(m8))
+    return pinpoint_json_obj(parts)
+
+# Serialize EmailTemplateRequest to a compact JSON object (declaration order).
+def email_template_request_to_json(EmailTemplateRequest v) -> str:
+    list[str] parts = []
+    if v.DefaultSubstitutions.is_some():
+        auto u0 = v.DefaultSubstitutions.unwrap()
+        parts.append("\"DefaultSubstitutions\":" + pinpoint_json_str(u0))
+    if v.HtmlPart.is_some():
+        auto u1 = v.HtmlPart.unwrap()
+        parts.append("\"HtmlPart\":" + pinpoint_json_str(u1))
+    if v.RecommenderId.is_some():
+        auto u2 = v.RecommenderId.unwrap()
+        parts.append("\"RecommenderId\":" + pinpoint_json_str(u2))
+    if v.Subject.is_some():
+        auto u3 = v.Subject.unwrap()
+        parts.append("\"Subject\":" + pinpoint_json_str(u3))
+    if v.Headers.is_some():
+        auto u4 = v.Headers.unwrap()
+        list[str] e5 = []
+        for x5 in u4:
+            e5.append(x5.to_json())
+        parts.append("\"Headers\":" + pinpoint_json_arr(e5))
+    if v.tags.is_some():
+        auto u6 = v.tags.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(pinpoint_json_str(k7) + ":" + pinpoint_json_str(u6[k7]))
+        parts.append("\"tags\":" + pinpoint_json_obj(m7))
+    if v.TemplateDescription.is_some():
+        auto u8 = v.TemplateDescription.unwrap()
+        parts.append("\"TemplateDescription\":" + pinpoint_json_str(u8))
+    if v.TextPart.is_some():
+        auto u9 = v.TextPart.unwrap()
+        parts.append("\"TextPart\":" + pinpoint_json_str(u9))
+    return pinpoint_json_obj(parts)
+
+# Serialize EndpointBatchItem to a compact JSON object (declaration order).
+def endpoint_batch_item_to_json(EndpointBatchItem v) -> str:
+    list[str] parts = []
+    if v.Address.is_some():
+        auto u0 = v.Address.unwrap()
+        parts.append("\"Address\":" + pinpoint_json_str(u0))
+    if v.Attributes.is_some():
+        auto u1 = v.Attributes.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            list[str] e3 = []
+            for x3 in u1[k2]:
+                e3.append(pinpoint_json_str(x3))
+            m2.append(pinpoint_json_str(k2) + ":" + pinpoint_json_arr(e3))
+        parts.append("\"Attributes\":" + pinpoint_json_obj(m2))
+    if v.ChannelType.is_some():
+        auto u4 = v.ChannelType.unwrap()
+        parts.append("\"ChannelType\":" + u4.to_json())
+    if v.Demographic.is_some():
+        auto u5 = v.Demographic.unwrap()
+        parts.append("\"Demographic\":" + u5.to_json())
+    if v.EffectiveDate.is_some():
+        auto u6 = v.EffectiveDate.unwrap()
+        parts.append("\"EffectiveDate\":" + pinpoint_json_str(u6))
+    if v.EndpointStatus.is_some():
+        auto u7 = v.EndpointStatus.unwrap()
+        parts.append("\"EndpointStatus\":" + pinpoint_json_str(u7))
+    if v.Id.is_some():
+        auto u8 = v.Id.unwrap()
+        parts.append("\"Id\":" + pinpoint_json_str(u8))
+    if v.Location.is_some():
+        auto u9 = v.Location.unwrap()
+        parts.append("\"Location\":" + u9.to_json())
+    if v.Metrics.is_some():
+        auto u10 = v.Metrics.unwrap()
+        list[str] m11 = []
+        for k11 in sorted(u10.keys()):
+            m11.append(pinpoint_json_str(k11) + ":" + str(u10[k11]))
+        parts.append("\"Metrics\":" + pinpoint_json_obj(m11))
+    if v.OptOut.is_some():
+        auto u12 = v.OptOut.unwrap()
+        parts.append("\"OptOut\":" + pinpoint_json_str(u12))
+    if v.RequestId.is_some():
+        auto u13 = v.RequestId.unwrap()
+        parts.append("\"RequestId\":" + pinpoint_json_str(u13))
+    if v.User.is_some():
+        auto u14 = v.User.unwrap()
+        parts.append("\"User\":" + endpoint_user_to_json(u14))
+    return pinpoint_json_obj(parts)
+
+# Serialize EndpointBatchRequest to a compact JSON object (declaration order).
+def endpoint_batch_request_to_json(EndpointBatchRequest v) -> str:
+    list[str] parts = []
+    list[str] e0 = []
+    for x0 in v.Item:
+        e0.append(endpoint_batch_item_to_json(x0))
+    parts.append("\"Item\":" + pinpoint_json_arr(e0))
+    return pinpoint_json_obj(parts)
+
+# Serialize EndpointRequest to a compact JSON object (declaration order).
+def endpoint_request_to_json(EndpointRequest v) -> str:
+    list[str] parts = []
+    if v.Address.is_some():
+        auto u0 = v.Address.unwrap()
+        parts.append("\"Address\":" + pinpoint_json_str(u0))
+    if v.Attributes.is_some():
+        auto u1 = v.Attributes.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            list[str] e3 = []
+            for x3 in u1[k2]:
+                e3.append(pinpoint_json_str(x3))
+            m2.append(pinpoint_json_str(k2) + ":" + pinpoint_json_arr(e3))
+        parts.append("\"Attributes\":" + pinpoint_json_obj(m2))
+    if v.ChannelType.is_some():
+        auto u4 = v.ChannelType.unwrap()
+        parts.append("\"ChannelType\":" + u4.to_json())
+    if v.Demographic.is_some():
+        auto u5 = v.Demographic.unwrap()
+        parts.append("\"Demographic\":" + u5.to_json())
+    if v.EffectiveDate.is_some():
+        auto u6 = v.EffectiveDate.unwrap()
+        parts.append("\"EffectiveDate\":" + pinpoint_json_str(u6))
+    if v.EndpointStatus.is_some():
+        auto u7 = v.EndpointStatus.unwrap()
+        parts.append("\"EndpointStatus\":" + pinpoint_json_str(u7))
+    if v.Location.is_some():
+        auto u8 = v.Location.unwrap()
+        parts.append("\"Location\":" + u8.to_json())
+    if v.Metrics.is_some():
+        auto u9 = v.Metrics.unwrap()
+        list[str] m10 = []
+        for k10 in sorted(u9.keys()):
+            m10.append(pinpoint_json_str(k10) + ":" + str(u9[k10]))
+        parts.append("\"Metrics\":" + pinpoint_json_obj(m10))
+    if v.OptOut.is_some():
+        auto u11 = v.OptOut.unwrap()
+        parts.append("\"OptOut\":" + pinpoint_json_str(u11))
+    if v.RequestId.is_some():
+        auto u12 = v.RequestId.unwrap()
+        parts.append("\"RequestId\":" + pinpoint_json_str(u12))
+    if v.User.is_some():
+        auto u13 = v.User.unwrap()
+        parts.append("\"User\":" + endpoint_user_to_json(u13))
+    return pinpoint_json_obj(parts)
+
+# Serialize EndpointSendConfiguration to a compact JSON object (declaration order).
+def endpoint_send_configuration_to_json(EndpointSendConfiguration v) -> str:
+    list[str] parts = []
+    if v.BodyOverride.is_some():
+        auto u0 = v.BodyOverride.unwrap()
+        parts.append("\"BodyOverride\":" + pinpoint_json_str(u0))
+    if v.Context.is_some():
+        auto u1 = v.Context.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            m2.append(pinpoint_json_str(k2) + ":" + pinpoint_json_str(u1[k2]))
+        parts.append("\"Context\":" + pinpoint_json_obj(m2))
+    if v.RawContent.is_some():
+        auto u3 = v.RawContent.unwrap()
+        parts.append("\"RawContent\":" + pinpoint_json_str(u3))
+    if v.Substitutions.is_some():
+        auto u4 = v.Substitutions.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            list[str] e6 = []
+            for x6 in u4[k5]:
+                e6.append(pinpoint_json_str(x6))
+            m5.append(pinpoint_json_str(k5) + ":" + pinpoint_json_arr(e6))
+        parts.append("\"Substitutions\":" + pinpoint_json_obj(m5))
+    if v.TitleOverride.is_some():
+        auto u7 = v.TitleOverride.unwrap()
+        parts.append("\"TitleOverride\":" + pinpoint_json_str(u7))
+    return pinpoint_json_obj(parts)
+
+# Serialize EndpointUser to a compact JSON object (declaration order).
+def endpoint_user_to_json(EndpointUser v) -> str:
+    list[str] parts = []
+    if v.UserAttributes.is_some():
+        auto u0 = v.UserAttributes.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            list[str] e2 = []
+            for x2 in u0[k1]:
+                e2.append(pinpoint_json_str(x2))
+            m1.append(pinpoint_json_str(k1) + ":" + pinpoint_json_arr(e2))
+        parts.append("\"UserAttributes\":" + pinpoint_json_obj(m1))
+    if v.UserId.is_some():
+        auto u3 = v.UserId.unwrap()
+        parts.append("\"UserId\":" + pinpoint_json_str(u3))
+    return pinpoint_json_obj(parts)
+
+# Serialize Event to a compact JSON object (declaration order).
+def event_to_json(Event v) -> str:
+    list[str] parts = []
+    if v.AppPackageName.is_some():
+        auto u0 = v.AppPackageName.unwrap()
+        parts.append("\"AppPackageName\":" + pinpoint_json_str(u0))
+    if v.AppTitle.is_some():
+        auto u1 = v.AppTitle.unwrap()
+        parts.append("\"AppTitle\":" + pinpoint_json_str(u1))
+    if v.AppVersionCode.is_some():
+        auto u2 = v.AppVersionCode.unwrap()
+        parts.append("\"AppVersionCode\":" + pinpoint_json_str(u2))
+    if v.Attributes.is_some():
+        auto u3 = v.Attributes.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(pinpoint_json_str(k4) + ":" + pinpoint_json_str(u3[k4]))
+        parts.append("\"Attributes\":" + pinpoint_json_obj(m4))
+    if v.ClientSdkVersion.is_some():
+        auto u5 = v.ClientSdkVersion.unwrap()
+        parts.append("\"ClientSdkVersion\":" + pinpoint_json_str(u5))
+    parts.append("\"EventType\":" + pinpoint_json_str(v.EventType))
+    if v.Metrics.is_some():
+        auto u6 = v.Metrics.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            m7.append(pinpoint_json_str(k7) + ":" + str(u6[k7]))
+        parts.append("\"Metrics\":" + pinpoint_json_obj(m7))
+    if v.SdkName.is_some():
+        auto u8 = v.SdkName.unwrap()
+        parts.append("\"SdkName\":" + pinpoint_json_str(u8))
+    if v.Session.is_some():
+        auto u9 = v.Session.unwrap()
+        parts.append("\"Session\":" + u9.to_json())
+    parts.append("\"Timestamp\":" + pinpoint_json_str(v.Timestamp))
+    return pinpoint_json_obj(parts)
+
+# Serialize EventDimensions to a compact JSON object (declaration order).
+def event_dimensions_to_json(EventDimensions v) -> str:
+    list[str] parts = []
+    if v.Attributes.is_some():
+        auto u0 = v.Attributes.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(pinpoint_json_str(k1) + ":" + attribute_dimension_to_json(u0[k1]))
+        parts.append("\"Attributes\":" + pinpoint_json_obj(m1))
+    if v.EventType.is_some():
+        auto u2 = v.EventType.unwrap()
+        parts.append("\"EventType\":" + set_dimension_to_json(u2))
+    if v.Metrics.is_some():
+        auto u3 = v.Metrics.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(pinpoint_json_str(k4) + ":" + u3[k4].to_json())
+        parts.append("\"Metrics\":" + pinpoint_json_obj(m4))
+    return pinpoint_json_obj(parts)
+
+# Serialize EventsBatch to a compact JSON object (declaration order).
+def events_batch_to_json(EventsBatch v) -> str:
+    list[str] parts = []
+    parts.append("\"Endpoint\":" + public_endpoint_to_json(v.Endpoint))
+    list[str] m0 = []
+    for k0 in sorted(v.Events.keys()):
+        m0.append(pinpoint_json_str(k0) + ":" + event_to_json(v.Events[k0]))
+    parts.append("\"Events\":" + pinpoint_json_obj(m0))
+    return pinpoint_json_obj(parts)
+
+# Serialize EventsRequest to a compact JSON object (declaration order).
+def events_request_to_json(EventsRequest v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.BatchItem.keys()):
+        m0.append(pinpoint_json_str(k0) + ":" + events_batch_to_json(v.BatchItem[k0]))
+    parts.append("\"BatchItem\":" + pinpoint_json_obj(m0))
+    return pinpoint_json_obj(parts)
+
+# Serialize GCMMessage to a compact JSON object (declaration order).
+def gcm_message_to_json(GCMMessage v) -> str:
+    list[str] parts = []
+    if v.Action.is_some():
+        auto u0 = v.Action.unwrap()
+        parts.append("\"Action\":" + u0.to_json())
+    if v.Body.is_some():
+        auto u1 = v.Body.unwrap()
+        parts.append("\"Body\":" + pinpoint_json_str(u1))
+    if v.CollapseKey.is_some():
+        auto u2 = v.CollapseKey.unwrap()
+        parts.append("\"CollapseKey\":" + pinpoint_json_str(u2))
+    if v.Data.is_some():
+        auto u3 = v.Data.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(pinpoint_json_str(k4) + ":" + pinpoint_json_str(u3[k4]))
+        parts.append("\"Data\":" + pinpoint_json_obj(m4))
+    if v.IconReference.is_some():
+        auto u5 = v.IconReference.unwrap()
+        parts.append("\"IconReference\":" + pinpoint_json_str(u5))
+    if v.ImageIconUrl.is_some():
+        auto u6 = v.ImageIconUrl.unwrap()
+        parts.append("\"ImageIconUrl\":" + pinpoint_json_str(u6))
+    if v.ImageUrl.is_some():
+        auto u7 = v.ImageUrl.unwrap()
+        parts.append("\"ImageUrl\":" + pinpoint_json_str(u7))
+    if v.PreferredAuthenticationMethod.is_some():
+        auto u8 = v.PreferredAuthenticationMethod.unwrap()
+        parts.append("\"PreferredAuthenticationMethod\":" + pinpoint_json_str(u8))
+    if v.Priority.is_some():
+        auto u9 = v.Priority.unwrap()
+        parts.append("\"Priority\":" + pinpoint_json_str(u9))
+    if v.RawContent.is_some():
+        auto u10 = v.RawContent.unwrap()
+        parts.append("\"RawContent\":" + pinpoint_json_str(u10))
+    if v.RestrictedPackageName.is_some():
+        auto u11 = v.RestrictedPackageName.unwrap()
+        parts.append("\"RestrictedPackageName\":" + pinpoint_json_str(u11))
+    if v.SilentPush.is_some():
+        auto u12 = v.SilentPush.unwrap()
+        parts.append("\"SilentPush\":" + json.dumps(JsonValue.Bool(u12)))
+    if v.SmallImageIconUrl.is_some():
+        auto u13 = v.SmallImageIconUrl.unwrap()
+        parts.append("\"SmallImageIconUrl\":" + pinpoint_json_str(u13))
+    if v.Sound.is_some():
+        auto u14 = v.Sound.unwrap()
+        parts.append("\"Sound\":" + pinpoint_json_str(u14))
+    if v.Substitutions.is_some():
+        auto u15 = v.Substitutions.unwrap()
+        list[str] m16 = []
+        for k16 in sorted(u15.keys()):
+            list[str] e17 = []
+            for x17 in u15[k16]:
+                e17.append(pinpoint_json_str(x17))
+            m16.append(pinpoint_json_str(k16) + ":" + pinpoint_json_arr(e17))
+        parts.append("\"Substitutions\":" + pinpoint_json_obj(m16))
+    if v.TimeToLive.is_some():
+        auto u18 = v.TimeToLive.unwrap()
+        parts.append("\"TimeToLive\":" + str(u18))
+    if v.Title.is_some():
+        auto u19 = v.Title.unwrap()
+        parts.append("\"Title\":" + pinpoint_json_str(u19))
+    if v.Url.is_some():
+        auto u20 = v.Url.unwrap()
+        parts.append("\"Url\":" + pinpoint_json_str(u20))
+    return pinpoint_json_obj(parts)
+
+# Serialize InAppTemplateRequest to a compact JSON object (declaration order).
+def in_app_template_request_to_json(InAppTemplateRequest v) -> str:
+    list[str] parts = []
+    if v.Content.is_some():
+        auto u0 = v.Content.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(x1.to_json())
+        parts.append("\"Content\":" + pinpoint_json_arr(e1))
+    if v.CustomConfig.is_some():
+        auto u2 = v.CustomConfig.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(pinpoint_json_str(k3) + ":" + pinpoint_json_str(u2[k3]))
+        parts.append("\"CustomConfig\":" + pinpoint_json_obj(m3))
+    if v.Layout.is_some():
+        auto u4 = v.Layout.unwrap()
+        parts.append("\"Layout\":" + u4.to_json())
+    if v.tags.is_some():
+        auto u5 = v.tags.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(pinpoint_json_str(k6) + ":" + pinpoint_json_str(u5[k6]))
+        parts.append("\"tags\":" + pinpoint_json_obj(m6))
+    if v.TemplateDescription.is_some():
+        auto u7 = v.TemplateDescription.unwrap()
+        parts.append("\"TemplateDescription\":" + pinpoint_json_str(u7))
+    return pinpoint_json_obj(parts)
+
+# Serialize MessageConfiguration to a compact JSON object (declaration order).
+def message_configuration_to_json(MessageConfiguration v) -> str:
+    list[str] parts = []
+    if v.ADMMessage.is_some():
+        auto u0 = v.ADMMessage.unwrap()
+        parts.append("\"ADMMessage\":" + u0.to_json())
+    if v.APNSMessage.is_some():
+        auto u1 = v.APNSMessage.unwrap()
+        parts.append("\"APNSMessage\":" + u1.to_json())
+    if v.BaiduMessage.is_some():
+        auto u2 = v.BaiduMessage.unwrap()
+        parts.append("\"BaiduMessage\":" + u2.to_json())
+    if v.CustomMessage.is_some():
+        auto u3 = v.CustomMessage.unwrap()
+        parts.append("\"CustomMessage\":" + u3.to_json())
+    if v.DefaultMessage.is_some():
+        auto u4 = v.DefaultMessage.unwrap()
+        parts.append("\"DefaultMessage\":" + u4.to_json())
+    if v.EmailMessage.is_some():
+        auto u5 = v.EmailMessage.unwrap()
+        parts.append("\"EmailMessage\":" + campaign_email_message_to_json(u5))
+    if v.GCMMessage.is_some():
+        auto u6 = v.GCMMessage.unwrap()
+        parts.append("\"GCMMessage\":" + u6.to_json())
+    if v.SMSMessage.is_some():
+        auto u7 = v.SMSMessage.unwrap()
+        parts.append("\"SMSMessage\":" + u7.to_json())
+    if v.InAppMessage.is_some():
+        auto u8 = v.InAppMessage.unwrap()
+        parts.append("\"InAppMessage\":" + campaign_in_app_message_to_json(u8))
+    return pinpoint_json_obj(parts)
+
+# Serialize MessageRequest to a compact JSON object (declaration order).
+def message_request_to_json(MessageRequest v) -> str:
+    list[str] parts = []
+    if v.Addresses.is_some():
+        auto u0 = v.Addresses.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(pinpoint_json_str(k1) + ":" + address_configuration_to_json(u0[k1]))
+        parts.append("\"Addresses\":" + pinpoint_json_obj(m1))
+    if v.Context.is_some():
+        auto u2 = v.Context.unwrap()
+        list[str] m3 = []
+        for k3 in sorted(u2.keys()):
+            m3.append(pinpoint_json_str(k3) + ":" + pinpoint_json_str(u2[k3]))
+        parts.append("\"Context\":" + pinpoint_json_obj(m3))
+    if v.Endpoints.is_some():
+        auto u4 = v.Endpoints.unwrap()
+        list[str] m5 = []
+        for k5 in sorted(u4.keys()):
+            m5.append(pinpoint_json_str(k5) + ":" + endpoint_send_configuration_to_json(u4[k5]))
+        parts.append("\"Endpoints\":" + pinpoint_json_obj(m5))
+    parts.append("\"MessageConfiguration\":" + direct_message_configuration_to_json(v.MessageConfiguration))
+    if v.TemplateConfiguration.is_some():
+        auto u6 = v.TemplateConfiguration.unwrap()
+        parts.append("\"TemplateConfiguration\":" + u6.to_json())
+    if v.TraceId.is_some():
+        auto u7 = v.TraceId.unwrap()
+        parts.append("\"TraceId\":" + pinpoint_json_str(u7))
+    return pinpoint_json_obj(parts)
+
+# Serialize PublicEndpoint to a compact JSON object (declaration order).
+def public_endpoint_to_json(PublicEndpoint v) -> str:
+    list[str] parts = []
+    if v.Address.is_some():
+        auto u0 = v.Address.unwrap()
+        parts.append("\"Address\":" + pinpoint_json_str(u0))
+    if v.Attributes.is_some():
+        auto u1 = v.Attributes.unwrap()
+        list[str] m2 = []
+        for k2 in sorted(u1.keys()):
+            list[str] e3 = []
+            for x3 in u1[k2]:
+                e3.append(pinpoint_json_str(x3))
+            m2.append(pinpoint_json_str(k2) + ":" + pinpoint_json_arr(e3))
+        parts.append("\"Attributes\":" + pinpoint_json_obj(m2))
+    if v.ChannelType.is_some():
+        auto u4 = v.ChannelType.unwrap()
+        parts.append("\"ChannelType\":" + u4.to_json())
+    if v.Demographic.is_some():
+        auto u5 = v.Demographic.unwrap()
+        parts.append("\"Demographic\":" + u5.to_json())
+    if v.EffectiveDate.is_some():
+        auto u6 = v.EffectiveDate.unwrap()
+        parts.append("\"EffectiveDate\":" + pinpoint_json_str(u6))
+    if v.EndpointStatus.is_some():
+        auto u7 = v.EndpointStatus.unwrap()
+        parts.append("\"EndpointStatus\":" + pinpoint_json_str(u7))
+    if v.Location.is_some():
+        auto u8 = v.Location.unwrap()
+        parts.append("\"Location\":" + u8.to_json())
+    if v.Metrics.is_some():
+        auto u9 = v.Metrics.unwrap()
+        list[str] m10 = []
+        for k10 in sorted(u9.keys()):
+            m10.append(pinpoint_json_str(k10) + ":" + str(u9[k10]))
+        parts.append("\"Metrics\":" + pinpoint_json_obj(m10))
+    if v.OptOut.is_some():
+        auto u11 = v.OptOut.unwrap()
+        parts.append("\"OptOut\":" + pinpoint_json_str(u11))
+    if v.RequestId.is_some():
+        auto u12 = v.RequestId.unwrap()
+        parts.append("\"RequestId\":" + pinpoint_json_str(u12))
+    if v.User.is_some():
+        auto u13 = v.User.unwrap()
+        parts.append("\"User\":" + endpoint_user_to_json(u13))
+    return pinpoint_json_obj(parts)
+
+# Serialize PushNotificationTemplateRequest to a compact JSON object (declaration order).
+def push_notification_template_request_to_json(PushNotificationTemplateRequest v) -> str:
+    list[str] parts = []
+    if v.ADM.is_some():
+        auto u0 = v.ADM.unwrap()
+        parts.append("\"ADM\":" + u0.to_json())
+    if v.APNS.is_some():
+        auto u1 = v.APNS.unwrap()
+        parts.append("\"APNS\":" + u1.to_json())
+    if v.Baidu.is_some():
+        auto u2 = v.Baidu.unwrap()
+        parts.append("\"Baidu\":" + u2.to_json())
+    if v.Default.is_some():
+        auto u3 = v.Default.unwrap()
+        parts.append("\"Default\":" + u3.to_json())
+    if v.DefaultSubstitutions.is_some():
+        auto u4 = v.DefaultSubstitutions.unwrap()
+        parts.append("\"DefaultSubstitutions\":" + pinpoint_json_str(u4))
+    if v.GCM.is_some():
+        auto u5 = v.GCM.unwrap()
+        parts.append("\"GCM\":" + u5.to_json())
+    if v.RecommenderId.is_some():
+        auto u6 = v.RecommenderId.unwrap()
+        parts.append("\"RecommenderId\":" + pinpoint_json_str(u6))
+    if v.tags.is_some():
+        auto u7 = v.tags.unwrap()
+        list[str] m8 = []
+        for k8 in sorted(u7.keys()):
+            m8.append(pinpoint_json_str(k8) + ":" + pinpoint_json_str(u7[k8]))
+        parts.append("\"tags\":" + pinpoint_json_obj(m8))
+    if v.TemplateDescription.is_some():
+        auto u9 = v.TemplateDescription.unwrap()
+        parts.append("\"TemplateDescription\":" + pinpoint_json_str(u9))
+    return pinpoint_json_obj(parts)
+
+# Serialize SMSMessage to a compact JSON object (declaration order).
+def sms_message_to_json(SMSMessage v) -> str:
+    list[str] parts = []
+    if v.Body.is_some():
+        auto u0 = v.Body.unwrap()
+        parts.append("\"Body\":" + pinpoint_json_str(u0))
+    if v.Keyword.is_some():
+        auto u1 = v.Keyword.unwrap()
+        parts.append("\"Keyword\":" + pinpoint_json_str(u1))
+    if v.MediaUrl.is_some():
+        auto u2 = v.MediaUrl.unwrap()
+        parts.append("\"MediaUrl\":" + pinpoint_json_str(u2))
+    if v.MessageType.is_some():
+        auto u3 = v.MessageType.unwrap()
+        parts.append("\"MessageType\":" + u3.to_json())
+    if v.OriginationNumber.is_some():
+        auto u4 = v.OriginationNumber.unwrap()
+        parts.append("\"OriginationNumber\":" + pinpoint_json_str(u4))
+    if v.SenderId.is_some():
+        auto u5 = v.SenderId.unwrap()
+        parts.append("\"SenderId\":" + pinpoint_json_str(u5))
+    if v.Substitutions.is_some():
+        auto u6 = v.Substitutions.unwrap()
+        list[str] m7 = []
+        for k7 in sorted(u6.keys()):
+            list[str] e8 = []
+            for x8 in u6[k7]:
+                e8.append(pinpoint_json_str(x8))
+            m7.append(pinpoint_json_str(k7) + ":" + pinpoint_json_arr(e8))
+        parts.append("\"Substitutions\":" + pinpoint_json_obj(m7))
+    if v.EntityId.is_some():
+        auto u9 = v.EntityId.unwrap()
+        parts.append("\"EntityId\":" + pinpoint_json_str(u9))
+    if v.TemplateId.is_some():
+        auto u10 = v.TemplateId.unwrap()
+        parts.append("\"TemplateId\":" + pinpoint_json_str(u10))
+    return pinpoint_json_obj(parts)
+
+# Serialize SMSTemplateRequest to a compact JSON object (declaration order).
+def sms_template_request_to_json(SMSTemplateRequest v) -> str:
+    list[str] parts = []
+    if v.Body.is_some():
+        auto u0 = v.Body.unwrap()
+        parts.append("\"Body\":" + pinpoint_json_str(u0))
+    if v.DefaultSubstitutions.is_some():
+        auto u1 = v.DefaultSubstitutions.unwrap()
+        parts.append("\"DefaultSubstitutions\":" + pinpoint_json_str(u1))
+    if v.RecommenderId.is_some():
+        auto u2 = v.RecommenderId.unwrap()
+        parts.append("\"RecommenderId\":" + pinpoint_json_str(u2))
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(pinpoint_json_str(k4) + ":" + pinpoint_json_str(u3[k4]))
+        parts.append("\"tags\":" + pinpoint_json_obj(m4))
+    if v.TemplateDescription.is_some():
+        auto u5 = v.TemplateDescription.unwrap()
+        parts.append("\"TemplateDescription\":" + pinpoint_json_str(u5))
+    return pinpoint_json_obj(parts)
+
+# Serialize Schedule to a compact JSON object (declaration order).
+def schedule_to_json(Schedule v) -> str:
+    list[str] parts = []
+    if v.EndTime.is_some():
+        auto u0 = v.EndTime.unwrap()
+        parts.append("\"EndTime\":" + pinpoint_json_str(u0))
+    if v.EventFilter.is_some():
+        auto u1 = v.EventFilter.unwrap()
+        parts.append("\"EventFilter\":" + campaign_event_filter_to_json(u1))
+    if v.Frequency.is_some():
+        auto u2 = v.Frequency.unwrap()
+        parts.append("\"Frequency\":" + u2.to_json())
+    if v.IsLocalTime.is_some():
+        auto u3 = v.IsLocalTime.unwrap()
+        parts.append("\"IsLocalTime\":" + json.dumps(JsonValue.Bool(u3)))
+    if v.QuietTime.is_some():
+        auto u4 = v.QuietTime.unwrap()
+        parts.append("\"QuietTime\":" + u4.to_json())
+    parts.append("\"StartTime\":" + pinpoint_json_str(v.StartTime))
+    if v.Timezone.is_some():
+        auto u5 = v.Timezone.unwrap()
+        parts.append("\"Timezone\":" + pinpoint_json_str(u5))
+    return pinpoint_json_obj(parts)
+
+# Serialize SegmentDemographics to a compact JSON object (declaration order).
+def segment_demographics_to_json(SegmentDemographics v) -> str:
+    list[str] parts = []
+    if v.AppVersion.is_some():
+        auto u0 = v.AppVersion.unwrap()
+        parts.append("\"AppVersion\":" + set_dimension_to_json(u0))
+    if v.Channel.is_some():
+        auto u1 = v.Channel.unwrap()
+        parts.append("\"Channel\":" + set_dimension_to_json(u1))
+    if v.DeviceType.is_some():
+        auto u2 = v.DeviceType.unwrap()
+        parts.append("\"DeviceType\":" + set_dimension_to_json(u2))
+    if v.Make.is_some():
+        auto u3 = v.Make.unwrap()
+        parts.append("\"Make\":" + set_dimension_to_json(u3))
+    if v.Model.is_some():
+        auto u4 = v.Model.unwrap()
+        parts.append("\"Model\":" + set_dimension_to_json(u4))
+    if v.Platform.is_some():
+        auto u5 = v.Platform.unwrap()
+        parts.append("\"Platform\":" + set_dimension_to_json(u5))
+    return pinpoint_json_obj(parts)
+
+# Serialize SegmentDimensions to a compact JSON object (declaration order).
+def segment_dimensions_to_json(SegmentDimensions v) -> str:
+    list[str] parts = []
+    if v.Attributes.is_some():
+        auto u0 = v.Attributes.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(pinpoint_json_str(k1) + ":" + attribute_dimension_to_json(u0[k1]))
+        parts.append("\"Attributes\":" + pinpoint_json_obj(m1))
+    if v.Behavior.is_some():
+        auto u2 = v.Behavior.unwrap()
+        parts.append("\"Behavior\":" + u2.to_json())
+    if v.Demographic.is_some():
+        auto u3 = v.Demographic.unwrap()
+        parts.append("\"Demographic\":" + segment_demographics_to_json(u3))
+    if v.Location.is_some():
+        auto u4 = v.Location.unwrap()
+        parts.append("\"Location\":" + segment_location_to_json(u4))
+    if v.Metrics.is_some():
+        auto u5 = v.Metrics.unwrap()
+        list[str] m6 = []
+        for k6 in sorted(u5.keys()):
+            m6.append(pinpoint_json_str(k6) + ":" + u5[k6].to_json())
+        parts.append("\"Metrics\":" + pinpoint_json_obj(m6))
+    if v.UserAttributes.is_some():
+        auto u7 = v.UserAttributes.unwrap()
+        list[str] m8 = []
+        for k8 in sorted(u7.keys()):
+            m8.append(pinpoint_json_str(k8) + ":" + attribute_dimension_to_json(u7[k8]))
+        parts.append("\"UserAttributes\":" + pinpoint_json_obj(m8))
+    return pinpoint_json_obj(parts)
+
+# Serialize SegmentGroup to a compact JSON object (declaration order).
+def segment_group_to_json(SegmentGroup v) -> str:
+    list[str] parts = []
+    if v.Dimensions.is_some():
+        auto u0 = v.Dimensions.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(segment_dimensions_to_json(x1))
+        parts.append("\"Dimensions\":" + pinpoint_json_arr(e1))
+    if v.SourceSegments.is_some():
+        auto u2 = v.SourceSegments.unwrap()
+        list[str] e3 = []
+        for x3 in u2:
+            e3.append(x3.to_json())
+        parts.append("\"SourceSegments\":" + pinpoint_json_arr(e3))
+    if v.SourceType.is_some():
+        auto u4 = v.SourceType.unwrap()
+        parts.append("\"SourceType\":" + u4.to_json())
+    if v.Type.is_some():
+        auto u5 = v.Type.unwrap()
+        parts.append("\"Type\":" + u5.to_json())
+    return pinpoint_json_obj(parts)
+
+# Serialize SegmentGroupList to a compact JSON object (declaration order).
+def segment_group_list_to_json(SegmentGroupList v) -> str:
+    list[str] parts = []
+    if v.Groups.is_some():
+        auto u0 = v.Groups.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(segment_group_to_json(x1))
+        parts.append("\"Groups\":" + pinpoint_json_arr(e1))
+    if v.Include.is_some():
+        auto u2 = v.Include.unwrap()
+        parts.append("\"Include\":" + u2.to_json())
+    return pinpoint_json_obj(parts)
+
+# Serialize SegmentLocation to a compact JSON object (declaration order).
+def segment_location_to_json(SegmentLocation v) -> str:
+    list[str] parts = []
+    if v.Country.is_some():
+        auto u0 = v.Country.unwrap()
+        parts.append("\"Country\":" + set_dimension_to_json(u0))
+    if v.GPSPoint.is_some():
+        auto u1 = v.GPSPoint.unwrap()
+        parts.append("\"GPSPoint\":" + u1.to_json())
+    return pinpoint_json_obj(parts)
+
+# Serialize SendUsersMessageRequest to a compact JSON object (declaration order).
+def send_users_message_request_to_json(SendUsersMessageRequest v) -> str:
+    list[str] parts = []
+    if v.Context.is_some():
+        auto u0 = v.Context.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(pinpoint_json_str(k1) + ":" + pinpoint_json_str(u0[k1]))
+        parts.append("\"Context\":" + pinpoint_json_obj(m1))
+    parts.append("\"MessageConfiguration\":" + direct_message_configuration_to_json(v.MessageConfiguration))
+    if v.TemplateConfiguration.is_some():
+        auto u2 = v.TemplateConfiguration.unwrap()
+        parts.append("\"TemplateConfiguration\":" + u2.to_json())
+    if v.TraceId.is_some():
+        auto u3 = v.TraceId.unwrap()
+        parts.append("\"TraceId\":" + pinpoint_json_str(u3))
+    list[str] m4 = []
+    for k4 in sorted(v.Users.keys()):
+        m4.append(pinpoint_json_str(k4) + ":" + endpoint_send_configuration_to_json(v.Users[k4]))
+    parts.append("\"Users\":" + pinpoint_json_obj(m4))
+    return pinpoint_json_obj(parts)
+
+# Serialize SetDimension to a compact JSON object (declaration order).
+def set_dimension_to_json(SetDimension v) -> str:
+    list[str] parts = []
+    if v.DimensionType.is_some():
+        auto u0 = v.DimensionType.unwrap()
+        parts.append("\"DimensionType\":" + u0.to_json())
+    list[str] e1 = []
+    for x1 in v.Values:
+        e1.append(pinpoint_json_str(x1))
+    parts.append("\"Values\":" + pinpoint_json_arr(e1))
+    return pinpoint_json_obj(parts)
+
+# Serialize SimpleEmail to a compact JSON object (declaration order).
+def simple_email_to_json(SimpleEmail v) -> str:
+    list[str] parts = []
+    if v.HtmlPart.is_some():
+        auto u0 = v.HtmlPart.unwrap()
+        parts.append("\"HtmlPart\":" + u0.to_json())
+    if v.Subject.is_some():
+        auto u1 = v.Subject.unwrap()
+        parts.append("\"Subject\":" + u1.to_json())
+    if v.TextPart.is_some():
+        auto u2 = v.TextPart.unwrap()
+        parts.append("\"TextPart\":" + u2.to_json())
+    if v.Headers.is_some():
+        auto u3 = v.Headers.unwrap()
+        list[str] e4 = []
+        for x4 in u3:
+            e4.append(x4.to_json())
+        parts.append("\"Headers\":" + pinpoint_json_arr(e4))
+    return pinpoint_json_obj(parts)
+
+# Serialize TagsModel to a compact JSON object (declaration order).
+def tags_model_to_json(TagsModel v) -> str:
+    list[str] parts = []
+    list[str] m0 = []
+    for k0 in sorted(v.tags.keys()):
+        m0.append(pinpoint_json_str(k0) + ":" + pinpoint_json_str(v.tags[k0]))
+    parts.append("\"tags\":" + pinpoint_json_obj(m0))
+    return pinpoint_json_obj(parts)
+
+# Serialize UpdateAttributesRequest to a compact JSON object (declaration order).
+def update_attributes_request_to_json(UpdateAttributesRequest v) -> str:
+    list[str] parts = []
+    if v.Blacklist.is_some():
+        auto u0 = v.Blacklist.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(pinpoint_json_str(x1))
+        parts.append("\"Blacklist\":" + pinpoint_json_arr(e1))
+    return pinpoint_json_obj(parts)
+
+# Serialize UpdateRecommenderConfiguration to a compact JSON object (declaration order).
+def update_recommender_configuration_to_json(UpdateRecommenderConfiguration v) -> str:
+    list[str] parts = []
+    if v.Attributes.is_some():
+        auto u0 = v.Attributes.unwrap()
+        list[str] m1 = []
+        for k1 in sorted(u0.keys()):
+            m1.append(pinpoint_json_str(k1) + ":" + pinpoint_json_str(u0[k1]))
+        parts.append("\"Attributes\":" + pinpoint_json_obj(m1))
+    if v.Description.is_some():
+        auto u2 = v.Description.unwrap()
+        parts.append("\"Description\":" + pinpoint_json_str(u2))
+    if v.Name.is_some():
+        auto u3 = v.Name.unwrap()
+        parts.append("\"Name\":" + pinpoint_json_str(u3))
+    if v.RecommendationProviderIdType.is_some():
+        auto u4 = v.RecommendationProviderIdType.unwrap()
+        parts.append("\"RecommendationProviderIdType\":" + pinpoint_json_str(u4))
+    parts.append("\"RecommendationProviderRoleArn\":" + pinpoint_json_str(v.RecommendationProviderRoleArn))
+    parts.append("\"RecommendationProviderUri\":" + pinpoint_json_str(v.RecommendationProviderUri))
+    if v.RecommendationTransformerUri.is_some():
+        auto u5 = v.RecommendationTransformerUri.unwrap()
+        parts.append("\"RecommendationTransformerUri\":" + pinpoint_json_str(u5))
+    if v.RecommendationsDisplayName.is_some():
+        auto u6 = v.RecommendationsDisplayName.unwrap()
+        parts.append("\"RecommendationsDisplayName\":" + pinpoint_json_str(u6))
+    if v.RecommendationsPerMessage.is_some():
+        auto u7 = v.RecommendationsPerMessage.unwrap()
+        parts.append("\"RecommendationsPerMessage\":" + str(u7))
+    return pinpoint_json_obj(parts)
+
+# Serialize VoiceMessage to a compact JSON object (declaration order).
+def voice_message_to_json(VoiceMessage v) -> str:
+    list[str] parts = []
+    if v.Body.is_some():
+        auto u0 = v.Body.unwrap()
+        parts.append("\"Body\":" + pinpoint_json_str(u0))
+    if v.LanguageCode.is_some():
+        auto u1 = v.LanguageCode.unwrap()
+        parts.append("\"LanguageCode\":" + pinpoint_json_str(u1))
+    if v.OriginationNumber.is_some():
+        auto u2 = v.OriginationNumber.unwrap()
+        parts.append("\"OriginationNumber\":" + pinpoint_json_str(u2))
+    if v.Substitutions.is_some():
+        auto u3 = v.Substitutions.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            list[str] e5 = []
+            for x5 in u3[k4]:
+                e5.append(pinpoint_json_str(x5))
+            m4.append(pinpoint_json_str(k4) + ":" + pinpoint_json_arr(e5))
+        parts.append("\"Substitutions\":" + pinpoint_json_obj(m4))
+    if v.VoiceId.is_some():
+        auto u6 = v.VoiceId.unwrap()
+        parts.append("\"VoiceId\":" + pinpoint_json_str(u6))
+    return pinpoint_json_obj(parts)
+
+# Serialize VoiceTemplateRequest to a compact JSON object (declaration order).
+def voice_template_request_to_json(VoiceTemplateRequest v) -> str:
+    list[str] parts = []
+    if v.Body.is_some():
+        auto u0 = v.Body.unwrap()
+        parts.append("\"Body\":" + pinpoint_json_str(u0))
+    if v.DefaultSubstitutions.is_some():
+        auto u1 = v.DefaultSubstitutions.unwrap()
+        parts.append("\"DefaultSubstitutions\":" + pinpoint_json_str(u1))
+    if v.LanguageCode.is_some():
+        auto u2 = v.LanguageCode.unwrap()
+        parts.append("\"LanguageCode\":" + pinpoint_json_str(u2))
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(pinpoint_json_str(k4) + ":" + pinpoint_json_str(u3[k4]))
+        parts.append("\"tags\":" + pinpoint_json_obj(m4))
+    if v.TemplateDescription.is_some():
+        auto u5 = v.TemplateDescription.unwrap()
+        parts.append("\"TemplateDescription\":" + pinpoint_json_str(u5))
+    if v.VoiceId.is_some():
+        auto u6 = v.VoiceId.unwrap()
+        parts.append("\"VoiceId\":" + pinpoint_json_str(u6))
+    return pinpoint_json_obj(parts)
+
+# Serialize WriteCampaignRequest to a compact JSON object (declaration order).
+def write_campaign_request_to_json(WriteCampaignRequest v) -> str:
+    list[str] parts = []
+    if v.AdditionalTreatments.is_some():
+        auto u0 = v.AdditionalTreatments.unwrap()
+        list[str] e1 = []
+        for x1 in u0:
+            e1.append(write_treatment_resource_to_json(x1))
+        parts.append("\"AdditionalTreatments\":" + pinpoint_json_arr(e1))
+    if v.CustomDeliveryConfiguration.is_some():
+        auto u2 = v.CustomDeliveryConfiguration.unwrap()
+        parts.append("\"CustomDeliveryConfiguration\":" + custom_delivery_configuration_to_json(u2))
+    if v.Description.is_some():
+        auto u3 = v.Description.unwrap()
+        parts.append("\"Description\":" + pinpoint_json_str(u3))
+    if v.HoldoutPercent.is_some():
+        auto u4 = v.HoldoutPercent.unwrap()
+        parts.append("\"HoldoutPercent\":" + str(u4))
+    if v.Hook.is_some():
+        auto u5 = v.Hook.unwrap()
+        parts.append("\"Hook\":" + u5.to_json())
+    if v.IsPaused.is_some():
+        auto u6 = v.IsPaused.unwrap()
+        parts.append("\"IsPaused\":" + json.dumps(JsonValue.Bool(u6)))
+    if v.Limits.is_some():
+        auto u7 = v.Limits.unwrap()
+        parts.append("\"Limits\":" + u7.to_json())
+    if v.MessageConfiguration.is_some():
+        auto u8 = v.MessageConfiguration.unwrap()
+        parts.append("\"MessageConfiguration\":" + message_configuration_to_json(u8))
+    if v.Name.is_some():
+        auto u9 = v.Name.unwrap()
+        parts.append("\"Name\":" + pinpoint_json_str(u9))
+    if v.Schedule.is_some():
+        auto u10 = v.Schedule.unwrap()
+        parts.append("\"Schedule\":" + schedule_to_json(u10))
+    if v.SegmentId.is_some():
+        auto u11 = v.SegmentId.unwrap()
+        parts.append("\"SegmentId\":" + pinpoint_json_str(u11))
+    if v.SegmentVersion.is_some():
+        auto u12 = v.SegmentVersion.unwrap()
+        parts.append("\"SegmentVersion\":" + str(u12))
+    if v.tags.is_some():
+        auto u13 = v.tags.unwrap()
+        list[str] m14 = []
+        for k14 in sorted(u13.keys()):
+            m14.append(pinpoint_json_str(k14) + ":" + pinpoint_json_str(u13[k14]))
+        parts.append("\"tags\":" + pinpoint_json_obj(m14))
+    if v.TemplateConfiguration.is_some():
+        auto u15 = v.TemplateConfiguration.unwrap()
+        parts.append("\"TemplateConfiguration\":" + u15.to_json())
+    if v.TreatmentDescription.is_some():
+        auto u16 = v.TreatmentDescription.unwrap()
+        parts.append("\"TreatmentDescription\":" + pinpoint_json_str(u16))
+    if v.TreatmentName.is_some():
+        auto u17 = v.TreatmentName.unwrap()
+        parts.append("\"TreatmentName\":" + pinpoint_json_str(u17))
+    if v.Priority.is_some():
+        auto u18 = v.Priority.unwrap()
+        parts.append("\"Priority\":" + str(u18))
+    return pinpoint_json_obj(parts)
+
+# Serialize WriteSegmentRequest to a compact JSON object (declaration order).
+def write_segment_request_to_json(WriteSegmentRequest v) -> str:
+    list[str] parts = []
+    if v.Dimensions.is_some():
+        auto u0 = v.Dimensions.unwrap()
+        parts.append("\"Dimensions\":" + segment_dimensions_to_json(u0))
+    if v.Name.is_some():
+        auto u1 = v.Name.unwrap()
+        parts.append("\"Name\":" + pinpoint_json_str(u1))
+    if v.SegmentGroups.is_some():
+        auto u2 = v.SegmentGroups.unwrap()
+        parts.append("\"SegmentGroups\":" + segment_group_list_to_json(u2))
+    if v.tags.is_some():
+        auto u3 = v.tags.unwrap()
+        list[str] m4 = []
+        for k4 in sorted(u3.keys()):
+            m4.append(pinpoint_json_str(k4) + ":" + pinpoint_json_str(u3[k4]))
+        parts.append("\"tags\":" + pinpoint_json_obj(m4))
+    return pinpoint_json_obj(parts)
+
+# Serialize WriteTreatmentResource to a compact JSON object (declaration order).
+def write_treatment_resource_to_json(WriteTreatmentResource v) -> str:
+    list[str] parts = []
+    if v.CustomDeliveryConfiguration.is_some():
+        auto u0 = v.CustomDeliveryConfiguration.unwrap()
+        parts.append("\"CustomDeliveryConfiguration\":" + custom_delivery_configuration_to_json(u0))
+    if v.MessageConfiguration.is_some():
+        auto u1 = v.MessageConfiguration.unwrap()
+        parts.append("\"MessageConfiguration\":" + message_configuration_to_json(u1))
+    if v.Schedule.is_some():
+        auto u2 = v.Schedule.unwrap()
+        parts.append("\"Schedule\":" + schedule_to_json(u2))
+    parts.append("\"SizePercent\":" + str(v.SizePercent))
+    if v.TemplateConfiguration.is_some():
+        auto u3 = v.TemplateConfiguration.unwrap()
+        parts.append("\"TemplateConfiguration\":" + u3.to_json())
+    if v.TreatmentDescription.is_some():
+        auto u4 = v.TreatmentDescription.unwrap()
+        parts.append("\"TreatmentDescription\":" + pinpoint_json_str(u4))
+    if v.TreatmentName.is_some():
+        auto u5 = v.TreatmentName.unwrap()
+        parts.append("\"TreatmentName\":" + pinpoint_json_str(u5))
+    return pinpoint_json_obj(parts)
+
+# Render a bool bound to a URI/query/header slot as its wire text.
+def pinpoint_bind_bool(bool b) -> str:
+    if b:
+        return "true"
+    return "false"
 
 # A bound Pinpoint client: credentials + region, threaded into every operation.
 struct PinpointClient:
     core.Credentials creds
     str region
+
+    # CreateApp  POST /v1/apps
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def create_app(self, CreateAppRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apps", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, create_application_request_to_json(input.CreateApplicationRequest), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # CreateCampaign  POST /v1/apps/{application-id}/campaigns
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def create_campaign(self, CreateCampaignRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["application-id"] = input.ApplicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apps/{application-id}/campaigns", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, write_campaign_request_to_json(input.WriteCampaignRequest), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # CreateEmailTemplate  POST /v1/templates/{template-name}/email
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, TooManyRequestsException
+    def create_email_template(self, CreateEmailTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["template-name"] = input.TemplateName
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/templates/{template-name}/email", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, email_template_request_to_json(input.EmailTemplateRequest), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
     # CreateExportJob  POST /v1/apps/{application-id}/jobs/export
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
@@ -3847,6 +5299,64 @@ struct PinpointClient:
         labels["application-id"] = input.ApplicationId
         auto b = binding.HttpBinding(method="POST", path_template="/v1/apps/{application-id}/jobs/import", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.ImportJobRequest.to_json(), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # CreateInAppTemplate  POST /v1/templates/{template-name}/inapp
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, TooManyRequestsException
+    def create_in_app_template(self, CreateInAppTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["template-name"] = input.TemplateName
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/templates/{template-name}/inapp", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, in_app_template_request_to_json(input.InAppTemplateRequest), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # CreatePushTemplate  POST /v1/templates/{template-name}/push
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, TooManyRequestsException
+    def create_push_template(self, CreatePushTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["template-name"] = input.TemplateName
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/templates/{template-name}/push", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, push_notification_template_request_to_json(input.PushNotificationTemplateRequest), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # CreateRecommenderConfiguration  POST /v1/recommenders
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def create_recommender_configuration(self, CreateRecommenderConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/recommenders", labels={}, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, create_recommender_configuration_to_json(input.CreateRecommenderConfiguration), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # CreateSegment  POST /v1/apps/{application-id}/segments
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def create_segment(self, CreateSegmentRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["application-id"] = input.ApplicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apps/{application-id}/segments", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, write_segment_request_to_json(input.WriteSegmentRequest), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # CreateSmsTemplate  POST /v1/templates/{template-name}/sms
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, TooManyRequestsException
+    def create_sms_template(self, CreateSmsTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["template-name"] = input.TemplateName
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/templates/{template-name}/sms", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, sms_template_request_to_json(input.SMSTemplateRequest), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # CreateVoiceTemplate  POST /v1/templates/{template-name}/voice
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, TooManyRequestsException
+    def create_voice_template(self, CreateVoiceTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["template-name"] = input.TemplateName
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/templates/{template-name}/voice", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, voice_template_request_to_json(input.VoiceTemplateRequest), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
     # DeleteAdmChannel  DELETE /v1/apps/{application-id}/channels/adm
@@ -4743,6 +6253,37 @@ struct PinpointClient:
         auto bp = restjson.rest_json_raw_payload(b, input.WriteEventStream.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
+    # PutEvents  POST /v1/apps/{application-id}/events
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def put_events(self, PutEventsRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["application-id"] = input.ApplicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apps/{application-id}/events", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, events_request_to_json(input.EventsRequest), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # RemoveAttributes  PUT /v1/apps/{application-id}/attributes/{attribute-type}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def remove_attributes(self, RemoveAttributesRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["application-id"] = input.ApplicationId
+        labels["attribute-type"] = input.AttributeType
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/attributes/{attribute-type}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, update_attributes_request_to_json(input.UpdateAttributesRequest), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # SendMessages  POST /v1/apps/{application-id}/messages
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def send_messages(self, SendMessagesRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["application-id"] = input.ApplicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apps/{application-id}/messages", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, message_request_to_json(input.MessageRequest), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
     # SendOTPMessage  POST /v1/apps/{application-id}/otp
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
     def send_otp_message(self, SendOTPMessageRequest input) -> str:
@@ -4751,6 +6292,25 @@ struct PinpointClient:
         labels["application-id"] = input.ApplicationId
         auto b = binding.HttpBinding(method="POST", path_template="/v1/apps/{application-id}/otp", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.SendOTPMessageRequestParameters.to_json(), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # SendUsersMessages  POST /v1/apps/{application-id}/users-messages
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def send_users_messages(self, SendUsersMessagesRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["application-id"] = input.ApplicationId
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/apps/{application-id}/users-messages", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, send_users_message_request_to_json(input.SendUsersMessageRequest), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # TagResource  POST /v1/tags/{resource-arn}
+    def tag_resource(self, TagResourceRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["resource-arn"] = input.ResourceArn
+        auto b = binding.HttpBinding(method="POST", path_template="/v1/tags/{resource-arn}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, tags_model_to_json(input.TagsModel), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
     # UntagResource  DELETE /v1/tags/{resource-arn}
@@ -4833,6 +6393,17 @@ struct PinpointClient:
         auto bp = restjson.rest_json_raw_payload(b, input.BaiduChannelRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
+    # UpdateCampaign  PUT /v1/apps/{application-id}/campaigns/{campaign-id}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def update_campaign(self, UpdateCampaignRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["application-id"] = input.ApplicationId
+        labels["campaign-id"] = input.CampaignId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/campaigns/{campaign-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, write_campaign_request_to_json(input.WriteCampaignRequest), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
     # UpdateEmailChannel  PUT /v1/apps/{application-id}/channels/email
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
     def update_email_channel(self, UpdateEmailChannelRequest input) -> str:
@@ -4843,6 +6414,43 @@ struct PinpointClient:
         auto bp = restjson.rest_json_raw_payload(b, input.EmailChannelRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
+    # UpdateEmailTemplate  PUT /v1/templates/{template-name}/email
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def update_email_template(self, UpdateEmailTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["template-name"] = input.TemplateName
+        dict[str, str] query = {}
+        if input.CreateNewVersion.is_some():
+            auto qt0 = pinpoint_bind_bool(input.CreateNewVersion.unwrap_or(False))
+            query["create-new-version"] = qt0
+        if input.Version.is_some():
+            query["version"] = input.Version.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/templates/{template-name}/email", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, email_template_request_to_json(input.EmailTemplateRequest), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # UpdateEndpoint  PUT /v1/apps/{application-id}/endpoints/{endpoint-id}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def update_endpoint(self, UpdateEndpointRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["application-id"] = input.ApplicationId
+        labels["endpoint-id"] = input.EndpointId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/endpoints/{endpoint-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, endpoint_request_to_json(input.EndpointRequest), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # UpdateEndpointsBatch  PUT /v1/apps/{application-id}/endpoints
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def update_endpoints_batch(self, UpdateEndpointsBatchRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["application-id"] = input.ApplicationId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/endpoints", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, endpoint_batch_request_to_json(input.EndpointBatchRequest), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
     # UpdateGcmChannel  PUT /v1/apps/{application-id}/channels/gcm
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
     def update_gcm_channel(self, UpdateGcmChannelRequest input) -> str:
@@ -4851,6 +6459,22 @@ struct PinpointClient:
         labels["application-id"] = input.ApplicationId
         auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/gcm", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.GCMChannelRequest.to_json(), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # UpdateInAppTemplate  PUT /v1/templates/{template-name}/inapp
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def update_in_app_template(self, UpdateInAppTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["template-name"] = input.TemplateName
+        dict[str, str] query = {}
+        if input.CreateNewVersion.is_some():
+            auto qt0 = pinpoint_bind_bool(input.CreateNewVersion.unwrap_or(False))
+            query["create-new-version"] = qt0
+        if input.Version.is_some():
+            query["version"] = input.Version.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/templates/{template-name}/inapp", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, in_app_template_request_to_json(input.InAppTemplateRequest), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
     # UpdateJourneyState  PUT /v1/apps/{application-id}/journeys/{journey-id}/state
@@ -4864,6 +6488,43 @@ struct PinpointClient:
         auto bp = restjson.rest_json_raw_payload(b, input.JourneyStateRequest.to_json(), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
+    # UpdatePushTemplate  PUT /v1/templates/{template-name}/push
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def update_push_template(self, UpdatePushTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["template-name"] = input.TemplateName
+        dict[str, str] query = {}
+        if input.CreateNewVersion.is_some():
+            auto qt0 = pinpoint_bind_bool(input.CreateNewVersion.unwrap_or(False))
+            query["create-new-version"] = qt0
+        if input.Version.is_some():
+            query["version"] = input.Version.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/templates/{template-name}/push", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, push_notification_template_request_to_json(input.PushNotificationTemplateRequest), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # UpdateRecommenderConfiguration  PUT /v1/recommenders/{recommender-id}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def update_recommender_configuration(self, UpdateRecommenderConfigurationRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["recommender-id"] = input.RecommenderId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/recommenders/{recommender-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, update_recommender_configuration_to_json(input.UpdateRecommenderConfiguration), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # UpdateSegment  PUT /v1/apps/{application-id}/segments/{segment-id}
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def update_segment(self, UpdateSegmentRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["application-id"] = input.ApplicationId
+        labels["segment-id"] = input.SegmentId
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/segments/{segment-id}", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, write_segment_request_to_json(input.WriteSegmentRequest), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
     # UpdateSmsChannel  PUT /v1/apps/{application-id}/channels/sms
     # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
     def update_sms_channel(self, UpdateSmsChannelRequest input) -> str:
@@ -4872,6 +6533,22 @@ struct PinpointClient:
         labels["application-id"] = input.ApplicationId
         auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/sms", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.SMSChannelRequest.to_json(), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # UpdateSmsTemplate  PUT /v1/templates/{template-name}/sms
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def update_sms_template(self, UpdateSmsTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["template-name"] = input.TemplateName
+        dict[str, str] query = {}
+        if input.CreateNewVersion.is_some():
+            auto qt0 = pinpoint_bind_bool(input.CreateNewVersion.unwrap_or(False))
+            query["create-new-version"] = qt0
+        if input.Version.is_some():
+            query["version"] = input.Version.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/templates/{template-name}/sms", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, sms_template_request_to_json(input.SMSTemplateRequest), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
     # UpdateTemplateActiveVersion  PUT /v1/templates/{template-name}/{template-type}/active-version
@@ -4893,6 +6570,22 @@ struct PinpointClient:
         labels["application-id"] = input.ApplicationId
         auto b = binding.HttpBinding(method="PUT", path_template="/v1/apps/{application-id}/channels/voice", labels=labels, greedy_labels={}, query={}, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
         auto bp = restjson.rest_json_raw_payload(b, input.VoiceChannelRequest.to_json(), "application/json")
+        return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
+
+    # UpdateVoiceTemplate  PUT /v1/templates/{template-name}/voice
+    # errors: BadRequestException, ForbiddenException, InternalServerErrorException, MethodNotAllowedException, NotFoundException, PayloadTooLargeException, TooManyRequestsException
+    def update_voice_template(self, UpdateVoiceTemplateRequest input) -> str:
+        auto host = endpoints.regional_host(pinpoint_service(), self.region)
+        dict[str, str] labels = {}
+        labels["template-name"] = input.TemplateName
+        dict[str, str] query = {}
+        if input.CreateNewVersion.is_some():
+            auto qt0 = pinpoint_bind_bool(input.CreateNewVersion.unwrap_or(False))
+            query["create-new-version"] = qt0
+        if input.Version.is_some():
+            query["version"] = input.Version.unwrap_or("")
+        auto b = binding.HttpBinding(method="PUT", path_template="/v1/templates/{template-name}/voice", labels=labels, greedy_labels={}, query=query, multi_query={}, headers={}, prefix_header_prefix="", prefix_headers={}, payload_kind=binding.PayloadKind.Empty, body="", content_type="")
+        auto bp = restjson.rest_json_raw_payload(b, voice_template_request_to_json(input.VoiceTemplateRequest), "application/json")
         return restjson.rest_json_request(self.creds, bp, pinpoint_service(), self.region, host)
 
     # VerifyOTPMessage  POST /v1/apps/{application-id}/verify-otp

@@ -16,7 +16,7 @@
 # Response.
 #
 # Coverage (rest-json): 48 operations — 47 with a generated method,
-#   1 skipped (a non-scalar URI/query/header binding, or a non-derivable payload).
+#   1 skipped (a non-scalar URI/query/header binding, or a non-serializable payload).
 #   170 structs (85 @derive(Json)), 33 enums, 1 error variants.
 #   9 paginators generated (0 paginated ops skipped) from paginators-1.json.
 # @derive(Json) is attached to structs whose members are all derive-
